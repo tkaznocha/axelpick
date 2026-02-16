@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Brand colors */
+  --emerald: #00A572;
+  --sky: #0C8DCC;
+  --lavender: #7C5FD3;
+
+  /* Aurora gradient */
+  --aurora: linear-gradient(135deg, #00C78A, #0EA5E9, #A78BFA);
+
+  /* Light mode */
+  --background: #F5F7FB;
+  --card: #FFFFFF;
+  --text-primary: #0A1628;
+  --text-secondary: #4B5563;
+
+  /* Dark mode base */
+  --navy: #0A1628;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0A1628;
+    --card: rgba(255, 255, 255, 0.05);
+    --text-primary: #F5F7FB;
+    --text-secondary: #9CA3AF;
+  }
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--background);
+}
+
+@layer utilities {
+  .aurora-gradient {
+    background: var(--aurora);
+  }
+
+  .aurora-text {
+    background: var(--aurora);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .frosted-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}

@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axel Pick — Fantasy Figure Skating</title>
+<meta name="description" content="The first real fantasy league for figure skating. Pick your skaters. Earn points. Compete globally. Launching at Worlds 2026.">
+<meta property="og:title" content="Axel Pick — Fantasy Figure Skating">
+<meta property="og:description" content="The first real fantasy league for figure skating. Launching at Worlds 2026 in Boston.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F7FB;
+    --bg-raised: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --border: rgba(10, 22, 40, 0.07);
+    --border-hover: rgba(10, 22, 40, 0.13);
+    --text: #0A1628;
+    --text-secondary: #3D5278;
+    --text-muted: #7B8FAB;
+    --emerald: #00A572;
+    --sky: #0C8DCC;
+    --lavender: #7C5FD3;
+    --aurora: linear-gradient(135deg, #00A572, #0C8DCC, #7C5FD3);
+    --accent-emerald-bg: rgba(0, 165, 114, 0.08);
+    --accent-sky-bg: rgba(12, 141, 204, 0.07);
+    --accent-lavender-bg: rgba(124, 95, 211, 0.07);
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color-scheme: light;
+    background: #F5F7FB !important;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: #F5F7FB !important;
+    color: #0A1628;
+    overflow-x: hidden;
+  }
+
+  /* ===== Aurora glow — subtle, contained at top ===== */
+  .aurora-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1000px;
+    height: 600px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.08;
+    background: radial-gradient(ellipse at 30% 50%, var(--emerald) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 40%, var(--sky) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 70%, var(--lavender) 0%, transparent 60%);
+    filter: blur(80px);
+    animation: auroraShift 25s ease-in-out infinite alternate;
+  }
+  @keyframes auroraShift {
+    0%   { opacity: 0.10; transform: translateX(-50%) scale(1); }
+    50%  { opacity: 0.14; transform: translateX(-48%) scale(1.03); }
+    100% { opacity: 0.10; transform: translateX(-52%) scale(0.98); }
+  }
+
+  /* ===== Noise texture ===== */
+  .noise {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.015;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* ===== Aurora top bar ===== */
+  .aurora-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--aurora);
+    z-index: 100;
+  }
+
+  /* ===== Layout ===== */
+  .page {
+    position: relative;
+    z-index: 10;
+  }
+
+  section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ===== Nav ===== */
+  .nav {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 32px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 10;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.04em;
+    text-decoration: none;
+  }
+  .nav-brand .w-axel { color: #0A1628; }
+  .nav-brand .w-pick {
+    background: var(--aurora);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-brand .dot {
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--emerald);
+    margin-left: 3px;
+    box-shadow: 0 0 8px rgba(0,165,114,0.3);
+  }
+  .nav-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    padding-top: 120px;
+    padding-bottom: 80px;
+  }
+  .hero-content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(40px, 7vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    color: #0A1628;
+    margin-bottom: 24px;
+    animation: fadeUp 0.7s ease-out both;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: var(--aurora);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .lead {
+    font-size: 18px;
+    line-height: 1.65;
+    color: #3D5278;
+    max-width: 540px;
+    margin-bottom: 40px;
+    animation: fadeUp 0.7s ease-out 0.1s both;
+  }
+
+  /* Signup in hero */
+  .signup-block {
+    animation: fadeUp 0.7s ease-out 0.2s both;
+  }
+  .signup-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+    margin-bottom: 14px;
+  }
+  .signup-label .pulse {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--emerald);
+    box-shadow: 0 0 6px rgba(0,165,114,0.4);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .signup-row {
+    display: flex;
+    gap: 10px;
+    max-width: 480px;
+  }
+  .signup-input {
+    flex: 1;
+    background: #FFFFFF;
+    border: 1px solid rgba(10, 22, 40, 0.10);
+    border-radius: 12px;
+    padding: 15px 18px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: #0A1628;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .signup-input::placeholder { color: #9EAEC4; }
+  .signup-input:focus {
+    border-color: rgba(0,165,114,0.5);
+    box-shadow: 0 0 0 3px rgba(0,165,114,0.1);
+  }
+  .signup-btn {
+    background: var(--aurora);
+    border: none;
+    border-radius: 12px;
+    padding: 15px 28px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.15s, box-shadow 0.25s;
+    box-shadow: 0 4px 20px rgba(0,165,114,0.2);
+  }
+  .signup-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 28px rgba(0,165,114,0.3);
+  }
+  .signup-btn:active { transform: translateY(0); }
+  .signup-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .signup-fine {
+    font-size: 12px;
+    color: #7B8FAB;
+    margin-top: 12px;
+  }
+
+  .signup-success {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: rgba(0,165,114,0.06);
+    border: 1px solid rgba(0,165,114,0.15);
+    border-radius: 12px;
+    max-width: 480px;
+  }
+  .signup-success .ico {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--emerald);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .signup-success .ico svg { width: 12px; height: 12px; stroke: #FFFFFF; }
+  .signup-success p { font-size: 14px; color: var(--emerald); font-weight: 500; }
+
+  /* ===== APP PREVIEW SECTION ===== */
+  .preview-section {
+    padding: 80px 0;
+  }
+  .preview-section .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+    margin-bottom: 20px;
+  }
+  .preview-section h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    color: #0A1628;
+    margin-bottom: 12px;
+  }
+  .preview-section .desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #3D5278;
+    max-width: 480px;
+    margin-bottom: 40px;
+  }
+
+  /* Screenshot placeholder frames */
+  .preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .preview-frame {
+    background: #FFFFFF;
+    border: 1px solid rgba(10,22,40,0.07);
+    border-radius: 16px;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(10, 22, 40, 0.04);
+  }
+  .preview-frame:hover {
+    border-color: rgba(10,22,40,0.13);
+    box-shadow: 0 4px 12px rgba(10, 22, 40, 0.06);
+  }
+  .preview-frame.tall {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 7;
+  }
+  .preview-frame .placeholder-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .preview-frame .placeholder-icon svg {
+    width: 20px; height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .preview-frame:nth-child(1) .placeholder-icon {
+    background: var(--accent-emerald-bg);
+    color: var(--emerald);
+  }
+  .preview-frame:nth-child(2) .placeholder-icon {
+    background: var(--accent-sky-bg);
+    color: var(--sky);
+  }
+  .preview-frame:nth-child(3) .placeholder-icon {
+    background: var(--accent-lavender-bg);
+    color: var(--lavender);
+  }
+  .preview-frame .placeholder-label {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 500;
+    color: #7B8FAB;
+    letter-spacing: -0.01em;
+  }
+  .preview-frame .placeholder-sub {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+    opacity: 0.5;
+  }
+
+  /* ===== WHY AXEL PICK ===== */
+  .why-section {
+    padding: 80px 0;
+    border-top: 1px solid rgba(10,22,40,0.07);
+  }
+  .why-section .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+    margin-bottom: 20px;
+  }
+  .why-section h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    color: #0A1628;
+    margin-bottom: 12px;
+  }
+  .why-section .desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #3D5278;
+    max-width: 540px;
+    margin-bottom: 36px;
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .why-item {
+    background: #FFFFFF;
+    border: 1px solid rgba(10,22,40,0.07);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    box-shadow: 0 1px 3px rgba(10,22,40,0.04);
+  }
+  .why-icon {
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .why-item:first-child .why-icon {
+    background: rgba(220, 60, 60, 0.08);
+    color: #C53030;
+  }
+  .why-item:last-child .why-icon {
+    background: var(--accent-emerald-bg);
+    color: var(--emerald);
+  }
+  .why-old {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: #7B8FAB;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .why-new {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--emerald);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .why-content p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #3D5278;
+  }
+  .why-values {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .why-val {
+    font-size: 13px;
+    color: #3D5278;
+    line-height: 1.5;
+  }
+  .why-val strong {
+    color: #0A1628;
+  }
+
+  /* ===== HOW IT WORKS ===== */
+  .how-section {
+    padding: 80px 0;
+    border-top: 1px solid rgba(10,22,40,0.07);
+  }
+  .how-section .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+    margin-bottom: 40px;
+  }
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .how-step {
+    background: #FFFFFF;
+    border: 1px solid rgba(10,22,40,0.07);
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 1px 3px rgba(10, 22, 40, 0.04);
+  }
+  .how-step:hover { border-color: rgba(10,22,40,0.13); }
+  .how-step-num {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .how-step:nth-child(1) .how-step-num {
+    background: var(--accent-emerald-bg);
+    color: var(--emerald);
+  }
+  .how-step:nth-child(2) .how-step-num {
+    background: var(--accent-sky-bg);
+    color: var(--sky);
+  }
+  .how-step:nth-child(3) .how-step-num {
+    background: var(--accent-lavender-bg);
+    color: var(--lavender);
+  }
+  .how-step h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    color: #0A1628;
+    margin-bottom: 8px;
+  }
+  .how-step p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #3D5278;
+  }
+
+  /* ===== EVENT CARD ===== */
+  .event-section {
+    padding: 80px 0;
+    border-top: 1px solid rgba(10,22,40,0.07);
+  }
+  .event-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(10,22,40,0.07);
+    border-radius: 20px;
+    padding: 36px 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(10, 22, 40, 0.05);
+  }
+  .event-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--aurora);
+    opacity: 0.5;
+  }
+  .event-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .event-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--emerald);
+    background: var(--accent-emerald-bg);
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+  .event-badge .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--emerald);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .event-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.03em;
+    color: #0A1628;
+    margin-top: 12px;
+  }
+  .event-meta {
+    font-size: 15px;
+    color: #3D5278;
+    margin-top: 4px;
+  }
+
+  .event-stats-row {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .ev-stat-val {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .ev-stat:nth-child(1) .ev-stat-val { color: var(--emerald); }
+  .ev-stat:nth-child(2) .ev-stat-val { color: var(--sky); }
+  .ev-stat:nth-child(3) .ev-stat-val { color: var(--lavender); }
+  .ev-stat-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+    margin-top: 4px;
+  }
+
+  /* Countdown */
+  .cd-row {
+    padding-top: 24px;
+    border-top: 1px solid rgba(10,22,40,0.07);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .cd-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+  }
+  .cd-digits {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .cd-unit { text-align: center; }
+  .cd-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: #0A1628;
+    letter-spacing: -0.02em;
+    min-width: 32px;
+  }
+  .cd-unit-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7B8FAB;
+  }
+  .cd-sep {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: #7B8FAB;
+    opacity: 0.3;
+    margin-top: -10px;
+  }
+
+  /* ===== BOTTOM CTA ===== */
+  .bottom-cta {
+    padding: 80px 0;
+    border-top: 1px solid rgba(10,22,40,0.07);
+    text-align: center;
+  }
+  .bottom-cta h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+    color: #0A1628;
+    margin-bottom: 12px;
+  }
+  .bottom-cta p {
+    font-size: 15px;
+    color: #3D5278;
+    margin-bottom: 32px;
+  }
+  .bottom-cta .signup-row {
+    margin: 0 auto;
+    justify-content: center;
+  }
+  .bottom-cta .signup-fine {
+    text-align: center;
+  }
+  .bottom-cta .signup-success {
+    margin: 0 auto;
+  }
+
+  /* ===== FOOTER ===== */
+  .site-footer {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-top: 1px solid rgba(10,22,40,0.07);
+  }
+  .site-footer .copy {
+    font-size: 12px;
+    color: #7B8FAB;
+  }
+  .site-footer .links {
+    display: flex;
+    gap: 20px;
+  }
+  .site-footer .links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #7B8FAB;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  .site-footer .links a:hover { color: #3D5278; }
+
+  /* ===== Animations ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .anim-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .anim-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 680px) {
+    .hero { padding-top: 80px; padding-bottom: 60px; }
+    .hero h1 { font-size: 36px; }
+    .signup-row { flex-direction: column; }
+    .signup-btn { text-align: center; }
+    .how-steps { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+    .why-values { flex-direction: column; gap: 12px; }
+    .preview-grid { grid-template-columns: 1fr; }
+    .preview-frame.tall { aspect-ratio: 16 / 9; }
+    .event-card { padding: 28px 24px; }
+    .event-stats-row { gap: 24px; }
+    .cd-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .site-footer { flex-direction: column; align-items: flex-start; }
+    .nav { padding: 24px 20px 0; }
+    section { padding: 0 20px; }
+    .hero-content { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Aurora top bar -->
+<div class="aurora-bar"></div>
+
+<!-- Noise -->
+<div class="noise"></div>
+
+<div class="page">
+
+  <!-- Aurora glow — contained, subtle -->
+  <div class="aurora-glow"></div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a class="nav-brand" href="#">
+      <span class="w-axel">Axel</span><span class="w-pick">Pick</span><span class="dot"></span>
+    </a>
+    <span class="nav-tag">Fantasy Figure Skating</span>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Your skaters.<br>Your&nbsp;<em>strategy</em>.</h1>
+      <p class="lead">Figure skating finally has a fantasy league worth playing. Pick your team before each ISU event, earn points from real placements and clean programs, and see who really knows the sport best. We're launching with a preview round at Worlds in Prague — try it out before the full season kicks off this fall.</p>
+
+      <div class="signup-block">
+        <div class="signup-label">
+          <span class="pulse"></span>
+          <span>Get early access</span>
+        </div>
+        <div class="signup-row" id="heroForm">
+          <input type="email" class="signup-input" id="heroEmail" placeholder="your@email.com" autocomplete="email">
+          <button class="signup-btn" onclick="handleSignup('hero')">Join the waitlist</button>
+        </div>
+        <div class="signup-success" id="heroSuccess">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <p>You're in. We'll notify you before picks open for Worlds in Prague.</p>
+        </div>
+        <p class="signup-fine">No ads. No fees. Just skating.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== APP PREVIEW ===== -->
+  <section class="preview-section anim-in">
+    <span class="section-label">Sneak Peek</span>
+    <h2>See the game in action</h2>
+    <p class="desc">Pick your skaters, track placements live, and watch your score climb. Here's what it looks like.</p>
+
+    <div class="preview-grid">
+      <div class="preview-frame">
+        <div class="placeholder-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+        <span class="placeholder-label">Skater Pick Screen</span>
+        <span class="placeholder-sub">Screenshot coming soon</span>
+      </div>
+      <div class="preview-frame">
+        <div class="placeholder-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <span class="placeholder-label">Live Scoring</span>
+        <span class="placeholder-sub">Screenshot coming soon</span>
+      </div>
+      <div class="preview-frame tall">
+        <div class="placeholder-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <span class="placeholder-label">Leaderboard &amp; Results</span>
+        <span class="placeholder-sub">Video coming soon</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY AXEL PICK ===== -->
+  <section class="why-section anim-in">
+    <span class="section-label">Why This Exists</span>
+    <h2>Built by fans, for fans</h2>
+    <p class="desc">Fantasy leagues exist for football, basketball, F1, cricket — but figure skating? Nothing. The few attempts out there are buried in ads, clunky forms, or abandoned side projects. Axel Pick is different.</p>
+
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-icon" style="color: var(--emerald);">&#10005;</div>
+        <div class="why-content">
+          <span class="why-old">Existing options</span>
+          <p>Ad-walled blogs, spreadsheet-based leagues, abandoned apps. No real game design. No mobile experience. No fun.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon" style="color: var(--emerald);">&#10003;</div>
+        <div class="why-content">
+          <span class="why-new">Axel Pick</span>
+          <p>A real fantasy game with budget mechanics, dynamic pricing, placement scoring, and private leagues — designed for the skating community from day one.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="why-values">
+      <div class="why-val"><strong>Free forever.</strong> No paywalls, no premium tiers.</div>
+      <div class="why-val"><strong>No ads.</strong> Clean experience, always.</div>
+      <div class="why-val"><strong>Community-first.</strong> Built with input from skating fans.</div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-section anim-in">
+    <span class="section-label">How It Works</span>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-num">1</div>
+        <h3>Scout the entry list</h3>
+        <p>Before each event, browse the real entry list and pick your skaters. Ilia or Kaori? A rising junior dark horse? Your budget, your call.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">2</div>
+        <h3>Watch and earn</h3>
+        <p>Points flow in from real results — placements, clean programs, personal bests. Every quad landed and every fall matters.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-num">3</div>
+        <h3>Prove you know the sport</h3>
+        <p>Climb the global leaderboard or create a private league with your skating friends. The preview round is at Worlds — the full season starts in October with the Grand Prix Series.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FIRST EVENT ===== -->
+  <section class="event-section anim-in">
+    <div class="event-card">
+      <div class="event-top">
+        <div>
+          <div class="event-badge"><span class="dot"></span> Preview Round</div>
+          <div class="event-title">ISU World Championships 2026</div>
+          <div class="event-meta">Prague, Czech Republic · March 24–29</div>
+        </div>
+      </div>
+
+      <div class="event-stats-row">
+        <div class="ev-stat">
+          <div class="ev-stat-val">8</div>
+          <div class="ev-stat-label">Picks</div>
+        </div>
+        <div class="ev-stat">
+          <div class="ev-stat-val">2×</div>
+          <div class="ev-stat-label">Points</div>
+        </div>
+        <div class="ev-stat">
+          <div class="ev-stat-val">$70M</div>
+          <div class="ev-stat-label">Budget</div>
+        </div>
+      </div>
+
+      <div class="cd-row">
+        <span class="cd-label">Preview round opens in</span>
+        <div class="cd-digits">
+          <div class="cd-unit"><div class="cd-num" id="cd-d">--</div><div class="cd-unit-label">Days</div></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><div class="cd-num" id="cd-h">--</div><div class="cd-unit-label">Hrs</div></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><div class="cd-num" id="cd-m">--</div><div class="cd-unit-label">Min</div></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><div class="cd-unit-label">Sec</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BOTTOM CTA ===== -->
+  <section class="bottom-cta anim-in">
+    <h2>The season finale is your starting line</h2>
+    <p>Try Axel Pick at Worlds in Prague — get a feel for the game before the full season launches in October.</p>
+    <div class="signup-row" id="btmForm">
+      <input type="email" class="signup-input" id="btmEmail" placeholder="your@email.com" autocomplete="email">
+      <button class="signup-btn" onclick="handleSignup('btm')">Join the waitlist</button>
+    </div>
+    <div class="signup-success" id="btmSuccess">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <p>You're in. We'll notify you before picks open for Worlds in Prague.</p>
+    </div>
+    <p class="signup-fine">Free forever. No ads. Built by skating fans.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <span class="copy">&copy; 2026 Axel Pick</span>
+    <div class="links">
+      <a href="https://x.com/axelpick" target="_blank" rel="noopener">X / Twitter</a>
+      <a href="mailto:hello@axelpick.app">Contact</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// Countdown — picks open March 22, 2026
+function tick() {
+  const t = new Date('2026-03-22T00:00:00Z') - new Date();
+  if (t <= 0) {
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
+    return;
+  }
+  const d = Math.floor(t / 864e5);
+  const h = Math.floor((t % 864e5) / 36e5);
+  const m = Math.floor((t % 36e5) / 6e4);
+  const s = Math.floor((t % 6e4) / 1e3);
+  document.getElementById('cd-d').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+tick(); setInterval(tick, 1000);
+
+// Signup
+function handleSignup(loc) {
+  const input = document.getElementById(loc === 'hero' ? 'heroEmail' : 'btmEmail');
+  const form = document.getElementById(loc === 'hero' ? 'heroForm' : 'btmForm');
+  const success = document.getElementById(loc === 'hero' ? 'heroSuccess' : 'btmSuccess');
+  const email = input.value.trim();
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    input.style.borderColor = 'rgba(220,50,50,0.5)';
+    input.style.boxShadow = '0 0 0 3px rgba(220,50,50,0.08)';
+    setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 2000);
+    return;
+  }
+
+  const btn = form.querySelector('.signup-btn');
+  btn.disabled = true;
+  btn.textContent = 'Joining...';
+
+  // Replace with actual backend call
+  setTimeout(() => {
+    form.style.display = 'none';
+    success.style.display = 'flex';
+    const fine = form.parentElement.querySelector('.signup-fine');
+    if (fine) fine.style.display = 'none';
+  }, 600);
+}
+
+// Enter key
+document.querySelectorAll('.signup-input').forEach(input => {
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') input.closest('.signup-row') ? input.parentElement.querySelector('.signup-btn').click() : null;
+  });
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.anim-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
