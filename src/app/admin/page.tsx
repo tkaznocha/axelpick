@@ -1,10 +1,30 @@
-export default function AdminPage() {
-  return (
-    <main className="min-h-screen p-8">
-      <h1 className="font-display text-3xl font-bold">Admin Panel</h1>
-      <p className="mt-2 text-text-secondary">
-        Manage events, entries, and results.
-      </p>
-    </main>
-  );
+import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { redirect } from "next/navigation";
+import { AdminPanel } from "./AdminPanel";
+
+export default async function AdminPage() {
+  const supabase = createServerSupabaseClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (user.id !== process.env.ADMIN_USER_ID) {
+    return (
+      <main className="min-h-screen flex items-center justify-center p-8">
+        <div className="text-center">
+          <h1 className="font-display text-2xl font-bold">Access Denied</h1>
+          <p className="mt-2 text-text-secondary">
+            You don&apos;t have admin permissions.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  return <AdminPanel />;
 }
