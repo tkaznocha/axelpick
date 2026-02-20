@@ -13,7 +13,8 @@ export default async function AdminPage() {
     redirect("/login");
   }
 
-  if (user.id !== process.env.ADMIN_USER_ID) {
+  const adminIds = (process.env.ADMIN_USER_ID ?? "").split(",").map((s) => s.trim());
+  if (!adminIds.includes(user.id)) {
     return (
       <main className="min-h-screen flex items-center justify-center p-8">
         <div className="text-center">
