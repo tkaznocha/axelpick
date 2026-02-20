@@ -35,6 +35,22 @@ export default async function DashboardPage() {
     .order("start_date", { ascending: true })
     .limit(3);
 
+  // Fetch user's leagues (up to 3)
+  const { data: memberships } = await supabase
+    .from("league_members")
+    .select("league_id, leagues(id, name, created_by)")
+    .eq("user_id", user.id)
+    .limit(3);
+
+  const myLeagues = (memberships ?? []).map((m) => {
+    const l = m.leagues as unknown as {
+      id: string;
+      name: string;
+      created_by: string;
+    };
+    return { id: l.id, name: l.name, isCreator: l.created_by === user.id };
+  });
+
   return (
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       {/* Header */}
@@ -117,6 +133,57 @@ export default async function DashboardPage() {
             <p className="text-text-secondary">
               No upcoming events yet. Check back soon!
             </p>
+          </div>
+        )}
+      </section>
+
+      {/* My Leagues */}
+      <section className="mt-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-xl font-semibold">My Leagues</h2>
+          {myLeagues.length > 0 && (
+            <a
+              href="/leagues"
+              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              View all &rarr;
+            </a>
+          )}
+        </div>
+
+        {myLeagues.length > 0 ? (
+          <div className="space-y-3">
+            {myLeagues.map((league) => (
+              <a
+                key={league.id}
+                href={`/leagues/${league.id}`}
+                className="block rounded-xl bg-card p-4 shadow-sm border border-black/5 transition-shadow hover:shadow-md"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-display font-semibold">
+                      {league.name}
+                    </h3>
+                    <p className="text-xs text-text-secondary mt-0.5">
+                      {league.isCreator ? "Created by you" : "Member"}
+                    </p>
+                  </div>
+                  <span className="text-text-secondary text-sm">&rarr;</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl bg-card p-6 text-center border border-black/5">
+            <p className="text-text-secondary text-sm mb-3">
+              Compete with friends in a private league.
+            </p>
+            <a
+              href="/leagues/create"
+              className="inline-block rounded-xl aurora-gradient px-5 py-2.5 text-sm font-display font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              Create League
+            </a>
           </div>
         )}
       </section>
