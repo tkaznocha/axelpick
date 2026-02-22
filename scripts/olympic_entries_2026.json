@@ -1,0 +1,602 @@
+[
+  {
+    "name": "Ilia Malinin",
+    "country": "USA",
+    "discipline": "men",
+    "world_ranking": 1
+  },
+  {
+    "name": "Yuma Kagiyama",
+    "country": "JPN",
+    "discipline": "men",
+    "world_ranking": 2
+  },
+  {
+    "name": "Mikhail Shaidorov",
+    "country": "KAZ",
+    "discipline": "men",
+    "world_ranking": 3
+  },
+  {
+    "name": "Shun Sato",
+    "country": "JPN",
+    "discipline": "men",
+    "world_ranking": 4
+  },
+  {
+    "name": "Adam Siao Him Fa",
+    "country": "FRA",
+    "discipline": "men",
+    "world_ranking": 5
+  },
+  {
+    "name": "Kevin Aymoz",
+    "country": "FRA",
+    "discipline": "men",
+    "world_ranking": 6
+  },
+  {
+    "name": "Nika Egadze",
+    "country": "GEO",
+    "discipline": "men",
+    "world_ranking": 7
+  },
+  {
+    "name": "Lukas Britschgi",
+    "country": "SUI",
+    "discipline": "men",
+    "world_ranking": 8
+  },
+  {
+    "name": "Daniel Grassl",
+    "country": "ITA",
+    "discipline": "men",
+    "world_ranking": 9
+  },
+  {
+    "name": "Kao Miura",
+    "country": "JPN",
+    "discipline": "men",
+    "world_ranking": 10
+  },
+  {
+    "name": "Matteo Rizzo",
+    "country": "ITA",
+    "discipline": "men",
+    "world_ranking": 11
+  },
+  {
+    "name": "Junhwan Cha",
+    "country": "KOR",
+    "discipline": "men",
+    "world_ranking": 14
+  },
+  {
+    "name": "Aleksandr Selevko",
+    "country": "EST",
+    "discipline": "men",
+    "world_ranking": 15
+  },
+  {
+    "name": "Adam Hagara",
+    "country": "SVK",
+    "discipline": "men",
+    "world_ranking": 19
+  },
+  {
+    "name": "Deniss Vasiljevs",
+    "country": "LAT",
+    "discipline": "men",
+    "world_ranking": 20
+  },
+  {
+    "name": "Andrew Torgashev",
+    "country": "USA",
+    "discipline": "men",
+    "world_ranking": 21
+  },
+  {
+    "name": "Vladimir Litvintsev",
+    "country": "AZE",
+    "discipline": "men",
+    "world_ranking": 23
+  },
+  {
+    "name": "Jin Boyang",
+    "country": "CHN",
+    "discipline": "men",
+    "world_ranking": 24
+  },
+  {
+    "name": "Stephen Gogolev",
+    "country": "CAN",
+    "discipline": "men",
+    "world_ranking": 25
+  },
+  {
+    "name": "Vladimir Samoilov",
+    "country": "POL",
+    "discipline": "men",
+    "world_ranking": 33
+  },
+  {
+    "name": "Hyungyeom Kim",
+    "country": "KOR",
+    "discipline": "men",
+    "world_ranking": 35
+  },
+  {
+    "name": "Fedirs Kuliss",
+    "country": "LAT",
+    "discipline": "men",
+    "world_ranking": 39
+  },
+  {
+    "name": "Maxim Naumov",
+    "country": "USA",
+    "discipline": "men",
+    "world_ranking": 45
+  },
+  {
+    "name": "Donovan Carrillo",
+    "country": "MEX",
+    "discipline": "men",
+    "world_ranking": 42
+  },
+  {
+    "name": "Tomas-Llorenc Guarino Sabate",
+    "country": "ESP",
+    "discipline": "men",
+    "world_ranking": 50
+  },
+  {
+    "name": "Andreas Nordeback",
+    "country": "SWE",
+    "discipline": "men",
+    "world_ranking": 48
+  },
+  {
+    "name": "Yu-Hsiang Li",
+    "country": "TPE",
+    "discipline": "men",
+    "world_ranking": 55
+  },
+  {
+    "name": "Kyrylo Marsak",
+    "country": "UKR",
+    "discipline": "men",
+    "world_ranking": 60
+  },
+  {
+    "name": "Petr Gumennik",
+    "country": "AIN",
+    "discipline": "men",
+    "world_ranking": null
+  },
+  {
+    "name": "Kaori Sakamoto",
+    "country": "JPN",
+    "discipline": "women",
+    "world_ranking": 1
+  },
+  {
+    "name": "Alysa Liu",
+    "country": "USA",
+    "discipline": "women",
+    "world_ranking": 2
+  },
+  {
+    "name": "Mone Chiba",
+    "country": "JPN",
+    "discipline": "women",
+    "world_ranking": 3
+  },
+  {
+    "name": "Amber Glenn",
+    "country": "USA",
+    "discipline": "women",
+    "world_ranking": 4
+  },
+  {
+    "name": "Isabeau Levito",
+    "country": "USA",
+    "discipline": "women",
+    "world_ranking": 5
+  },
+  {
+    "name": "Anastasiia Gubanova",
+    "country": "GEO",
+    "discipline": "women",
+    "world_ranking": 7
+  },
+  {
+    "name": "Lara Naki Gutmann",
+    "country": "ITA",
+    "discipline": "women",
+    "world_ranking": 9
+  },
+  {
+    "name": "Ami Nakai",
+    "country": "JPN",
+    "discipline": "women",
+    "world_ranking": 10
+  },
+  {
+    "name": "Nina Pinzarrone",
+    "country": "BEL",
+    "discipline": "women",
+    "world_ranking": 11
+  },
+  {
+    "name": "Niina Petrokina",
+    "country": "EST",
+    "discipline": "women",
+    "world_ranking": 12
+  },
+  {
+    "name": "Sofia Samodelkina",
+    "country": "KAZ",
+    "discipline": "women",
+    "world_ranking": 17
+  },
+  {
+    "name": "Madeline Schizas",
+    "country": "CAN",
+    "discipline": "women",
+    "world_ranking": 18
+  },
+  {
+    "name": "Loena Hendrickx",
+    "country": "BEL",
+    "discipline": "women",
+    "world_ranking": 19
+  },
+  {
+    "name": "Lorine Schild",
+    "country": "FRA",
+    "discipline": "women",
+    "world_ranking": 20
+  },
+  {
+    "name": "Haein Lee",
+    "country": "KOR",
+    "discipline": "women",
+    "world_ranking": 21
+  },
+  {
+    "name": "Jia Shin",
+    "country": "KOR",
+    "discipline": "women",
+    "world_ranking": 23
+  },
+  {
+    "name": "Kimmy Repond",
+    "country": "SUI",
+    "discipline": "women",
+    "world_ranking": 24
+  },
+  {
+    "name": "Ekaterina Kurakova",
+    "country": "POL",
+    "discipline": "women",
+    "world_ranking": 28
+  },
+  {
+    "name": "Iida Karhunen",
+    "country": "FIN",
+    "discipline": "women",
+    "world_ranking": 30
+  },
+  {
+    "name": "Julia Sauter",
+    "country": "ROU",
+    "discipline": "women",
+    "world_ranking": 35
+  },
+  {
+    "name": "Olga Mikutina",
+    "country": "AUT",
+    "discipline": "women",
+    "world_ranking": 37
+  },
+  {
+    "name": "Mariia Seniuk",
+    "country": "ISR",
+    "discipline": "women",
+    "world_ranking": 38
+  },
+  {
+    "name": "Livia Kaiser",
+    "country": "SUI",
+    "discipline": "women",
+    "world_ranking": 40
+  },
+  {
+    "name": "Ruiyang Zhang",
+    "country": "CHN",
+    "discipline": "women",
+    "world_ranking": 45
+  },
+  {
+    "name": "Kristen Spours",
+    "country": "GBR",
+    "discipline": "women",
+    "world_ranking": 50
+  },
+  {
+    "name": "Alexandra Feigin",
+    "country": "BUL",
+    "discipline": "women",
+    "world_ranking": 48
+  },
+  {
+    "name": "Meda Variakojyte",
+    "country": "LTU",
+    "discipline": "women",
+    "world_ranking": 55
+  },
+  {
+    "name": "Adeliia Petrosian",
+    "country": "AIN",
+    "discipline": "women",
+    "world_ranking": null
+  },
+  {
+    "name": "Viktoriia Safonova",
+    "country": "AIN",
+    "discipline": "women",
+    "world_ranking": null
+  },
+  {
+    "name": "Riku Miura / Ryuichi Kihara",
+    "country": "JPN",
+    "discipline": "pairs",
+    "world_ranking": 1
+  },
+  {
+    "name": "Minerva Fabienne Hase / Nikita Volodin",
+    "country": "GER",
+    "discipline": "pairs",
+    "world_ranking": 2
+  },
+  {
+    "name": "Anastasiia Metelkina / Luka Berulava",
+    "country": "GEO",
+    "discipline": "pairs",
+    "world_ranking": 3
+  },
+  {
+    "name": "Sara Conti / Niccolo Macii",
+    "country": "ITA",
+    "discipline": "pairs",
+    "world_ranking": 4
+  },
+  {
+    "name": "Deanna Stellato-Dudek / Maxime Deschamps",
+    "country": "CAN",
+    "discipline": "pairs",
+    "world_ranking": 5
+  },
+  {
+    "name": "Maria Pavlova / Alexei Sviatchenko",
+    "country": "HUN",
+    "discipline": "pairs",
+    "world_ranking": 7
+  },
+  {
+    "name": "Ellie Kam / Danny O'Shea",
+    "country": "USA",
+    "discipline": "pairs",
+    "world_ranking": 8
+  },
+  {
+    "name": "Rebecca Ghilardi / Filippo Ambrosini",
+    "country": "ITA",
+    "discipline": "pairs",
+    "world_ranking": 9
+  },
+  {
+    "name": "Lia Pereira / Trennt Michaud",
+    "country": "CAN",
+    "discipline": "pairs",
+    "world_ranking": 10
+  },
+  {
+    "name": "Annika Hocke / Robert Kunkel",
+    "country": "GER",
+    "discipline": "pairs",
+    "world_ranking": 11
+  },
+  {
+    "name": "Emily Chan / Spencer Akira Howe",
+    "country": "USA",
+    "discipline": "pairs",
+    "world_ranking": 12
+  },
+  {
+    "name": "Anastasia Vaipan-Law / Luke Digby",
+    "country": "GBR",
+    "discipline": "pairs",
+    "world_ranking": 13
+  },
+  {
+    "name": "Ioulia Chtchetinina / Michal Wozniak",
+    "country": "POL",
+    "discipline": "pairs",
+    "world_ranking": 14
+  },
+  {
+    "name": "Yuna Nagaoka / Sumitada Moriguchi",
+    "country": "JPN",
+    "discipline": "pairs",
+    "world_ranking": 15
+  },
+  {
+    "name": "Daria Danilova / Michel Tsiba",
+    "country": "NED",
+    "discipline": "pairs",
+    "world_ranking": 17
+  },
+  {
+    "name": "Camille Kovalev / Pavel Kovalev",
+    "country": "FRA",
+    "discipline": "pairs",
+    "world_ranking": 19
+  },
+  {
+    "name": "Anastasiia Golubeva / Hektor Giotopoulos Moore",
+    "country": "AUS",
+    "discipline": "pairs",
+    "world_ranking": 25
+  },
+  {
+    "name": "Sui Wenjing / Han Cong",
+    "country": "CHN",
+    "discipline": "pairs",
+    "world_ranking": 29
+  },
+  {
+    "name": "Karina Akopova / Nikita Rakhmanin",
+    "country": "ARM",
+    "discipline": "pairs",
+    "world_ranking": 32
+  },
+  {
+    "name": "Lilah Fear / Lewis Gibson",
+    "country": "GBR",
+    "discipline": "ice_dance",
+    "world_ranking": 1
+  },
+  {
+    "name": "Madison Chock / Evan Bates",
+    "country": "USA",
+    "discipline": "ice_dance",
+    "world_ranking": 2
+  },
+  {
+    "name": "Charlene Guignard / Marco Fabbri",
+    "country": "ITA",
+    "discipline": "ice_dance",
+    "world_ranking": 3
+  },
+  {
+    "name": "Piper Gilles / Paul Poirier",
+    "country": "CAN",
+    "discipline": "ice_dance",
+    "world_ranking": 4
+  },
+  {
+    "name": "Evgeniia Lopareva / Geoffrey Brissaud",
+    "country": "FRA",
+    "discipline": "ice_dance",
+    "world_ranking": 5
+  },
+  {
+    "name": "Emilea Zingas / Vadym Kolesnik",
+    "country": "USA",
+    "discipline": "ice_dance",
+    "world_ranking": 6
+  },
+  {
+    "name": "Allison Reed / Saulius Ambrulevicius",
+    "country": "LTU",
+    "discipline": "ice_dance",
+    "world_ranking": 7
+  },
+  {
+    "name": "Christina Carreira / Anthony Ponomarenko",
+    "country": "USA",
+    "discipline": "ice_dance",
+    "world_ranking": 8
+  },
+  {
+    "name": "Olivia Smart / Tim Dieck",
+    "country": "ESP",
+    "discipline": "ice_dance",
+    "world_ranking": 9
+  },
+  {
+    "name": "Marjorie Lajoie / Zachary Lagha",
+    "country": "CAN",
+    "discipline": "ice_dance",
+    "world_ranking": 11
+  },
+  {
+    "name": "Diana Davis / Gleb Smolkin",
+    "country": "GEO",
+    "discipline": "ice_dance",
+    "world_ranking": 12
+  },
+  {
+    "name": "Juulia Turkkila / Matthias Versluis",
+    "country": "FIN",
+    "discipline": "ice_dance",
+    "world_ranking": 13
+  },
+  {
+    "name": "Hannah Lim / Ye Quan",
+    "country": "KOR",
+    "discipline": "ice_dance",
+    "world_ranking": 14
+  },
+  {
+    "name": "Natalie Taschlerova / Filip Taschler",
+    "country": "CZE",
+    "discipline": "ice_dance",
+    "world_ranking": 16
+  },
+  {
+    "name": "Katerina Mrazkova / Daniel Mrazek",
+    "country": "CZE",
+    "discipline": "ice_dance",
+    "world_ranking": 18
+  },
+  {
+    "name": "Marie-Jade Lauriault / Romain Le Gac",
+    "country": "CAN",
+    "discipline": "ice_dance",
+    "world_ranking": 19
+  },
+  {
+    "name": "Laurence Fournier Beaudry / Guillaume Cizeron",
+    "country": "FRA",
+    "discipline": "ice_dance",
+    "world_ranking": 21
+  },
+  {
+    "name": "Jennifer Janse van Rensburg / Benjamin Steffan",
+    "country": "GER",
+    "discipline": "ice_dance",
+    "world_ranking": 22
+  },
+  {
+    "name": "Holly Harris / Jason Chan",
+    "country": "AUS",
+    "discipline": "ice_dance",
+    "world_ranking": 26
+  },
+  {
+    "name": "Phebe Bekker / James Hernandez",
+    "country": "GBR",
+    "discipline": "ice_dance",
+    "world_ranking": 32
+  },
+  {
+    "name": "Shiyue Wang / Xinyu Liu",
+    "country": "CHN",
+    "discipline": "ice_dance",
+    "world_ranking": 35
+  },
+  {
+    "name": "Sofia Val / Asaf Kazimov",
+    "country": "ESP",
+    "discipline": "ice_dance",
+    "world_ranking": 38
+  },
+  {
+    "name": "Milla Ruud Reitan / Nikolaj Majorov",
+    "country": "SWE",
+    "discipline": "ice_dance",
+    "world_ranking": 42
+  }
+]
