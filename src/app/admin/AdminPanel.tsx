@@ -6,9 +6,11 @@ import {
   importEntries,
   importResults,
   fetchEvents,
+  fetchEventEntries,
+  withdrawSkater,
 } from "./actions";
 
-type Tab = "event" | "entries" | "results";
+type Tab = "event" | "entries" | "results" | "withdrawals";
 
 interface EventOption {
   id: string;
@@ -25,7 +27,7 @@ export function AdminPanel() {
     <main className="min-h-screen p-6 md:p-8 max-w-3xl mx-auto">
       <h1 className="font-display text-3xl font-bold mb-2">Admin Panel</h1>
       <p className="text-text-secondary mb-8">
-        Manage events, entries, and results.
+        Manage events, entries, results, and withdrawals.
       </p>
 
       {/* Tabs */}
@@ -34,6 +36,7 @@ export function AdminPanel() {
           ["event", "Create Event"],
           ["entries", "Import Entries"],
           ["results", "Import Results"],
+          ["withdrawals", "Withdrawals"],
         ] as const).map(([key, label]) => (
           <button
             key={key}
@@ -52,6 +55,7 @@ export function AdminPanel() {
       {tab === "event" && <CreateEventForm />}
       {tab === "entries" && <ImportEntriesForm />}
       {tab === "results" && <ImportResultsForm />}
+      {tab === "withdrawals" && <WithdrawalForm />}
     </main>
   );
 }
@@ -310,6 +314,197 @@ function ImportResultsForm() {
       </button>
 
       <DetailLog details={result?.details} />
+    </div>
+  );
+}
+
+// ---------- Withdrawals ----------
+
+interface EntryRow {
+  id: string;
+  skater_id: string;
+  price_at_event: number;
+  is_withdrawn: boolean;
+  withdrawn_at: string | null;
+  skaters: {
+    id: string;
+    name: string;
+    country: string;
+    discipline: string;
+  };
+}
+
+function WithdrawalForm() {
+  const [isPending, startTransition] = useTransition();
+  const [events, setEvents] = useState<EventOption[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState("");
+  const [entries, setEntries] = useState<EntryRow[]>([]);
+  const [loadingEntries, setLoadingEntries] = useState(false);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [deadline, setDeadline] = useState("");
+  const [result, setResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
+
+  useEffect(() => {
+    fetchEvents().then((res) => {
+      if (res.success) setEvents(res.events);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!selectedEvent) {
+      setEntries([]);
+      return;
+    }
+    setLoadingEntries(true);
+    setResult(null);
+    setConfirmingId(null);
+    fetchEventEntries(selectedEvent).then((res) => {
+      if (res.success) setEntries(res.entries as EntryRow[]);
+      setLoadingEntries(false);
+    });
+  }, [selectedEvent]);
+
+  function handleWithdraw(skaterId: string) {
+    startTransition(async () => {
+      const res = await withdrawSkater(
+        selectedEvent,
+        skaterId,
+        deadline || null
+      );
+      if (res.success) {
+        setResult({ success: true, message: res.summary! });
+        setConfirmingId(null);
+        // Refresh entries
+        const refreshed = await fetchEventEntries(selectedEvent);
+        if (refreshed.success) setEntries(refreshed.entries as EntryRow[]);
+      } else {
+        setResult({ success: false, message: res.error ?? "Unknown error" });
+      }
+    });
+  }
+
+  const activeEntries = entries.filter((e) => !e.is_withdrawn);
+  const withdrawnEntries = entries.filter((e) => e.is_withdrawn);
+
+  return (
+    <div className="space-y-5">
+      <StatusMessage result={result} />
+
+      <EventSelector
+        events={events}
+        value={selectedEvent}
+        onChange={setSelectedEvent}
+      />
+
+      {selectedEvent && (
+        <div>
+          <label className="mb-1 block text-sm font-medium">
+            Replacement Deadline
+          </label>
+          <input
+            type="datetime-local"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            className="w-full rounded-xl border border-black/10 bg-background px-4 py-3 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald"
+          />
+          <p className="mt-1 text-xs text-text-secondary">
+            Deadline for affected users to pick a replacement (set before
+            withdrawing)
+          </p>
+        </div>
+      )}
+
+      {loadingEntries && (
+        <p className="text-sm text-text-secondary">Loading entries...</p>
+      )}
+
+      {/* Withdrawn skaters */}
+      {withdrawnEntries.length > 0 && (
+        <div>
+          <p className="text-sm font-medium text-red-600 mb-2">
+            Withdrawn ({withdrawnEntries.length})
+          </p>
+          <div className="space-y-2">
+            {withdrawnEntries.map((entry) => (
+              <div
+                key={entry.id}
+                className="flex items-center justify-between rounded-xl border border-red-200 bg-red-50 p-3"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-red-700 line-through">
+                    {entry.skaters.name}
+                  </span>
+                  <span className="text-xs text-red-500">
+                    {entry.skaters.country} &middot; {entry.skaters.discipline}
+                  </span>
+                </div>
+                <span className="rounded-full bg-red-200 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                  WITHDRAWN
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Active skaters */}
+      {activeEntries.length > 0 && (
+        <div>
+          <p className="text-sm font-medium mb-2">
+            Active Entries ({activeEntries.length})
+          </p>
+          <div className="space-y-2">
+            {activeEntries.map((entry) => (
+              <div
+                key={entry.id}
+                className="rounded-xl border border-black/5 bg-card p-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium">
+                      {entry.skaters.name}
+                    </span>
+                    <span className="text-xs text-text-secondary">
+                      {entry.skaters.country} &middot;{" "}
+                      {entry.skaters.discipline}
+                    </span>
+                    <span className="font-mono text-xs text-text-secondary">
+                      ${(entry.price_at_event / 1_000_000).toFixed(1)}M
+                    </span>
+                  </div>
+                  {confirmingId === entry.skater_id ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleWithdraw(entry.skater_id)}
+                        disabled={isPending}
+                        className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                      >
+                        {isPending ? "..." : "Confirm"}
+                      </button>
+                      <button
+                        onClick={() => setConfirmingId(null)}
+                        className="rounded-lg border border-black/10 px-3 py-1.5 text-xs font-medium text-text-secondary hover:bg-black/5"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmingId(entry.skater_id)}
+                      className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50"
+                    >
+                      Withdraw
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

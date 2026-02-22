@@ -3,6 +3,7 @@
 export interface SkaterEntry {
   skater_id: string;
   price_at_event: number;
+  is_withdrawn?: boolean;
   skater: {
     id: string;
     name: string;
@@ -41,14 +42,50 @@ export default function SkaterCard({
   isPicked,
   onToggle,
   disabled,
+  isWithdrawn,
 }: {
   entry: SkaterEntry;
   isPicked: boolean;
   onToggle: () => void;
   disabled: boolean;
+  isWithdrawn?: boolean;
 }) {
   const { skater, price_at_event } = entry;
   const priceM = (price_at_event / 1_000_000).toFixed(1);
+
+  if (isWithdrawn) {
+    return (
+      <div className="w-full text-left rounded-xl p-4 shadow-sm border border-red-200 bg-red-50/50 opacity-60 cursor-not-allowed">
+        <div className="flex items-center gap-3">
+          <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-lg">
+            {countryFlag(skater.country)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-display font-semibold truncate line-through text-text-secondary">
+                {skater.name}
+              </span>
+              <span className="flex-shrink-0 rounded-full bg-red-200 px-2 py-0.5 text-xs font-medium text-red-800">
+                WITHDRAWN
+              </span>
+            </div>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs text-text-secondary">
+                {skater.country}
+              </span>
+              <span
+                className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                  disciplineColors[skater.discipline] ?? "bg-gray-100 text-gray-700"
+                }`}
+              >
+                {disciplineLabels[skater.discipline] ?? skater.discipline}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <button

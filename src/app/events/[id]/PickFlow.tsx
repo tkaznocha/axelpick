@@ -3,9 +3,14 @@
 import { useMemo, useState, useTransition } from "react";
 import SkaterCard, { type SkaterEntry } from "@/components/SkaterCard";
 import BudgetBar from "@/components/BudgetBar";
-import { lockPicks } from "./actions";
+import { lockPicks, replaceWithdrawnPick } from "./actions";
 
 type SortKey = "price_desc" | "price_asc" | "ranking" | "name";
+
+interface PendingReplacement {
+  withdrawn_skater_id: string;
+  replacement_skater_id: string | null;
+}
 
 interface PickFlowProps {
   eventId: string;
@@ -14,6 +19,8 @@ interface PickFlowProps {
   entries: SkaterEntry[];
   initialPicks: string[]; // skater IDs already picked
   isLocked: boolean; // event is past lock time or completed
+  pendingReplacements: PendingReplacement[];
+  replacementDeadline: string | null;
 }
 
 export default function PickFlow({
@@ -23,6 +30,8 @@ export default function PickFlow({
   entries,
   initialPicks,
   isLocked: initialLocked,
+  pendingReplacements,
+  replacementDeadline,
 }: PickFlowProps) {
   const [picked, setPicked] = useState<Set<string>>(
     () => new Set(initialPicks)
@@ -34,17 +43,44 @@ export default function PickFlow({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // Replacement mode state
+  const unreplacedWithdrawals = pendingReplacements.filter(
+    (r) => r.replacement_skater_id === null
+  );
+  const inReplacementMode = isLocked && unreplacedWithdrawals.length > 0;
+  const [replacementPick, setReplacementPick] = useState<string | null>(null);
+  const [replacingFor, setReplacingFor] = useState<string | null>(
+    unreplacedWithdrawals[0]?.withdrawn_skater_id ?? null
+  );
+  const [replacementSuccess, setReplacementSuccess] = useState(false);
+
+  const deadlinePassed = replacementDeadline
+    ? new Date(replacementDeadline) <= new Date()
+    : false;
+
   // Filters
   const [discipline, setDiscipline] = useState<string>("all");
   const [sort, setSort] = useState<SortKey>("ranking");
   const [search, setSearch] = useState("");
 
+  // Withdrawn skater IDs (for filtering)
+  const withdrawnIds = useMemo(
+    () => new Set(entries.filter((e) => e.is_withdrawn).map((e) => e.skater_id)),
+    [entries]
+  );
+
   // Derived
   const budgetSpent = useMemo(() => {
-    return entries
-      .filter((e) => picked.has(e.skater_id))
+    let total = entries
+      .filter((e) => picked.has(e.skater_id) && !withdrawnIds.has(e.skater_id))
       .reduce((sum, e) => sum + e.price_at_event, 0);
-  }, [entries, picked]);
+    // Add replacement pick cost if in replacement mode
+    if (replacementPick) {
+      const rpEntry = entries.find((e) => e.skater_id === replacementPick);
+      if (rpEntry) total += rpEntry.price_at_event;
+    }
+    return total;
+  }, [entries, picked, withdrawnIds, replacementPick]);
 
   const disciplines = useMemo(() => {
     const set = new Set(entries.map((e) => e.skater.discipline));
@@ -88,6 +124,12 @@ export default function PickFlow({
   }, [entries, discipline, sort, search]);
 
   function togglePick(skaterId: string) {
+    if (inReplacementMode) {
+      // In replacement mode, select/deselect replacement candidate
+      setReplacementPick((prev) => (prev === skaterId ? null : skaterId));
+      setError(null);
+      return;
+    }
     if (isLocked) return;
     setPicked((prev) => {
       const next = new Set(prev);
@@ -116,10 +158,56 @@ export default function PickFlow({
     });
   }
 
+  function handleReplacement() {
+    if (!replacingFor || !replacementPick) return;
+    startTransition(async () => {
+      const res = await replaceWithdrawnPick(
+        eventId,
+        replacingFor,
+        replacementPick
+      );
+      if (res.success) {
+        setReplacementSuccess(true);
+        setError(null);
+        // Update local state
+        setPicked((prev) => {
+          const next = new Set(prev);
+          next.delete(replacingFor!);
+          next.add(replacementPick!);
+          return next;
+        });
+        setReplacementPick(null);
+        setReplacingFor(null);
+      } else {
+        setError(res.error ?? "Failed to replace pick");
+      }
+    });
+  }
+
   const atLimit = picked.size >= picksLimit;
 
   return (
     <div className="pb-24">
+      {/* Withdrawal replacement banner */}
+      {inReplacementMode && !deadlinePassed && !replacementSuccess && (
+        <div className="mb-4 rounded-lg bg-amber-50 p-4 border border-amber-200">
+          <p className="text-sm font-semibold text-amber-800">
+            {unreplacedWithdrawals.length} skater{unreplacedWithdrawals.length > 1 ? "s" : ""} in your roster withdrew
+          </p>
+          <p className="mt-1 text-sm text-amber-700">
+            Select a replacement skater below.
+            {replacementDeadline && (
+              <> Deadline: {new Date(replacementDeadline).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</>
+            )}
+          </p>
+        </div>
+      )}
+      {inReplacementMode && deadlinePassed && (
+        <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">
+          The replacement deadline has passed.
+        </div>
+      )}
+
       {/* Status messages */}
       {error && (
         <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">
@@ -129,6 +217,11 @@ export default function PickFlow({
       {success && (
         <div className="mb-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700 border border-emerald-200">
           Your picks are locked! Good luck!
+        </div>
+      )}
+      {replacementSuccess && (
+        <div className="mb-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700 border border-emerald-200">
+          Replacement confirmed! Your roster has been updated.
         </div>
       )}
 
@@ -183,15 +276,32 @@ export default function PickFlow({
 
       {/* Entry list */}
       <div className="grid gap-3 sm:grid-cols-2">
-        {filtered.map((entry) => (
-          <SkaterCard
-            key={entry.skater_id}
-            entry={entry}
-            isPicked={picked.has(entry.skater_id)}
-            onToggle={() => togglePick(entry.skater_id)}
-            disabled={isLocked || (atLimit && !picked.has(entry.skater_id))}
-          />
-        ))}
+        {filtered.map((entry) => {
+          const isWithdrawn = withdrawnIds.has(entry.skater_id);
+          const isReplacementCandidate =
+            inReplacementMode && !isWithdrawn && !picked.has(entry.skater_id);
+          const isSelectedReplacement = replacementPick === entry.skater_id;
+
+          return (
+            <SkaterCard
+              key={entry.skater_id}
+              entry={entry}
+              isPicked={
+                isSelectedReplacement
+                  ? true
+                  : picked.has(entry.skater_id) && !isWithdrawn
+              }
+              onToggle={() => togglePick(entry.skater_id)}
+              disabled={
+                isWithdrawn ||
+                (inReplacementMode
+                  ? deadlinePassed || (!isReplacementCandidate && !isSelectedReplacement)
+                  : isLocked || (atLimit && !picked.has(entry.skater_id)))
+              }
+              isWithdrawn={isWithdrawn}
+            />
+          );
+        })}
       </div>
 
       {filtered.length === 0 && (
@@ -202,13 +312,15 @@ export default function PickFlow({
 
       {/* Sticky budget bar */}
       <BudgetBar
-        picksUsed={picked.size}
+        picksUsed={inReplacementMode ? picksLimit - unreplacedWithdrawals.length + (replacementPick ? 1 : 0) : picked.size}
         picksLimit={picksLimit}
         budgetSpent={budgetSpent}
         budgetTotal={budget}
-        onLock={handleLock}
+        onLock={inReplacementMode ? handleReplacement : handleLock}
         isLocking={isPending}
-        isLocked={isLocked}
+        isLocked={inReplacementMode ? false : isLocked}
+        replacementMode={inReplacementMode && !deadlinePassed && !replacementSuccess}
+        replacementReady={!!replacementPick}
       />
     </div>
   );

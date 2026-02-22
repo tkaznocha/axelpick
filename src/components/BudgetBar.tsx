@@ -8,6 +8,8 @@ export default function BudgetBar({
   onLock,
   isLocking,
   isLocked,
+  replacementMode,
+  replacementReady,
 }: {
   picksUsed: number;
   picksLimit: number;
@@ -16,10 +18,14 @@ export default function BudgetBar({
   onLock: () => void;
   isLocking: boolean;
   isLocked: boolean;
+  replacementMode?: boolean;
+  replacementReady?: boolean;
 }) {
   const budgetRemaining = budgetTotal - budgetSpent;
   const isOverBudget = budgetRemaining < 0;
-  const isReady = picksUsed === picksLimit && !isOverBudget;
+  const isReady = replacementMode
+    ? !!replacementReady && !isOverBudget
+    : picksUsed === picksLimit && !isOverBudget;
 
   const spentM = (budgetSpent / 1_000_000).toFixed(1);
   const totalM = (budgetTotal / 1_000_000).toFixed(0);
@@ -81,7 +87,13 @@ export default function BudgetBar({
                   : "bg-gray-300"
               }`}
             >
-              {isLocking ? "Locking..." : "Lock Picks"}
+              {isLocking
+                ? replacementMode
+                  ? "Replacing..."
+                  : "Locking..."
+                : replacementMode
+                  ? "Confirm Replacement"
+                  : "Lock Picks"}
             </button>
           )}
         </div>

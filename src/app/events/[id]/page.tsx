@@ -28,7 +28,7 @@ export default async function EventPage({
   const { data: entries } = await supabase
     .from("event_entries")
     .select(
-      "skater_id, price_at_event, skaters(id, name, country, discipline, world_ranking, photo_url)"
+      "skater_id, price_at_event, is_withdrawn, skaters(id, name, country, discipline, world_ranking, photo_url)"
     )
     .eq("event_id", params.id);
 
@@ -36,6 +36,7 @@ export default async function EventPage({
   const entryList = (entries ?? []).map((e: Record<string, unknown>) => ({
     skater_id: e.skater_id as string,
     price_at_event: e.price_at_event as number,
+    is_withdrawn: (e.is_withdrawn as boolean) ?? false,
     skater: e.skaters as {
       id: string;
       name: string;
@@ -45,6 +46,13 @@ export default async function EventPage({
       photo_url: string | null;
     },
   }));
+
+  // Fetch user's pending replacement entitlements
+  const { data: pendingReplacements } = await supabase
+    .from("pick_replacements")
+    .select("withdrawn_skater_id, replacement_skater_id")
+    .eq("user_id", user.id)
+    .eq("event_id", params.id);
 
   // Fetch user's existing picks for this event
   const { data: existingPicks } = await supabase
@@ -130,6 +138,11 @@ export default async function EventPage({
         entries={entryList}
         initialPicks={pickedSkaterIds}
         isLocked={!!isLocked}
+        pendingReplacements={(pendingReplacements ?? []).map((r) => ({
+          withdrawn_skater_id: r.withdrawn_skater_id,
+          replacement_skater_id: r.replacement_skater_id,
+        }))}
+        replacementDeadline={event.replacement_deadline ?? null}
       />
     </main>
   );

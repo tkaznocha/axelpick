@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { logout } from "@/app/login/actions";
+import NotificationBanner from "@/components/NotificationBanner";
 
 export default async function DashboardPage() {
   const supabase = createServerSupabaseClient();
@@ -34,6 +35,15 @@ export default async function DashboardPage() {
     .in("status", ["upcoming", "locked"])
     .order("start_date", { ascending: true })
     .limit(3);
+
+  // Fetch unread notifications
+  const { data: unreadNotifications } = await supabase
+    .from("notifications")
+    .select("id, type, title, body, event_id, metadata, is_read, created_at")
+    .eq("user_id", user.id)
+    .eq("is_read", false)
+    .order("created_at", { ascending: false })
+    .limit(10);
 
   // Fetch user's leagues (up to 3)
   const { data: memberships } = await supabase
@@ -72,6 +82,9 @@ export default async function DashboardPage() {
           </button>
         </form>
       </div>
+
+      {/* Notifications */}
+      <NotificationBanner notifications={unreadNotifications ?? []} />
 
       {/* Season Points */}
       <div className="mb-8 rounded-2xl aurora-gradient p-px">

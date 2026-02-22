@@ -337,6 +337,104 @@ function getOrdinal(n: number): string {
   return s[(v - 20) % 10] || s[v] || s[0];
 }
 
+// ---------- Fetch Event Entries (for withdrawal management) ----------
+
+export async function fetchEventEntries(eventId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from("event_entries")
+    .select(
+      "id, skater_id, price_at_event, is_withdrawn, withdrawn_at, skaters(id, name, country, discipline)"
+    )
+    .eq("event_id", eventId)
+    .order("price_at_event", { ascending: false });
+
+  if (error) return { success: false, error: error.message, entries: [] };
+  return { success: true, entries: data ?? [] };
+}
+
+// ---------- Withdraw Skater ----------
+
+export async function withdrawSkater(
+  eventId: string,
+  skaterId: string,
+  replacementDeadline: string | null
+) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  // 1. Mark entry as withdrawn
+  const { error: updateErr } = await admin
+    .from("event_entries")
+    .update({ is_withdrawn: true, withdrawn_at: new Date().toISOString() })
+    .eq("event_id", eventId)
+    .eq("skater_id", skaterId);
+
+  if (updateErr) return { success: false, error: updateErr.message };
+
+  // 2. Update replacement deadline on event (if provided)
+  if (replacementDeadline) {
+    await admin
+      .from("events")
+      .update({ replacement_deadline: replacementDeadline })
+      .eq("id", eventId);
+  }
+
+  // 3. Get skater name + event name for notification text
+  const { data: skater } = await admin
+    .from("skaters")
+    .select("name")
+    .eq("id", skaterId)
+    .single();
+  const { data: event } = await admin
+    .from("events")
+    .select("name")
+    .eq("id", eventId)
+    .single();
+
+  // 4. Find affected users (those who picked this skater)
+  const { data: affectedPicks } = await admin
+    .from("user_picks")
+    .select("user_id")
+    .eq("event_id", eventId)
+    .eq("skater_id", skaterId);
+
+  const affectedUserIds = (affectedPicks ?? []).map((p) => p.user_id);
+
+  // 5. Create replacement entitlements and notifications
+  for (const userId of affectedUserIds) {
+    await admin.from("pick_replacements").insert({
+      user_id: userId,
+      event_id: eventId,
+      withdrawn_skater_id: skaterId,
+    });
+
+    const deadlineText = replacementDeadline
+      ? `You have until ${new Date(replacementDeadline).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} to pick a replacement.`
+      : "Check the event page to pick a replacement.";
+
+    await admin.from("notifications").insert({
+      user_id: userId,
+      type: "withdrawal",
+      title: "Skater Withdrawal",
+      body: `${skater?.name ?? "A skater"} has withdrawn from ${event?.name ?? "the event"}. ${deadlineText}`,
+      event_id: eventId,
+      metadata: {
+        skater_id: skaterId,
+        skater_name: skater?.name,
+        replacement_deadline: replacementDeadline,
+      },
+    });
+  }
+
+  return {
+    success: true,
+    summary: `${skater?.name ?? "Skater"} withdrawn. ${affectedUserIds.length} user(s) notified.`,
+  };
+}
+
 // ---------- Fetch Events (for dropdowns) ----------
 
 export async function fetchEvents() {
