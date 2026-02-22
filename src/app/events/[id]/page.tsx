@@ -30,7 +30,7 @@ export default async function EventPage({
   const { data: entries } = await supabase
     .from("event_entries")
     .select(
-      "skater_id, price_at_event, is_withdrawn, skaters(id, name, country, discipline, world_ranking, photo_url)"
+      "skater_id, price_at_event, is_withdrawn, skaters(id, name, country, discipline, world_ranking, photo_url, season_best_score, personal_best_score)"
     )
     .eq("event_id", params.id);
 
@@ -46,6 +46,8 @@ export default async function EventPage({
       discipline: string;
       world_ranking: number | null;
       photo_url: string | null;
+      season_best_score: number | null;
+      personal_best_score: number | null;
     },
   }));
 

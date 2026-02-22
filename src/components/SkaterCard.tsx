@@ -11,6 +11,8 @@ export interface SkaterEntry {
     discipline: string;
     world_ranking: number | null;
     photo_url: string | null;
+    season_best_score: number | null;
+    personal_best_score: number | null;
   };
 }
 
@@ -132,6 +134,20 @@ export default function SkaterCard({
               </span>
             )}
           </div>
+          {(skater.season_best_score || skater.personal_best_score) && (
+            <div className="flex items-center gap-2 mt-0.5">
+              {skater.season_best_score && (
+                <span className="text-xs text-text-secondary">
+                  SB: <span className="font-mono font-medium text-text-primary">{skater.season_best_score.toFixed(2)}</span>
+                </span>
+              )}
+              {skater.personal_best_score && (
+                <span className="text-xs text-text-secondary">
+                  PB: <span className="font-mono font-medium text-text-primary">{skater.personal_best_score.toFixed(2)}</span>
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Price */}
