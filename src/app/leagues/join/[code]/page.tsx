@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import JoinLeagueButton from "./JoinLeagueButton";
+import AppShell from "@/components/AppShell";
 
 export default async function JoinLeaguePage({
   params,
@@ -25,13 +26,8 @@ export default async function JoinLeaguePage({
 
   if (!league) {
     return (
+      <AppShell>
       <main className="min-h-screen p-6 md:p-8 max-w-lg mx-auto">
-        <a
-          href="/leagues"
-          className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-        >
-          &larr; My Leagues
-        </a>
         <div className="rounded-xl bg-card p-8 text-center border border-black/5">
           <p className="font-display text-xl font-semibold mb-2">
             League not found
@@ -41,6 +37,7 @@ export default async function JoinLeaguePage({
           </p>
         </div>
       </main>
+      </AppShell>
     );
   }
 
@@ -63,14 +60,8 @@ export default async function JoinLeaguePage({
     .eq("league_id", league.id);
 
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-lg mx-auto">
-      <a
-        href="/leagues"
-        className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-      >
-        &larr; My Leagues
-      </a>
-
       <div className="rounded-2xl bg-card p-8 border border-black/5 text-center">
         <p className="text-sm text-text-secondary mb-2">
           You&apos;ve been invited to join
@@ -82,5 +73,6 @@ export default async function JoinLeaguePage({
         <JoinLeagueButton inviteCode={league.invite_code} />
       </div>
     </main>
+    </AppShell>
   );
 }

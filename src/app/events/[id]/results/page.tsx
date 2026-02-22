@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
+import AppShell from "@/components/AppShell";
 import TrackEvent from "@/components/TrackEvent";
 
 const placementMap: Record<number, number> = {
@@ -104,15 +105,9 @@ export default async function ResultsPage({
   });
 
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       <TrackEvent name="results_viewed" data={{ event_id: params.id }} />
-      {/* Back link */}
-      <a
-        href={`/events/${params.id}`}
-        className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-      >
-        &larr; Back to event
-      </a>
 
       {/* Event header */}
       <div className="mb-8">
@@ -267,5 +262,6 @@ export default async function ResultsPage({
         </div>
       )}
     </main>
+    </AppShell>
   );
 }
