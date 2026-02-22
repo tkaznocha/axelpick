@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
+import AppShell from "@/components/AppShell";
 
 export default async function LeaguesPage() {
   const supabase = createServerSupabaseClient();
@@ -31,15 +32,8 @@ export default async function LeaguesPage() {
   });
 
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
-      {/* Back link */}
-      <a
-        href="/dashboard"
-        className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-      >
-        &larr; Dashboard
-      </a>
-
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display text-3xl font-bold">My Leagues</h1>
@@ -94,5 +88,6 @@ export default async function LeaguesPage() {
         </div>
       )}
     </main>
+    </AppShell>
   );
 }

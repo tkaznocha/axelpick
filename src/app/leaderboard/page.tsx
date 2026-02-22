@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
+import AppShell from "@/components/AppShell";
 
 export default async function LeaderboardPage() {
   const supabase = createServerSupabaseClient();
@@ -26,15 +27,8 @@ export default async function LeaderboardPage() {
   const currentUserEntry = leaderboard.find((u) => u.isCurrentUser);
 
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
-      {/* Back link */}
-      <a
-        href="/dashboard"
-        className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-      >
-        &larr; Dashboard
-      </a>
-
       <h1 className="font-display text-3xl font-bold mb-2">Leaderboard</h1>
       <p className="text-text-secondary mb-8">Global season rankings</p>
 
@@ -122,6 +116,7 @@ export default async function LeaderboardPage() {
         </div>
       )}
     </main>
+    </AppShell>
   );
 }
 

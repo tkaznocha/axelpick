@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
-import { logout } from "@/app/login/actions";
 import NotificationBanner from "@/components/NotificationBanner";
+import AppShell from "@/components/AppShell";
 
 export default async function DashboardPage() {
   const supabase = createServerSupabaseClient();
@@ -62,25 +62,16 @@ export default async function DashboardPage() {
   });
 
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-display text-3xl font-bold">
-            Hey, {displayName}
-          </h1>
-          <p className="mt-1 text-text-secondary">
-            Welcome to your fantasy skating dashboard.
-          </p>
-        </div>
-        <form action={logout}>
-          <button
-            type="submit"
-            className="rounded-xl border border-black/10 px-4 py-2 text-sm text-text-secondary transition-colors hover:bg-black/5"
-          >
-            Sign out
-          </button>
-        </form>
+      <div className="mb-8">
+        <h1 className="font-display text-3xl font-bold">
+          Hey, {displayName}
+        </h1>
+        <p className="mt-1 text-text-secondary">
+          Welcome to your fantasy skating dashboard.
+        </p>
       </div>
 
       {/* Notifications */}
@@ -201,5 +192,6 @@ export default async function DashboardPage() {
         )}
       </section>
     </main>
+    </AppShell>
   );
 }

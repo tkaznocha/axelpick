@@ -1,14 +1,9 @@
+import AppShell from "@/components/AppShell";
+
 export default function HowToPlayPage() {
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-3xl mx-auto">
-      {/* Back link */}
-      <a
-        href="/dashboard"
-        className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-      >
-        &larr; Dashboard
-      </a>
-
       <h1 className="font-display text-4xl font-bold mb-3">How to Play</h1>
       <p className="text-lg text-text-secondary mb-12 max-w-xl">
         Pick your skaters from the entry list and stay within budget. Points are
@@ -180,6 +175,7 @@ export default function HowToPlayPage() {
         </a>
       </div>
     </main>
+    </AppShell>
   );
 }
 

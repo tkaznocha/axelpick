@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import PickFlow from "./PickFlow";
+import AppShell from "@/components/AppShell";
 
 export default async function EventPage({
   params,
@@ -89,15 +90,8 @@ export default async function EventPage({
         : "Grand Prix";
 
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
-      {/* Back link */}
-      <a
-        href="/dashboard"
-        className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-      >
-        &larr; Dashboard
-      </a>
-
       {/* Event header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -145,5 +139,6 @@ export default async function EventPage({
         replacementDeadline={event.replacement_deadline ?? null}
       />
     </main>
+    </AppShell>
   );
 }
