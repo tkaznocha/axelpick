@@ -452,3 +452,388 @@ export async function fetchEvents() {
 
   return { success: true, events: data ?? [] };
 }
+
+// ---------- Fetch Events Full (for edit forms) ----------
+
+export async function fetchEventsFull() {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from("events")
+    .select("*")
+    .order("start_date", { ascending: false });
+
+  if (error) {
+    return { success: false, error: error.message, events: [] };
+  }
+
+  return { success: true, events: data ?? [] };
+}
+
+// ---------- Update Event ----------
+
+export async function updateEvent(
+  eventId: string,
+  fields: Record<string, unknown>
+) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from("events")
+    .update({ ...fields, updated_at: new Date().toISOString() })
+    .eq("id", eventId);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Delete Event ----------
+
+export async function deleteEvent(eventId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  // Block if user_picks exist
+  const { count } = await admin
+    .from("user_picks")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId);
+
+  if (count && count > 0) {
+    return {
+      success: false,
+      error: `Cannot delete: ${count} user pick(s) reference this event.`,
+    };
+  }
+
+  // Delete related data first
+  await admin.from("results").delete().eq("event_id", eventId);
+  await admin.from("event_entries").delete().eq("event_id", eventId);
+
+  const { error } = await admin.from("events").delete().eq("id", eventId);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Update Entry Price ----------
+
+export async function updateEntryPrice(entryId: string, newPrice: number) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from("event_entries")
+    .update({ price_at_event: newPrice })
+    .eq("id", entryId);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Remove Entry ----------
+
+export async function removeEntry(entryId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  // Get the entry to check for picks
+  const { data: entry } = await admin
+    .from("event_entries")
+    .select("event_id, skater_id")
+    .eq("id", entryId)
+    .single();
+
+  if (!entry) return { success: false, error: "Entry not found" };
+
+  const { count } = await admin
+    .from("user_picks")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", entry.event_id)
+    .eq("skater_id", entry.skater_id);
+
+  if (count && count > 0) {
+    return {
+      success: false,
+      error: `Cannot remove: ${count} user(s) have picked this skater.`,
+    };
+  }
+
+  const { error } = await admin
+    .from("event_entries")
+    .delete()
+    .eq("id", entryId);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Add Entry to Event ----------
+
+export async function addEntryToEvent(
+  eventId: string,
+  skaterId: string,
+  price: number
+) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin.from("event_entries").insert({
+    event_id: eventId,
+    skater_id: skaterId,
+    price_at_event: price,
+  });
+
+  if (error) {
+    if (error.message.includes("duplicate")) {
+      return { success: false, error: "Skater already entered in this event" };
+    }
+    return { success: false, error: error.message };
+  }
+  return { success: true };
+}
+
+// ---------- Search Skaters ----------
+
+export async function fetchSkaterSearch(query: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from("skaters")
+    .select("id, name, country, discipline, current_price")
+    .ilike("name", `%${query}%`)
+    .limit(20);
+
+  if (error) return { success: false, error: error.message, skaters: [] };
+  return { success: true, skaters: data ?? [] };
+}
+
+// ---------- Fetch Event Results ----------
+
+export async function fetchEventResults(eventId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from("results")
+    .select(
+      "id, skater_id, final_placement, sp_placement, total_score, sp_score, fs_score, falls, is_personal_best, is_withdrawal, fantasy_points_raw, fantasy_points_final, skaters(id, name, country, discipline)"
+    )
+    .eq("event_id", eventId)
+    .order("final_placement", { ascending: true });
+
+  if (error) return { success: false, error: error.message, results: [] };
+  return { success: true, results: data ?? [] };
+}
+
+// ---------- Update Result ----------
+
+export async function updateResult(
+  resultId: string,
+  fields: {
+    final_placement?: number;
+    sp_placement?: number | null;
+    total_score?: number | null;
+    sp_score?: number | null;
+    fs_score?: number | null;
+    falls?: number;
+    is_personal_best?: boolean;
+    is_withdrawal?: boolean;
+  }
+) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  // Get result + event for recalculation
+  const { data: result } = await admin
+    .from("results")
+    .select("*, events(points_multiplier)")
+    .eq("id", resultId)
+    .single();
+
+  if (!result) return { success: false, error: "Result not found" };
+
+  const merged = {
+    final_placement: fields.final_placement ?? result.final_placement,
+    sp_placement: fields.sp_placement !== undefined ? fields.sp_placement : result.sp_placement,
+    falls: fields.falls ?? result.falls,
+    is_personal_best: fields.is_personal_best ?? result.is_personal_best,
+    is_withdrawal: fields.is_withdrawal ?? result.is_withdrawal,
+  };
+
+  const { raw, final: finalPts } = calculateFantasyPoints(merged, {
+    points_multiplier: Number(result.events.points_multiplier),
+  });
+
+  const { error } = await admin
+    .from("results")
+    .update({
+      ...fields,
+      fantasy_points_raw: raw,
+      fantasy_points_final: finalPts,
+    })
+    .eq("id", resultId);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true, fantasy_points_raw: raw, fantasy_points_final: finalPts };
+}
+
+// ---------- Delete Result ----------
+
+export async function deleteResult(resultId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin.from("results").delete().eq("id", resultId);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Recalculate Event Points (full cascade) ----------
+
+export async function recalculateEventPoints(eventId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  // Get event
+  const { data: event } = await admin
+    .from("events")
+    .select("id, points_multiplier")
+    .eq("id", eventId)
+    .single();
+
+  if (!event) return { success: false, error: "Event not found" };
+
+  // Get all results for the event
+  const { data: results } = await admin
+    .from("results")
+    .select("*")
+    .eq("event_id", eventId);
+
+  if (!results) return { success: false, error: "No results found" };
+
+  // Recalculate each result
+  for (const r of results) {
+    const { raw, final: finalPts } = calculateFantasyPoints(
+      {
+        final_placement: r.final_placement,
+        sp_placement: r.sp_placement,
+        falls: r.falls,
+        is_personal_best: r.is_personal_best,
+        is_withdrawal: r.is_withdrawal,
+      },
+      { points_multiplier: Number(event.points_multiplier) }
+    );
+
+    await admin
+      .from("results")
+      .update({ fantasy_points_raw: raw, fantasy_points_final: finalPts })
+      .eq("id", r.id);
+  }
+
+  // Cascade to user picks
+  await recalcUserPoints(admin, eventId);
+
+  return { success: true, summary: `${results.length} results recalculated` };
+}
+
+// ---------- Fetch Skaters (paginated) ----------
+
+export async function fetchSkaters({
+  search,
+  discipline,
+  page,
+}: {
+  search?: string;
+  discipline?: string;
+  page?: number;
+}) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const pageSize = 50;
+  const currentPage = page ?? 1;
+  const from = (currentPage - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  let query = admin
+    .from("skaters")
+    .select("*", { count: "exact" })
+    .order("name", { ascending: true })
+    .range(from, to);
+
+  if (search) {
+    query = query.ilike("name", `%${search}%`);
+  }
+  if (discipline && discipline !== "all") {
+    query = query.eq("discipline", discipline);
+  }
+
+  const { data, error, count } = await query;
+
+  if (error) return { success: false, error: error.message, skaters: [], total: 0 };
+  return {
+    success: true,
+    skaters: data ?? [],
+    total: count ?? 0,
+    page: currentPage,
+    pageSize,
+  };
+}
+
+// ---------- Update Skater ----------
+
+export async function updateSkater(
+  skaterId: string,
+  fields: Record<string, unknown>
+) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from("skaters")
+    .update({ ...fields, updated_at: new Date().toISOString() })
+    .eq("id", skaterId);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Delete Skater ----------
+
+export async function deleteSkater(skaterId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  // Check for entries
+  const { count: entryCount } = await admin
+    .from("event_entries")
+    .select("id", { count: "exact", head: true })
+    .eq("skater_id", skaterId);
+
+  if (entryCount && entryCount > 0) {
+    return {
+      success: false,
+      error: `Cannot delete: ${entryCount} event entry/entries reference this skater.`,
+    };
+  }
+
+  // Check for results
+  const { count: resultCount } = await admin
+    .from("results")
+    .select("id", { count: "exact", head: true })
+    .eq("skater_id", skaterId);
+
+  if (resultCount && resultCount > 0) {
+    return {
+      success: false,
+      error: `Cannot delete: ${resultCount} result(s) reference this skater.`,
+    };
+  }
+
+  const { error } = await admin.from("skaters").delete().eq("id", skaterId);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
