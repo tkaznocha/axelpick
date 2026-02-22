@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import CopyInviteLink from "./CopyInviteLink";
+import EventRosters from "./EventRosters";
 
 export default async function LeaguePage({
   params,
@@ -42,6 +43,13 @@ export default async function LeaguePage({
     .from("league_members")
     .select("user_id, users(id, display_name, avatar_url, total_season_points)")
     .eq("league_id", league.id);
+
+  // Fetch locked/completed events for roster reveal
+  const { data: lockedEvents } = await supabase
+    .from("events")
+    .select("id, name, status")
+    .in("status", ["locked", "in_progress", "completed"])
+    .order("start_date", { ascending: false });
 
   // Build leaderboard sorted by points
   const leaderboard = (members ?? [])
@@ -158,6 +166,13 @@ export default async function LeaguePage({
           </div>
         )}
       </section>
+
+      {/* Event Rosters */}
+      <EventRosters
+        leagueId={league.id}
+        lockedEvents={lockedEvents ?? []}
+        currentUserId={user.id}
+      />
     </main>
   );
 }
