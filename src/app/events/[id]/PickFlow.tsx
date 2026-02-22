@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import SkaterCard, { type SkaterEntry } from "@/components/SkaterCard";
 import BudgetBar from "@/components/BudgetBar";
-import { lockPicks, replaceWithdrawnPick } from "./actions";
+import { addPick, removePick, replaceWithdrawnPick } from "./actions";
 
 type SortKey = "price_desc" | "price_asc" | "ranking" | "name";
 
@@ -29,19 +29,15 @@ export default function PickFlow({
   budget,
   entries,
   initialPicks,
-  isLocked: initialLocked,
+  isLocked,
   pendingReplacements,
   replacementDeadline,
 }: PickFlowProps) {
   const [picked, setPicked] = useState<Set<string>>(
     () => new Set(initialPicks)
   );
-  const [isLocked, setIsLocked] = useState(
-    initialLocked || initialPicks.length > 0
-  );
-  const [isPending, startTransition] = useTransition();
+  const [isSaving, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
   // Replacement mode state
   const unreplacedWithdrawals = pendingReplacements.filter(
@@ -131,29 +127,42 @@ export default function PickFlow({
       return;
     }
     if (isLocked) return;
+
+    const isRemoving = picked.has(skaterId);
+    const atLimit = picked.size >= picksLimit;
+
+    if (!isRemoving && atLimit) return;
+
+    // Optimistically update
     setPicked((prev) => {
       const next = new Set(prev);
-      if (next.has(skaterId)) {
+      if (isRemoving) {
         next.delete(skaterId);
-      } else if (next.size < picksLimit) {
+      } else {
         next.add(skaterId);
       }
       return next;
     });
     setError(null);
-    setSuccess(false);
-  }
 
-  function handleLock() {
+    // Save to server
     startTransition(async () => {
-      const skaterIds = Array.from(picked);
-      const res = await lockPicks(eventId, skaterIds);
-      if (res.success) {
-        setIsLocked(true);
-        setSuccess(true);
-        setError(null);
-      } else {
-        setError(res.error ?? "Failed to lock picks");
+      const res = isRemoving
+        ? await removePick(eventId, skaterId)
+        : await addPick(eventId, skaterId);
+
+      if (!res.success) {
+        // Rollback
+        setPicked((prev) => {
+          const next = new Set(prev);
+          if (isRemoving) {
+            next.add(skaterId);
+          } else {
+            next.delete(skaterId);
+          }
+          return next;
+        });
+        setError(res.error ?? "Failed to save pick");
       }
     });
   }
@@ -212,11 +221,6 @@ export default function PickFlow({
       {error && (
         <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">
           {error}
-        </div>
-      )}
-      {success && (
-        <div className="mb-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700 border border-emerald-200">
-          Your picks are locked! Good luck!
         </div>
       )}
       {replacementSuccess && (
@@ -316,12 +320,24 @@ export default function PickFlow({
         picksLimit={picksLimit}
         budgetSpent={budgetSpent}
         budgetTotal={budget}
-        onLock={inReplacementMode ? handleReplacement : handleLock}
-        isLocking={isPending}
-        isLocked={inReplacementMode ? false : isLocked}
-        replacementMode={inReplacementMode && !deadlinePassed && !replacementSuccess}
-        replacementReady={!!replacementPick}
-      />
+        isSaving={isSaving}
+        lastSaveError={error}
+      >
+        {/* Replacement button rendered here when in replacement mode */}
+        {inReplacementMode && !deadlinePassed && !replacementSuccess && (
+          <button
+            onClick={handleReplacement}
+            disabled={!replacementPick || isSaving}
+            className={`rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+              replacementPick
+                ? "aurora-gradient hover:shadow-lg hover:shadow-emerald/20"
+                : "bg-gray-300"
+            }`}
+          >
+            {isSaving ? "Replacing..." : "Confirm Replacement"}
+          </button>
+        )}
+      </BudgetBar>
     </div>
   );
 }
