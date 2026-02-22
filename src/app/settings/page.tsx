@@ -2,6 +2,8 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import ProfileForm from "./ProfileForm";
+import ChangePasswordForm from "./ChangePasswordForm";
+import DeleteAccountSection from "./DeleteAccountSection";
 import { logout } from "@/app/login/actions";
 
 export default async function SettingsPage() {
@@ -29,6 +31,9 @@ export default async function SettingsPage() {
     "Skater";
 
   const email = user.email || "";
+
+  // Check if user has a password-based identity (vs. OAuth-only)
+  const hasPassword = user.app_metadata?.providers?.includes("email") ?? false;
 
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString("en-US", {
@@ -67,20 +72,36 @@ export default async function SettingsPage() {
           <ProfileForm displayName={displayName} email={email} />
         </section>
 
-        {/* Danger zone */}
+        {/* Change Password — only for email/password users */}
+        {hasPassword && (
+          <section className="rounded-2xl bg-card p-6 shadow-sm border border-black/5 mb-6">
+            <h2 className="font-display font-semibold text-lg mb-1">
+              Change password
+            </h2>
+            <p className="text-sm text-text-secondary mb-4">
+              Update the password you use to sign in.
+            </p>
+            <ChangePasswordForm />
+          </section>
+        )}
+
+        {/* Account actions */}
         <section className="rounded-2xl bg-card p-6 shadow-sm border border-black/5">
           <h2 className="font-display font-semibold text-lg mb-1">Account</h2>
           <p className="text-sm text-text-secondary mb-4">
-            Sign out of your account on this device.
+            Sign out or permanently delete your account.
           </p>
-          <form action={logout}>
-            <button
-              type="submit"
-              className="rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-display font-semibold text-red-600 transition-colors hover:bg-red-100"
-            >
-              Sign out
-            </button>
-          </form>
+          <div className="flex flex-wrap items-center gap-3">
+            <form action={logout}>
+              <button
+                type="submit"
+                className="rounded-xl border border-black/10 px-5 py-2.5 text-sm font-display font-semibold text-text-secondary transition-colors hover:bg-black/5"
+              >
+                Sign out
+              </button>
+            </form>
+            <DeleteAccountSection />
+          </div>
         </section>
       </main>
     </AppShell>
