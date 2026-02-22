@@ -31,8 +31,13 @@ export default async function AppShell({
 
   return (
     <>
-      <NavBar displayName={displayName} />
-      {children}
+      <div className="app-aurora-bar" />
+      <div className="app-aurora-glow" />
+      <div className="app-noise" />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <NavBar displayName={displayName} />
+        {children}
+      </div>
     </>
   );
 }

@@ -34,6 +34,52 @@ body {
   background-attachment: fixed;
 }
 
+/* Aurora glow for app pages — matches landing page */
+.app-aurora-glow {
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  height: 600px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  background: radial-gradient(ellipse at 30% 50%, var(--emerald) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 40%, var(--sky) 0%, transparent 55%),
+              radial-gradient(ellipse at 50% 70%, var(--lavender) 0%, transparent 60%);
+  filter: blur(80px);
+  animation: appAuroraShift 25s ease-in-out infinite alternate;
+}
+
+@keyframes appAuroraShift {
+  0%   { opacity: 0.10; transform: translateX(-50%) scale(1); }
+  50%  { opacity: 0.14; transform: translateX(-48%) scale(1.03); }
+  100% { opacity: 0.10; transform: translateX(-52%) scale(0.98); }
+}
+
+/* Noise texture for app pages — matches landing page */
+.app-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.015;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Aurora top bar for app pages */
+.app-aurora-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--aurora);
+  z-index: 100;
+}
+
 @layer utilities {
   .aurora-gradient {
     background: var(--aurora);
