@@ -1,6 +1,9 @@
+import TrackEvent from "@/components/TrackEvent";
+
 export default function HowToPlayPage() {
   return (
     <main className="min-h-screen p-6 md:p-8 max-w-3xl mx-auto">
+      <TrackEvent name="how_to_play_viewed" />
       {/* Back link */}
       <a
         href="/dashboard"

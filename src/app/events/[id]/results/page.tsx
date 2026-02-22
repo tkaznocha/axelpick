@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
+import TrackEvent from "@/components/TrackEvent";
 
 const placementMap: Record<number, number> = {
   1: 25, 2: 18, 3: 15, 4: 12, 5: 10,
@@ -104,6 +105,7 @@ export default async function ResultsPage({
 
   return (
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
+      <TrackEvent name="results_viewed" data={{ event_id: params.id }} />
       {/* Back link */}
       <a
         href={`/events/${params.id}`}

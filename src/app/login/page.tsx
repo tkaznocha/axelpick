@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { login, signup, signInWithGoogle } from "./actions";
 
 export default function LoginPage() {
@@ -50,7 +51,10 @@ function LoginForm() {
           )}
 
           {/* Google OAuth */}
-          <form action={signInWithGoogle}>
+          <form action={() => {
+            track("login", { method: "google" });
+            return signInWithGoogle();
+          }}>
             <button
               type="submit"
               className="flex w-full items-center justify-center gap-3 rounded-xl border border-black/10 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
@@ -85,7 +89,10 @@ function LoginForm() {
           </div>
 
           {/* Email/Password Form */}
-          <form action={mode === "login" ? login : signup} className="space-y-4">
+          <form action={(formData) => {
+            track(mode === "login" ? "login" : "signup", { method: "email" });
+            return mode === "login" ? login(formData) : signup(formData);
+          }} className="space-y-4">
             {mode === "signup" && (
               <div>
                 <label

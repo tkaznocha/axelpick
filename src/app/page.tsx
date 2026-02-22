@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { track } from "@vercel/analytics";
 import { joinWaitlist } from "./waitlist-action";
 import "@/styles/landing.css";
 
@@ -281,6 +282,7 @@ function SignupBlock({ id }: { id: string }) {
     startTransition(async () => {
       const res = await joinWaitlist(email);
       if (res.success) {
+        track("waitlist_signup");
         setSuccess(true);
       } else {
         setError("fail");
