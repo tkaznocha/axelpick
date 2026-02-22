@@ -247,6 +247,8 @@ export default function LandingPage() {
         <footer className="site-footer">
           <span className="copy">&copy; 2026 Axel Pick</span>
           <div className="foot-links">
+            <a href="/terms">Terms</a>
+            <a href="/privacy">Privacy</a>
             <a
               href="https://x.com/axelpick"
               target="_blank"
