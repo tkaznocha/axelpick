@@ -1,18 +1,28 @@
+import Link from "next/link";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import NotificationBanner from "@/components/NotificationBanner";
 import AppShell from "@/components/AppShell";
 
 export default async function DashboardPage() {
-  const user = await getAuthUser();
-  if (!user) redirect("/login");
-
   const supabase = createServerSupabaseClient();
 
-  // Run all independent queries in parallel
+  // Start auth + events query in parallel (events doesn't need user.id)
+  const [user, { data: upcomingEvents }] = await Promise.all([
+    getAuthUser(),
+    supabase
+      .from("events")
+      .select("id, name, location, start_date, end_date, event_type, status, picks_limit, budget")
+      .in("status", ["upcoming", "locked"])
+      .order("start_date", { ascending: true })
+      .limit(3),
+  ]);
+
+  if (!user) redirect("/login");
+
+  // Run user-specific queries in parallel
   const [
     { data: profile },
-    { data: upcomingEvents },
     { data: unreadNotifications },
     { data: memberships },
   ] = await Promise.all([
@@ -21,12 +31,6 @@ export default async function DashboardPage() {
       .select("display_name, avatar_url, total_season_points")
       .eq("id", user.id)
       .single(),
-    supabase
-      .from("events")
-      .select("id, name, location, start_date, end_date, event_type, status, picks_limit, budget")
-      .in("status", ["upcoming", "locked"])
-      .order("start_date", { ascending: true })
-      .limit(3),
     supabase
       .from("notifications")
       .select("id, type, title, body, event_id, metadata, is_read, created_at")
@@ -102,7 +106,7 @@ export default async function DashboardPage() {
         {upcomingEvents && upcomingEvents.length > 0 ? (
           <div className="space-y-4">
             {upcomingEvents.map((event) => (
-              <a
+              <Link
                 key={event.id}
                 href={`/events/${event.id}`}
                 className="block rounded-xl bg-card p-5 shadow-sm border border-black/5 card-accent-sky transition-all hover:shadow-md hover:-translate-y-px"
@@ -135,7 +139,7 @@ export default async function DashboardPage() {
                     </p>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         ) : (
@@ -168,19 +172,19 @@ export default async function DashboardPage() {
             <h2 className="font-display text-xl font-semibold">My Leagues</h2>
           </div>
           {myLeagues.length > 0 && (
-            <a
+            <Link
               href="/leagues"
               className="text-sm text-text-secondary hover:text-text-primary transition-colors"
             >
               View all &rarr;
-            </a>
+            </Link>
           )}
         </div>
 
         {myLeagues.length > 0 ? (
           <div className="space-y-3">
             {myLeagues.map((league) => (
-              <a
+              <Link
                 key={league.id}
                 href={`/leagues/${league.id}`}
                 className="block rounded-xl bg-card p-4 shadow-sm border border-black/5 card-accent-lavender transition-all hover:shadow-md hover:-translate-y-px"
@@ -196,7 +200,7 @@ export default async function DashboardPage() {
                   </div>
                   <span className="text-text-secondary text-sm">&rarr;</span>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         ) : (
@@ -212,12 +216,12 @@ export default async function DashboardPage() {
             <p className="text-text-secondary text-sm mb-3">
               Compete with friends in a private league.
             </p>
-            <a
+            <Link
               href="/leagues/create"
               className="inline-block rounded-xl aurora-gradient px-5 py-2.5 text-sm font-display font-semibold text-white transition-opacity hover:opacity-90"
             >
               Create League
-            </a>
+            </Link>
           </div>
         )}
       </section>

@@ -9,21 +9,18 @@ export default async function EventPage({
 }: {
   params: { id: string };
 }) {
-  const user = await getAuthUser();
-  if (!user) redirect("/login");
-
   const supabase = createServerSupabaseClient();
 
-  // Fetch event first (needed to check existence)
-  const { data: event } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", params.id)
-    .single();
+  // Start auth + event query in parallel (event doesn't need user.id)
+  const [user, { data: event }] = await Promise.all([
+    getAuthUser(),
+    supabase.from("events").select("*").eq("id", params.id).single(),
+  ]);
 
+  if (!user) redirect("/login");
   if (!event) notFound();
 
-  // Run remaining queries in parallel
+  // Run remaining queries in parallel (these need user.id)
   const [
     { data: entries },
     { data: pendingReplacements },

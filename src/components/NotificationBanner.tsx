@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTransition, useState } from "react";
 import { markNotificationRead } from "@/app/dashboard/actions";
 
@@ -43,12 +44,12 @@ export default function NotificationBanner({
               <p className="text-sm font-semibold text-amber-800">{n.title}</p>
               <p className="mt-1 text-sm text-amber-700">{n.body}</p>
               {n.event_id && (
-                <a
+                <Link
                   href={`/events/${n.event_id}`}
                   className="mt-2 inline-block text-sm font-medium text-amber-900 underline underline-offset-2 hover:no-underline"
                 >
                   View Event &rarr;
-                </a>
+                </Link>
               )}
             </div>
             <button
