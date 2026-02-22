@@ -116,7 +116,7 @@ export function WithdrawalsTab() {
       {selectedEvent && (
         <div>
           <label className="mb-1 block text-sm font-medium">
-            Replacement Deadline
+            Replacement Deadline (UTC)
           </label>
           <input
             type="datetime-local"
@@ -125,8 +125,7 @@ export function WithdrawalsTab() {
             className="w-full rounded-xl border border-black/10 bg-background px-4 py-3 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald"
           />
           <p className="mt-1 text-xs text-text-secondary">
-            Deadline for affected users to pick a replacement (set before
-            withdrawing)
+            Enter time in UTC. Set before withdrawing a skater.
           </p>
         </div>
       )}

@@ -195,7 +195,7 @@ export function EventsTab() {
                 <EditRow label="Multiplier">
                   <InlineEditField value={ev.points_multiplier} type="number" onSave={(v) => handleFieldUpdate(ev.id, "points_multiplier", v)} />
                 </EditRow>
-                <EditRow label="Picks Lock At">
+                <EditRow label="Picks Lock At (UTC)">
                   <InlineEditField value={ev.picks_lock_at ?? ""} onSave={(v) => handleFieldUpdate(ev.id, "picks_lock_at", v || null)} />
                 </EditRow>
               </div>
@@ -272,7 +272,8 @@ function CreateEventInline({ onCreated }: { onCreated: () => void }) {
         <input name="points_multiplier" type="number" step="0.5" placeholder="Multiplier (2)" required className="rounded-xl border border-black/10 bg-background px-4 py-2.5 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald" />
       </div>
 
-      <input name="picks_lock_at" type="datetime-local" placeholder="Picks Lock At" className="w-full rounded-xl border border-black/10 bg-background px-4 py-2.5 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald" />
+      <input name="picks_lock_at" type="datetime-local" placeholder="Picks Lock At (UTC)" className="w-full rounded-xl border border-black/10 bg-background px-4 py-2.5 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald" />
+      <p className="text-xs text-text-secondary -mt-2">Enter time in UTC. Prague (CET) is UTC+1, so 13:00 CET = 12:00 UTC.</p>
 
       <button type="submit" disabled={isPending} className="w-full rounded-xl bg-emerald px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600 disabled:opacity-50">
         {isPending ? "Creating..." : "Create Event"}

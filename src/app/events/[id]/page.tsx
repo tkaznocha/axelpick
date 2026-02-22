@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import PickFlow from "./PickFlow";
+import PicksLockTime from "@/components/PicksLockTime";
 import AppShell from "@/components/AppShell";
 
 export default async function EventPage({
@@ -116,7 +117,7 @@ export default async function EventPage({
           </svg>
           {event.location} &middot; {startStr} – {endStr}
         </p>
-        <div className="mt-4 flex gap-6 text-sm">
+        <div className="mt-4 flex flex-wrap gap-6 text-sm">
           <div className="flex items-center gap-1.5">
             <div className="h-6 w-6 rounded-md bg-emerald-50 flex items-center justify-center">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald">
@@ -155,6 +156,20 @@ export default async function EventPage({
               <span className="text-text-secondary">skaters</span>
             </span>
           </div>
+          {event.picks_lock_at && !isLocked && (
+            <div className="flex items-center gap-1.5">
+              <div className="h-6 w-6 rounded-md bg-amber-50 flex items-center justify-center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <span className="font-mono">
+                <span className="text-text-secondary">locks </span>
+                <PicksLockTime lockAt={event.picks_lock_at} />
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
