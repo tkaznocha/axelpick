@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import AppShell from "@/components/AppShell";
+import TrackEvent from "@/components/TrackEvent";
 
 const placementMap: Record<number, number> = {
   1: 25, 2: 18, 3: 15, 4: 12, 5: 10,
@@ -106,6 +107,8 @@ export default async function ResultsPage({
   return (
     <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
+      <TrackEvent name="results_viewed" data={{ event_id: params.id }} />
+
       {/* Event header */}
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold">{event.name}</h1>

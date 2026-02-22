@@ -1,9 +1,12 @@
 import AppShell from "@/components/AppShell";
+import TrackEvent from "@/components/TrackEvent";
 
 export default function HowToPlayPage() {
   return (
     <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-3xl mx-auto">
+      <TrackEvent name="how_to_play_viewed" />
+
       <h1 className="font-display text-4xl font-bold mb-3">How to Play</h1>
       <p className="text-lg text-text-secondary mb-12 max-w-xl">
         Pick your skaters from the entry list and stay within budget. Points are

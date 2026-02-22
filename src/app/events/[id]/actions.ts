@@ -3,7 +3,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 
-export async function lockPicks(eventId: string, skaterIds: string[]) {
+export async function addPick(eventId: string, skaterId: string) {
   const supabase = createServerSupabaseClient();
 
   const {
@@ -25,7 +25,7 @@ export async function lockPicks(eventId: string, skaterIds: string[]) {
     return { success: false, error: "Event not found" };
   }
 
-  // Check if picks are locked
+  // Check if event is still open
   if (event.status !== "upcoming") {
     return { success: false, error: "Event is no longer accepting picks" };
   }
@@ -33,29 +33,52 @@ export async function lockPicks(eventId: string, skaterIds: string[]) {
     return { success: false, error: "Picks are locked for this event" };
   }
 
-  // Validate pick count
-  if (skaterIds.length !== event.picks_limit) {
-    return {
-      success: false,
-      error: `You must pick exactly ${event.picks_limit} skaters`,
-    };
-  }
-
-  // Validate budget — fetch prices for selected skaters
-  const { data: entries } = await supabase
+  // Verify skater is in the event and not withdrawn
+  const { data: entry } = await supabase
     .from("event_entries")
-    .select("skater_id, price_at_event")
+    .select("skater_id, price_at_event, is_withdrawn")
     .eq("event_id", eventId)
-    .in("skater_id", skaterIds);
+    .eq("skater_id", skaterId)
+    .single();
 
-  if (!entries || entries.length !== skaterIds.length) {
-    return {
-      success: false,
-      error: "One or more selected skaters are not in this event",
-    };
+  if (!entry) {
+    return { success: false, error: "Skater is not in this event" };
+  }
+  if (entry.is_withdrawn) {
+    return { success: false, error: "Skater has withdrawn from this event" };
   }
 
-  const totalCost = entries.reduce((sum, e) => sum + e.price_at_event, 0);
+  // Fetch existing picks
+  const { data: existingPicks } = await supabase
+    .from("user_picks")
+    .select("skater_id")
+    .eq("user_id", user.id)
+    .eq("event_id", eventId);
+
+  const currentPicks = existingPicks ?? [];
+
+  // Check for duplicate
+  if (currentPicks.some((p) => p.skater_id === skaterId)) {
+    return { success: false, error: "Skater already picked" };
+  }
+
+  // Check pick limit
+  if (currentPicks.length >= event.picks_limit) {
+    return { success: false, error: "Pick limit reached" };
+  }
+
+  // Check budget
+  const currentIds = currentPicks.map((p) => p.skater_id);
+  const { data: currentEntries } = await supabase
+    .from("event_entries")
+    .select("price_at_event")
+    .eq("event_id", eventId)
+    .in("skater_id", [...currentIds, skaterId]);
+
+  const totalCost = (currentEntries ?? []).reduce(
+    (sum, e) => sum + e.price_at_event,
+    0
+  );
   if (totalCost > event.budget) {
     return {
       success: false,
@@ -63,23 +86,60 @@ export async function lockPicks(eventId: string, skaterIds: string[]) {
     };
   }
 
-  // Delete any existing picks for this user+event, then insert new ones
-  await supabase
-    .from("user_picks")
-    .delete()
-    .eq("user_id", user.id)
-    .eq("event_id", eventId);
-
-  const picks = skaterIds.map((skaterId) => ({
+  // Insert the pick
+  const { error } = await supabase.from("user_picks").insert({
     user_id: user.id,
     event_id: eventId,
     skater_id: skaterId,
-  }));
-
-  const { error } = await supabase.from("user_picks").insert(picks);
+  });
 
   if (error) {
     return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+export async function removePick(eventId: string, skaterId: string) {
+  const supabase = createServerSupabaseClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { success: false, error: "Not authenticated" };
+  }
+
+  // Fetch event to validate
+  const { data: event } = await supabase
+    .from("events")
+    .select("id, picks_lock_at, status")
+    .eq("id", eventId)
+    .single();
+
+  if (!event) {
+    return { success: false, error: "Event not found" };
+  }
+
+  // Check if event is still open
+  if (event.status !== "upcoming") {
+    return { success: false, error: "Event is no longer accepting picks" };
+  }
+  if (event.picks_lock_at && new Date(event.picks_lock_at) <= new Date()) {
+    return { success: false, error: "Picks are locked for this event" };
+  }
+
+  // Delete the pick
+  const { count } = await supabase
+    .from("user_picks")
+    .delete({ count: "exact" })
+    .eq("user_id", user.id)
+    .eq("event_id", eventId)
+    .eq("skater_id", skaterId);
+
+  if (count === 0) {
+    return { success: false, error: "Pick not found" };
   }
 
   return { success: true };

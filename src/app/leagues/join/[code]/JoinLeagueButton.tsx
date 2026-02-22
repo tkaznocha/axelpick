@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { track } from "@vercel/analytics";
 import { joinLeague } from "@/app/leagues/actions";
 
 export default function JoinLeagueButton({ inviteCode }: { inviteCode: string }) {
@@ -9,6 +10,7 @@ export default function JoinLeagueButton({ inviteCode }: { inviteCode: string })
 
   function handleJoin() {
     setError(null);
+    track("league_joined");
     startTransition(async () => {
       const result = await joinLeague(inviteCode);
       if (result?.error) {

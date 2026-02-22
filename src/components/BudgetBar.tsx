@@ -5,27 +5,20 @@ export default function BudgetBar({
   picksLimit,
   budgetSpent,
   budgetTotal,
-  onLock,
-  isLocking,
-  isLocked,
-  replacementMode,
-  replacementReady,
+  isSaving,
+  lastSaveError,
+  children,
 }: {
   picksUsed: number;
   picksLimit: number;
   budgetSpent: number;
   budgetTotal: number;
-  onLock: () => void;
-  isLocking: boolean;
-  isLocked: boolean;
-  replacementMode?: boolean;
-  replacementReady?: boolean;
+  isSaving?: boolean;
+  lastSaveError?: string | null;
+  children?: React.ReactNode;
 }) {
   const budgetRemaining = budgetTotal - budgetSpent;
   const isOverBudget = budgetRemaining < 0;
-  const isReady = replacementMode
-    ? !!replacementReady && !isOverBudget
-    : picksUsed === picksLimit && !isOverBudget;
 
   const spentM = (budgetSpent / 1_000_000).toFixed(1);
   const totalM = (budgetTotal / 1_000_000).toFixed(0);
@@ -72,30 +65,21 @@ export default function BudgetBar({
             </div>
           </div>
 
-          {/* Lock button */}
-          {isLocked ? (
-            <div className="rounded-xl bg-black/5 px-5 py-2.5 text-sm font-medium text-text-secondary">
-              Picks Locked
-            </div>
-          ) : (
-            <button
-              onClick={onLock}
-              disabled={!isReady || isLocking}
-              className={`rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
-                isReady
-                  ? "aurora-gradient hover:shadow-lg hover:shadow-emerald/20"
-                  : "bg-gray-300"
-              }`}
-            >
-              {isLocking
-                ? replacementMode
-                  ? "Replacing..."
-                  : "Locking..."
-                : replacementMode
-                  ? "Confirm Replacement"
-                  : "Lock Picks"}
-            </button>
-          )}
+          {/* Save status or replacement button slot */}
+          <div className="flex items-center gap-3">
+            {lastSaveError ? (
+              <span className="text-xs text-red-600">{lastSaveError}</span>
+            ) : isSaving ? (
+              <span className="text-xs text-text-secondary animate-pulse">
+                Saving…
+              </span>
+            ) : picksUsed > 0 ? (
+              <span className="text-xs text-emerald">
+                ✓ Saved
+              </span>
+            ) : null}
+            {children}
+          </div>
         </div>
       </div>
     </div>

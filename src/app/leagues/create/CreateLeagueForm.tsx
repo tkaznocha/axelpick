@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { track } from "@vercel/analytics";
 import { createLeague } from "@/app/leagues/actions";
 
 export default function CreateLeagueForm() {
@@ -9,6 +10,8 @@ export default function CreateLeagueForm() {
 
   function handleSubmit(formData: FormData) {
     setError(null);
+    const name = formData.get("name") as string;
+    track("league_created", { league_name_length: name?.trim().length ?? 0 });
     startTransition(async () => {
       const result = await createLeague(formData);
       if (result?.error) {
