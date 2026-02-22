@@ -34,7 +34,9 @@ export async function createEvent(formData: FormData) {
   const pointsMultiplier = parseFloat(
     formData.get("points_multiplier") as string
   );
-  const picksLockAt = formData.get("picks_lock_at") as string;
+  const picksLockAtRaw = formData.get("picks_lock_at") as string;
+  // datetime-local gives "YYYY-MM-DDTHH:MM" without timezone — treat as UTC
+  const picksLockAt = picksLockAtRaw ? `${picksLockAtRaw}:00Z` : null;
 
   const { data, error } = await admin.from("events").insert({
     name,
@@ -45,7 +47,7 @@ export async function createEvent(formData: FormData) {
     picks_limit: picksLimit,
     budget,
     points_multiplier: pointsMultiplier,
-    picks_lock_at: picksLockAt || null,
+    picks_lock_at: picksLockAt,
     status: "upcoming",
   }).select().single();
 
@@ -360,10 +362,15 @@ export async function fetchEventEntries(eventId: string) {
 export async function withdrawSkater(
   eventId: string,
   skaterId: string,
-  replacementDeadline: string | null
+  replacementDeadlineRaw: string | null
 ) {
   await requireAdmin();
   const admin = createAdminClient();
+
+  // datetime-local gives "YYYY-MM-DDTHH:MM" without timezone — treat as UTC
+  const replacementDeadline = replacementDeadlineRaw
+    ? `${replacementDeadlineRaw}:00Z`
+    : null;
 
   // 1. Mark entry as withdrawn
   const { error: updateErr } = await admin
@@ -412,7 +419,7 @@ export async function withdrawSkater(
     });
 
     const deadlineText = replacementDeadline
-      ? `You have until ${new Date(replacementDeadline).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} to pick a replacement.`
+      ? `You have until ${new Date(replacementDeadline).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "UTC", timeZoneName: "short" })} to pick a replacement.`
       : "Check the event page to pick a replacement.";
 
     await admin.from("notifications").insert({

@@ -130,10 +130,10 @@ function CreateEventForm() {
       </div>
 
       <Field
-        label="Picks Lock At"
+        label="Picks Lock At (UTC)"
         name="picks_lock_at"
         type="datetime-local"
-        helpText="When picks should lock (leave empty for manual lock)"
+        helpText="Enter time in UTC. Prague (CET) is UTC+1, so 13:00 CET = 12:00 UTC."
       />
 
       <button
@@ -402,7 +402,7 @@ function WithdrawalForm() {
       {selectedEvent && (
         <div>
           <label className="mb-1 block text-sm font-medium">
-            Replacement Deadline
+            Replacement Deadline (UTC)
           </label>
           <input
             type="datetime-local"
@@ -411,8 +411,7 @@ function WithdrawalForm() {
             className="w-full rounded-xl border border-black/10 bg-background px-4 py-3 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald"
           />
           <p className="mt-1 text-xs text-text-secondary">
-            Deadline for affected users to pick a replacement (set before
-            withdrawing)
+            Enter time in UTC. Set before withdrawing a skater.
           </p>
         </div>
       )}

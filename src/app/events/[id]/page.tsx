@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import PickFlow from "./PickFlow";
+import PicksLockTime from "@/components/PicksLockTime";
 
 export default async function EventPage({
   params,
@@ -114,7 +115,7 @@ export default async function EventPage({
         <p className="mt-1 text-text-secondary">
           {event.location} &middot; {startStr} – {endStr}
         </p>
-        <div className="mt-3 flex gap-4 text-sm">
+        <div className="mt-3 flex flex-wrap gap-4 text-sm">
           <span className="font-mono">
             <span className="text-text-secondary">Picks:</span>{" "}
             <span className="font-semibold">{event.picks_limit}</span>
@@ -127,6 +128,12 @@ export default async function EventPage({
             <span className="text-text-secondary">Skaters:</span>{" "}
             <span className="font-semibold">{entryList.length}</span>
           </span>
+          {event.picks_lock_at && !isLocked && (
+            <span className="font-mono">
+              <span className="text-text-secondary">Locks:</span>{" "}
+              <PicksLockTime lockAt={event.picks_lock_at} />
+            </span>
+          )}
         </div>
       </div>
 

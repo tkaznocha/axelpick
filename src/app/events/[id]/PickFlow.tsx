@@ -206,7 +206,7 @@ export default function PickFlow({
           <p className="mt-1 text-sm text-amber-700">
             Select a replacement skater below.
             {replacementDeadline && (
-              <> Deadline: {new Date(replacementDeadline).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</>
+              <> Deadline: {new Date(replacementDeadline).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" })}</>
             )}
           </p>
         </div>
