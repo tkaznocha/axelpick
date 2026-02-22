@@ -473,6 +473,12 @@ export async function fetchEventsFull() {
 
 // ---------- Update Event ----------
 
+const ALLOWED_EVENT_FIELDS = new Set([
+  "name", "event_type", "location", "start_date", "end_date",
+  "picks_limit", "budget", "points_multiplier", "picks_lock_at",
+  "status", "replacement_deadline",
+]);
+
 export async function updateEvent(
   eventId: string,
   fields: Record<string, unknown>
@@ -480,9 +486,14 @@ export async function updateEvent(
   await requireAdmin();
   const admin = createAdminClient();
 
+  const sanitized: Record<string, unknown> = {};
+  for (const key of Object.keys(fields)) {
+    if (ALLOWED_EVENT_FIELDS.has(key)) sanitized[key] = fields[key];
+  }
+
   const { error } = await admin
     .from("events")
-    .update({ ...fields, updated_at: new Date().toISOString() })
+    .update({ ...sanitized, updated_at: new Date().toISOString() })
     .eq("id", eventId);
 
   if (error) return { success: false, error: error.message };
@@ -785,6 +796,11 @@ export async function fetchSkaters({
 
 // ---------- Update Skater ----------
 
+const ALLOWED_SKATER_FIELDS = new Set([
+  "name", "country", "discipline", "world_ranking",
+  "current_price", "is_active", "photo_url",
+]);
+
 export async function updateSkater(
   skaterId: string,
   fields: Record<string, unknown>
@@ -792,9 +808,14 @@ export async function updateSkater(
   await requireAdmin();
   const admin = createAdminClient();
 
+  const sanitized: Record<string, unknown> = {};
+  for (const key of Object.keys(fields)) {
+    if (ALLOWED_SKATER_FIELDS.has(key)) sanitized[key] = fields[key];
+  }
+
   const { error } = await admin
     .from("skaters")
-    .update({ ...fields, updated_at: new Date().toISOString() })
+    .update({ ...sanitized, updated_at: new Date().toISOString() })
     .eq("id", skaterId);
 
   if (error) return { success: false, error: error.message };

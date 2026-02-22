@@ -39,7 +39,7 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    redirect("/login?error=" + encodeURIComponent(error.message));
+    redirect("/login?error=" + encodeURIComponent("Invalid email or password"));
   }
 
   redirect("/dashboard");
@@ -48,7 +48,11 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = createClient();
 
-  const displayName = formData.get("displayName") as string;
+  const displayName = (formData.get("displayName") as string)?.trim();
+  if (!displayName || displayName.length < 1 || displayName.length > 50) {
+    redirect("/login?error=" + encodeURIComponent("Display name must be 1-50 characters"));
+  }
+
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -64,7 +68,7 @@ export async function signup(formData: FormData) {
   });
 
   if (error) {
-    redirect("/login?error=" + encodeURIComponent(error.message));
+    redirect("/login?error=" + encodeURIComponent("Could not create account. Please try again."));
   }
 
   redirect("/login?message=Check your email to confirm your account");
@@ -82,7 +86,7 @@ export async function signInWithGoogle() {
   });
 
   if (error) {
-    redirect("/login?error=" + encodeURIComponent(error.message));
+    redirect("/login?error=" + encodeURIComponent("Sign-in failed. Please try again."));
   }
 
   if (data.url) {
