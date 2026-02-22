@@ -103,10 +103,12 @@ export default function NavBar({ displayName }: { displayName: string }) {
 
           {/* Desktop right side */}
           <div className="hidden md:flex items-center gap-3">
-            <div className="h-7 w-7 rounded-full aurora-gradient flex items-center justify-center text-xs font-semibold text-white">
-              {displayName.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-sm text-text-secondary">{displayName}</span>
+            <a href="/settings" className="flex items-center gap-2 rounded-lg px-2 py-1 transition-colors hover:bg-black/[0.03]">
+              <div className="h-7 w-7 rounded-full aurora-gradient flex items-center justify-center text-xs font-semibold text-white">
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+              <span className="text-sm text-text-secondary">{displayName}</span>
+            </a>
             <form action={logout}>
               <button
                 type="submit"
@@ -164,12 +166,12 @@ export default function NavBar({ displayName }: { displayName: string }) {
               })}
             </div>
             <div className="mt-3 pt-3 border-t border-black/5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <a href="/settings" className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
                 <div className="h-7 w-7 rounded-full aurora-gradient flex items-center justify-center text-xs font-semibold text-white">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm text-text-secondary">{displayName}</span>
-              </div>
+              </a>
               <form action={logout}>
                 <button
                   type="submit"
