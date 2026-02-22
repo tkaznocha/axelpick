@@ -1,56 +1,47 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import NotificationBanner from "@/components/NotificationBanner";
 import AppShell from "@/components/AppShell";
 
 export default async function DashboardPage() {
+  const user = await getAuthUser();
+  if (!user) redirect("/login");
+
   const supabase = createServerSupabaseClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Run all independent queries in parallel
+  const [
+    { data: profile },
+    { data: upcomingEvents },
+    { data: unreadNotifications },
+    { data: memberships },
+  ] = await Promise.all([
+    supabase
+      .from("users")
+      .select("display_name, avatar_url, total_season_points")
+      .eq("id", user.id)
+      .single(),
+    supabase
+      .from("events")
+      .select("id, name, location, start_date, end_date, event_type, status, picks_limit, budget")
+      .in("status", ["upcoming", "locked"])
+      .order("start_date", { ascending: true })
+      .limit(3),
+    supabase
+      .from("notifications")
+      .select("id, type, title, body, event_id, metadata, is_read, created_at")
+      .eq("user_id", user.id)
+      .eq("is_read", false)
+      .order("created_at", { ascending: false })
+      .limit(10),
+    supabase
+      .from("league_members")
+      .select("league_id, leagues(id, name, created_by)")
+      .eq("user_id", user.id)
+      .limit(3),
+  ]);
 
-  if (!user) {
-    redirect("/login");
-  }
-
-  // Fetch user profile from public.users table
-  const { data: profile } = await supabase
-    .from("users")
-    .select("display_name, avatar_url, total_season_points")
-    .eq("id", user.id)
-    .single();
-
-  const displayName =
-    profile?.display_name ||
-    user.user_metadata?.display_name ||
-    user.user_metadata?.full_name ||
-    user.email?.split("@")[0] ||
-    "Skater";
-
-  // Fetch upcoming events
-  const { data: upcomingEvents } = await supabase
-    .from("events")
-    .select("id, name, location, start_date, end_date, event_type, status, picks_limit, budget")
-    .in("status", ["upcoming", "locked"])
-    .order("start_date", { ascending: true })
-    .limit(3);
-
-  // Fetch unread notifications
-  const { data: unreadNotifications } = await supabase
-    .from("notifications")
-    .select("id, type, title, body, event_id, metadata, is_read, created_at")
-    .eq("user_id", user.id)
-    .eq("is_read", false)
-    .order("created_at", { ascending: false })
-    .limit(10);
-
-  // Fetch user's leagues (up to 3)
-  const { data: memberships } = await supabase
-    .from("league_members")
-    .select("league_id, leagues(id, name, created_by)")
-    .eq("user_id", user.id)
-    .limit(3);
+  const displayName = profile?.display_name || getDisplayName(user);
 
   const myLeagues = (memberships ?? []).map((m) => {
     const l = m.leagues as unknown as {
@@ -62,7 +53,7 @@ export default async function DashboardPage() {
   });
 
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-8">

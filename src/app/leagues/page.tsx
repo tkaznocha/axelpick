@@ -1,14 +1,12 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 
 export default async function LeaguesPage() {
-  const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
+
+  const supabase = createServerSupabaseClient();
 
   // Fetch user's leagues via league_members join
   const { data: memberships } = await supabase
@@ -31,8 +29,10 @@ export default async function LeaguesPage() {
     };
   });
 
+  const displayName = getDisplayName(user);
+
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">

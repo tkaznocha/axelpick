@@ -1,5 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { cache } from "react";
+import type { User } from "@supabase/supabase-js";
 
 export function createServerSupabaseClient() {
   const cookieStore = cookies();
@@ -24,5 +26,27 @@ export function createServerSupabaseClient() {
         },
       },
     }
+  );
+}
+
+/**
+ * Cached getUser() — deduplicated within a single React render pass.
+ * Middleware already refreshes the session; this just reads it.
+ */
+export const getAuthUser = cache(async () => {
+  const supabase = createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
+});
+
+/** Derive a display name from a Supabase user without a DB query. */
+export function getDisplayName(user: User): string {
+  return (
+    user.user_metadata?.display_name ||
+    user.user_metadata?.full_name ||
+    user.email?.split("@")[0] ||
+    "Skater"
   );
 }

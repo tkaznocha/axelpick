@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import ProfileForm from "./ProfileForm";
@@ -7,15 +7,10 @@ import DeleteAccountSection from "./DeleteAccountSection";
 import { logout } from "@/app/login/actions";
 
 export default async function SettingsPage() {
+  const user = await getAuthUser();
+  if (!user) redirect("/login");
+
   const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
 
   const { data: profile } = await supabase
     .from("users")
@@ -23,12 +18,7 @@ export default async function SettingsPage() {
     .eq("id", user.id)
     .single();
 
-  const displayName =
-    profile?.display_name ||
-    user.user_metadata?.display_name ||
-    user.user_metadata?.full_name ||
-    user.email?.split("@")[0] ||
-    "Skater";
+  const displayName = profile?.display_name || getDisplayName(user);
 
   const email = user.email || "";
 
@@ -43,7 +33,7 @@ export default async function SettingsPage() {
     : null;
 
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
       <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">

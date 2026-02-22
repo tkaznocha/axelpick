@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import JoinLeagueButton from "./JoinLeagueButton";
 import AppShell from "@/components/AppShell";
@@ -8,12 +8,11 @@ export default async function JoinLeaguePage({
 }: {
   params: { code: string };
 }) {
-  const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
+
+  const supabase = createServerSupabaseClient();
+  const displayName = getDisplayName(user);
 
   // Case-insensitive lookup
   const normalizedCode = params.code.toUpperCase().trim();
@@ -26,7 +25,7 @@ export default async function JoinLeaguePage({
 
   if (!league) {
     return (
-      <AppShell>
+      <AppShell displayName={displayName}>
       <main className="min-h-screen p-6 md:p-8 max-w-lg mx-auto">
         <div className="rounded-xl bg-card p-8 text-center border border-black/5">
           <p className="font-display text-xl font-semibold mb-2">
@@ -60,7 +59,7 @@ export default async function JoinLeaguePage({
     .eq("league_id", league.id);
 
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-lg mx-auto">
       <div className="rounded-2xl bg-card p-8 border border-black/5 text-center">
         <p className="text-sm text-text-secondary mb-2">

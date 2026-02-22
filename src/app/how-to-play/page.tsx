@@ -1,9 +1,13 @@
+import { getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import AppShell from "@/components/AppShell";
 import TrackEvent from "@/components/TrackEvent";
 
-export default function HowToPlayPage() {
+export default async function HowToPlayPage() {
+  const user = await getAuthUser();
+  const displayName = user ? getDisplayName(user) : "Skater";
+
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-3xl mx-auto">
       <TrackEvent name="how_to_play_viewed" />
 
