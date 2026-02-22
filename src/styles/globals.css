@@ -27,7 +27,11 @@ html {
 
 body {
   color: var(--text-primary);
-  background: var(--background);
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% -10%, rgba(0, 165, 114, 0.07), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 0%, rgba(124, 95, 211, 0.06), transparent 55%);
+  background-attachment: fixed;
 }
 
 @layer utilities {
@@ -47,5 +51,23 @@ body {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Subtle colored left accent on cards */
+  .card-accent-emerald {
+    border-left: 3px solid var(--emerald);
+  }
+
+  .card-accent-sky {
+    border-left: 3px solid var(--sky);
+  }
+
+  .card-accent-lavender {
+    border-left: 3px solid var(--lavender);
+  }
+
+  .card-accent-aurora {
+    border-left: 3px solid transparent;
+    border-image: var(--aurora) 1;
   }
 }
