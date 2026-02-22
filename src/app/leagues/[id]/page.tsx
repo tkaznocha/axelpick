@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import CopyInviteLink from "./CopyInviteLink";
 import EventRosters from "./EventRosters";
@@ -9,14 +9,12 @@ export default async function LeaguePage({
 }: {
   params: { id: string };
 }) {
-  const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  // Fetch league
+  const supabase = createServerSupabaseClient();
+
+  // Fetch league first (needed to check existence)
   const { data: league } = await supabase
     .from("leagues")
     .select("id, name, invite_code, created_by, created_at")
@@ -39,18 +37,18 @@ export default async function LeaguePage({
     redirect(`/leagues/join/${league.invite_code}`);
   }
 
-  // Fetch members with user data
-  const { data: members } = await supabase
-    .from("league_members")
-    .select("user_id, users(id, display_name, avatar_url, total_season_points)")
-    .eq("league_id", league.id);
-
-  // Fetch locked/completed events for roster reveal
-  const { data: lockedEvents } = await supabase
-    .from("events")
-    .select("id, name, status")
-    .in("status", ["locked", "in_progress", "completed"])
-    .order("start_date", { ascending: false });
+  // Run remaining queries in parallel
+  const [{ data: members }, { data: lockedEvents }] = await Promise.all([
+    supabase
+      .from("league_members")
+      .select("user_id, users(id, display_name, avatar_url, total_season_points)")
+      .eq("league_id", league.id),
+    supabase
+      .from("events")
+      .select("id, name, status")
+      .in("status", ["locked", "in_progress", "completed"])
+      .order("start_date", { ascending: false }),
+  ]);
 
   // Build leaderboard sorted by points
   const leaderboard = (members ?? [])
@@ -73,9 +71,10 @@ export default async function LeaguePage({
     .map((u, i) => ({ ...u, rank: i + 1 }));
 
   const isCreator = league.created_by === user.id;
+  const displayName = getDisplayName(user);
 
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       {/* League header */}
       <div className="mb-6">

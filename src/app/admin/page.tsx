@@ -1,17 +1,10 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { getAuthUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { AdminPanel } from "./AdminPanel";
 
 export default async function AdminPage() {
-  const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  const user = await getAuthUser();
+  if (!user) redirect("/login");
 
   const adminIds = (process.env.ADMIN_USER_ID ?? "").split(",").map((s) => s.trim());
   if (!adminIds.includes(user.id)) {

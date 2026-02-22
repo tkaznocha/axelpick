@@ -53,6 +53,8 @@ body {
               radial-gradient(ellipse at 50% 70%, var(--lavender) 0%, transparent 60%);
   filter: blur(80px);
   animation: appAuroraTop 25s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  contain: strict;
 }
 
 /* Aurora glow – middle */
@@ -69,6 +71,8 @@ body {
               radial-gradient(ellipse at 70% 60%, var(--lavender) 0%, transparent 55%);
   filter: blur(90px);
   animation: appAuroraMid 30s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  contain: strict;
 }
 
 /* Aurora glow – bottom */
@@ -85,6 +89,8 @@ body {
               radial-gradient(ellipse at 30% 70%, var(--sky) 0%, transparent 60%);
   filter: blur(90px);
   animation: appAuroraBtm 28s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  contain: strict;
 }
 
 @keyframes appAuroraTop {

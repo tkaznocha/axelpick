@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import TrackEvent from "@/components/TrackEvent";
@@ -28,14 +28,12 @@ export default async function ResultsPage({
 }: {
   params: { id: string };
 }) {
-  const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  // Fetch event
+  const supabase = createServerSupabaseClient();
+
+  // Fetch event first (needed to check existence)
   const { data: event } = await supabase
     .from("events")
     .select("*")
@@ -44,21 +42,19 @@ export default async function ResultsPage({
 
   if (!event) notFound();
 
-  // Fetch results with skater info
-  const { data: results } = await supabase
-    .from("results")
-    .select(
-      "*, skaters(id, name, country, discipline)"
-    )
-    .eq("event_id", params.id)
-    .order("final_placement", { ascending: true });
-
-  // Fetch user's picks for this event
-  const { data: userPicks } = await supabase
-    .from("user_picks")
-    .select("skater_id, points_earned")
-    .eq("user_id", user.id)
-    .eq("event_id", params.id);
+  // Run remaining queries in parallel
+  const [{ data: results }, { data: userPicks }] = await Promise.all([
+    supabase
+      .from("results")
+      .select("*, skaters(id, name, country, discipline)")
+      .eq("event_id", params.id)
+      .order("final_placement", { ascending: true }),
+    supabase
+      .from("user_picks")
+      .select("skater_id, points_earned")
+      .eq("user_id", user.id)
+      .eq("event_id", params.id),
+  ]);
 
   const pickedIds = new Set((userPicks ?? []).map((p) => p.skater_id));
   const userTotal = (userPicks ?? []).reduce(
@@ -104,8 +100,10 @@ export default async function ResultsPage({
     year: "numeric",
   });
 
+  const displayName = getDisplayName(user);
+
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       <TrackEvent name="results_viewed" data={{ event_id: params.id }} />
 

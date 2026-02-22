@@ -1,21 +1,19 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 
 export default async function LeaderboardPage() {
-  const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  // Fetch all users sorted by season points
+  const supabase = createServerSupabaseClient();
+
+  // Fetch top 100 users sorted by season points
   const { data: users } = await supabase
     .from("users")
     .select("id, display_name, avatar_url, total_season_points")
-    .order("total_season_points", { ascending: false });
+    .order("total_season_points", { ascending: false })
+    .limit(100);
 
   const leaderboard = (users ?? []).map((u, i) => ({
     ...u,
@@ -26,8 +24,10 @@ export default async function LeaderboardPage() {
   // Find current user's rank
   const currentUserEntry = leaderboard.find((u) => u.isCurrentUser);
 
+  const displayName = getDisplayName(user);
+
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       <div className="flex items-center gap-2.5 mb-2">
         <div className="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center">

@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import PickFlow from "./PickFlow";
 import PicksLockTime from "@/components/PicksLockTime";
@@ -9,15 +9,12 @@ export default async function EventPage({
 }: {
   params: { id: string };
 }) {
-  const supabase = createServerSupabaseClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  // Fetch event
+  const supabase = createServerSupabaseClient();
+
+  // Fetch event first (needed to check existence)
   const { data: event } = await supabase
     .from("events")
     .select("*")
@@ -26,13 +23,29 @@ export default async function EventPage({
 
   if (!event) notFound();
 
-  // Fetch entry list with skater details
-  const { data: entries } = await supabase
-    .from("event_entries")
-    .select(
-      "skater_id, price_at_event, is_withdrawn, skaters(id, name, country, discipline, world_ranking, photo_url, season_best_score, personal_best_score)"
-    )
-    .eq("event_id", params.id);
+  // Run remaining queries in parallel
+  const [
+    { data: entries },
+    { data: pendingReplacements },
+    { data: existingPicks },
+  ] = await Promise.all([
+    supabase
+      .from("event_entries")
+      .select(
+        "skater_id, price_at_event, is_withdrawn, skaters(id, name, country, discipline, world_ranking, photo_url, season_best_score, personal_best_score)"
+      )
+      .eq("event_id", params.id),
+    supabase
+      .from("pick_replacements")
+      .select("withdrawn_skater_id, replacement_skater_id")
+      .eq("user_id", user.id)
+      .eq("event_id", params.id),
+    supabase
+      .from("user_picks")
+      .select("skater_id")
+      .eq("user_id", user.id)
+      .eq("event_id", params.id),
+  ]);
 
   // Reshape entries for the client — Supabase returns skaters as object, not array
   const entryList = (entries ?? []).map((e: Record<string, unknown>) => ({
@@ -50,20 +63,6 @@ export default async function EventPage({
       personal_best_score: number | null;
     },
   }));
-
-  // Fetch user's pending replacement entitlements
-  const { data: pendingReplacements } = await supabase
-    .from("pick_replacements")
-    .select("withdrawn_skater_id, replacement_skater_id")
-    .eq("user_id", user.id)
-    .eq("event_id", params.id);
-
-  // Fetch user's existing picks for this event
-  const { data: existingPicks } = await supabase
-    .from("user_picks")
-    .select("skater_id")
-    .eq("user_id", user.id)
-    .eq("event_id", params.id);
 
   const pickedSkaterIds = (existingPicks ?? []).map((p) => p.skater_id);
 
@@ -92,8 +91,10 @@ export default async function EventPage({
         ? "Championship"
         : "Grand Prix";
 
+  const displayName = getDisplayName(user);
+
   return (
-    <AppShell>
+    <AppShell displayName={displayName}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       {/* Event header */}
       <div className="mb-8 rounded-2xl bg-card p-6 border border-black/5 shadow-sm">
