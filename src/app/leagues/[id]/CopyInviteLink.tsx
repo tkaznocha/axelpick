@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 
 export default function CopyInviteLink({ inviteCode }: { inviteCode: string }) {
   const [copied, setCopied] = useState(false);
@@ -8,6 +9,7 @@ export default function CopyInviteLink({ inviteCode }: { inviteCode: string }) {
   async function handleCopy() {
     const link = `${window.location.origin}/leagues/join/${inviteCode}`;
     await navigator.clipboard.writeText(link);
+    track("invite_link_copied");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

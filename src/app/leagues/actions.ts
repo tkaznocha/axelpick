@@ -6,11 +6,9 @@ import { redirect } from "next/navigation";
 const CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 
 function generateInviteCode(length = 6): string {
-  let code = "";
-  for (let i = 0; i < length; i++) {
-    code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
-  }
-  return code;
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join("");
 }
 
 export async function createLeague(formData: FormData) {

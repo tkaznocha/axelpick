@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import { track } from "@vercel/analytics";
 import SkaterCard, { type SkaterEntry } from "@/components/SkaterCard";
 import BudgetBar from "@/components/BudgetBar";
 import { addPick, removePick, replaceWithdrawnPick } from "./actions";
@@ -163,6 +164,16 @@ export default function PickFlow({
           return next;
         });
         setError(res.error ?? "Failed to save pick");
+      } else {
+        const entry = entries.find((e) => e.skater_id === skaterId);
+        const newSize = isRemoving ? picked.size - 1 : picked.size + 1;
+        track(isRemoving ? "skater_removed" : "skater_picked", {
+          event_id: eventId,
+          discipline: entry?.skater.discipline ?? "",
+          skater_price: entry?.price_at_event ?? 0,
+          picks_count: newSize,
+          budget_remaining: budget - budgetSpent,
+        });
       }
     });
   }
@@ -176,6 +187,7 @@ export default function PickFlow({
         replacementPick
       );
       if (res.success) {
+        track("withdrawn_replaced", { event_id: eventId });
         setReplacementSuccess(true);
         setError(null);
         // Update local state
@@ -244,7 +256,10 @@ export default function PickFlow({
         <div className="flex gap-1 rounded-xl bg-black/5 p-1">
           <FilterChip
             active={discipline === "all"}
-            onClick={() => setDiscipline("all")}
+            onClick={() => {
+              setDiscipline("all");
+              track("roster_filter_used", { filter_type: "discipline", value: "all" });
+            }}
           >
             All
           </FilterChip>
@@ -252,7 +267,10 @@ export default function PickFlow({
             <FilterChip
               key={d}
               active={discipline === d}
-              onClick={() => setDiscipline(d)}
+              onClick={() => {
+                setDiscipline(d);
+                track("roster_filter_used", { filter_type: "discipline", value: d });
+              }}
             >
               {d === "ice_dance" ? "Dance" : d.charAt(0).toUpperCase() + d.slice(1)}
             </FilterChip>
@@ -262,7 +280,11 @@ export default function PickFlow({
         {/* Sort */}
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as SortKey)}
+          onChange={(e) => {
+            const val = e.target.value as SortKey;
+            setSort(val);
+            track("roster_filter_used", { filter_type: "sort", value: val });
+          }}
           className="rounded-xl border border-black/10 bg-background px-3 py-2.5 text-sm outline-none focus:border-emerald"
         >
           <option value="ranking">By Ranking</option>

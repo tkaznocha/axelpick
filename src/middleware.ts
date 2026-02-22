@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Redirect unauthenticated users away from protected routes
-  const protectedPaths = ["/dashboard", "/events", "/leaderboard", "/leagues"];
+  const protectedPaths = ["/dashboard", "/events", "/leaderboard", "/leagues", "/admin"];
   const isProtected = protectedPaths.some((p) =>
     request.nextUrl.pathname.startsWith(p)
   );

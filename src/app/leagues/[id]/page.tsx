@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import CopyInviteLink from "./CopyInviteLink";
 import EventRosters from "./EventRosters";
+import AppShell from "@/components/AppShell";
 
 export default async function LeaguePage({
   params,
@@ -74,15 +75,8 @@ export default async function LeaguePage({
   const isCreator = league.created_by === user.id;
 
   return (
+    <AppShell>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
-      {/* Back link */}
-      <a
-        href="/leagues"
-        className="inline-block mb-6 text-sm text-text-secondary hover:text-text-primary transition-colors"
-      >
-        &larr; My Leagues
-      </a>
-
       {/* League header */}
       <div className="mb-6">
         <h1 className="font-display text-3xl font-bold">{league.name}</h1>
@@ -174,6 +168,7 @@ export default async function LeaguePage({
         currentUserId={user.id}
       />
     </main>
+    </AppShell>
   );
 }
 
