@@ -24,14 +24,6 @@ interface EventRef {
   status?: string;
 }
 
-function countryFlag(code: string): string {
-  const upper = code.toUpperCase().slice(0, 2);
-  if (upper.length !== 2) return code;
-  return String.fromCodePoint(
-    ...upper.split("").map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
-  );
-}
-
 export default async function SkaterPage({ params }: { params: { id: string } }) {
   const supabase = createServerSupabaseClient();
 
@@ -57,6 +49,37 @@ export default async function SkaterPage({ params }: { params: { id: string } })
   const displayName = getDisplayName(user);
 
   const priceM = (skater.current_price / 1_000_000).toFixed(1);
+
+  // Discipline-aware labels for SP/FS
+  const isIceDance = skater.discipline === "ice_dance";
+  const spLabel = isIceDance ? "Rhythm Dance" : "Short Program";
+  const fsLabel = isIceDance ? "Free Dance" : "Free Skating";
+
+  // Compute age from date_of_birth
+  let age: number | null = null;
+  if (skater.date_of_birth) {
+    const dob = new Date(skater.date_of_birth);
+    const now = new Date();
+    age = now.getFullYear() - dob.getFullYear();
+    if (
+      now.getMonth() < dob.getMonth() ||
+      (now.getMonth() === dob.getMonth() && now.getDate() < dob.getDate())
+    ) {
+      age--;
+    }
+  }
+
+  const hasSegmentScores =
+    skater.season_best_sp != null ||
+    skater.season_best_fs != null ||
+    skater.personal_best_sp != null ||
+    skater.personal_best_fs != null;
+
+  const hasProgramInfo =
+    skater.sp_music || skater.fs_music || skater.coaches || skater.choreographer;
+
+  const hasAboutInfo =
+    skater.height_cm || skater.hometown || skater.started_skating;
 
   // Build results lookup by event_id
   const resultsMap = new Map<string, NonNullable<typeof results>[number]>();
@@ -88,8 +111,8 @@ export default async function SkaterPage({ params }: { params: { id: string } })
         {/* Profile Header */}
         <div className="rounded-2xl bg-card border border-black/5 shadow-sm p-6 mb-6">
           <div className="flex items-center gap-4">
-            <div className="h-16 w-16 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-3xl">
-              {countryFlag(skater.country)}
+            <div className="h-16 w-16 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-xl font-semibold text-text-secondary">
+              {skater.name.charAt(0).toUpperCase()}
             </div>
             <div>
               <h1 className="font-display text-3xl font-bold">{skater.name}</h1>
@@ -102,6 +125,12 @@ export default async function SkaterPage({ params }: { params: { id: string } })
                 >
                   {disciplineLabels[skater.discipline] ?? skater.discipline}
                 </span>
+                {age != null && (
+                  <span className="text-sm text-text-secondary">Age {age}</span>
+                )}
+                {skater.hometown && (
+                  <span className="text-sm text-text-secondary">{skater.hometown}</span>
+                )}
               </div>
             </div>
           </div>
@@ -132,6 +161,96 @@ export default async function SkaterPage({ params }: { params: { id: string } })
             </p>
           </div>
         </div>
+
+        {/* Segment Score Breakdown */}
+        {hasSegmentScores && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            <div className="rounded-xl bg-card border border-black/5 p-4">
+              <p className="text-xs text-text-secondary mb-1">Season Best {spLabel}</p>
+              <p className="font-mono font-semibold text-lg">
+                {skater.season_best_sp != null ? Number(skater.season_best_sp).toFixed(2) : "\u2014"}
+              </p>
+            </div>
+            <div className="rounded-xl bg-card border border-black/5 p-4">
+              <p className="text-xs text-text-secondary mb-1">Season Best {fsLabel}</p>
+              <p className="font-mono font-semibold text-lg">
+                {skater.season_best_fs != null ? Number(skater.season_best_fs).toFixed(2) : "\u2014"}
+              </p>
+            </div>
+            <div className="rounded-xl bg-card border border-black/5 p-4">
+              <p className="text-xs text-text-secondary mb-1">PB {spLabel}</p>
+              <p className="font-mono font-semibold text-lg">
+                {skater.personal_best_sp != null ? Number(skater.personal_best_sp).toFixed(2) : "\u2014"}
+              </p>
+            </div>
+            <div className="rounded-xl bg-card border border-black/5 p-4">
+              <p className="text-xs text-text-secondary mb-1">PB {fsLabel}</p>
+              <p className="font-mono font-semibold text-lg">
+                {skater.personal_best_fs != null ? Number(skater.personal_best_fs).toFixed(2) : "\u2014"}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Programs & Coaching */}
+        {hasProgramInfo && (
+          <div className="rounded-2xl bg-card border border-black/5 shadow-sm p-6 mb-6">
+            <h2 className="font-display text-lg font-semibold mb-4">Programs & Coaching</h2>
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+              {skater.sp_music && (
+                <div>
+                  <dt className="text-xs text-text-secondary">{spLabel} Music</dt>
+                  <dd className="mt-0.5 whitespace-pre-line">{skater.sp_music}</dd>
+                </div>
+              )}
+              {skater.fs_music && (
+                <div>
+                  <dt className="text-xs text-text-secondary">{fsLabel} Music</dt>
+                  <dd className="mt-0.5 whitespace-pre-line">{skater.fs_music}</dd>
+                </div>
+              )}
+              {skater.coaches && (
+                <div>
+                  <dt className="text-xs text-text-secondary">Coach</dt>
+                  <dd className="mt-0.5">{skater.coaches}</dd>
+                </div>
+              )}
+              {skater.choreographer && (
+                <div>
+                  <dt className="text-xs text-text-secondary">Choreographer</dt>
+                  <dd className="mt-0.5">{skater.choreographer}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        )}
+
+        {/* About */}
+        {hasAboutInfo && (
+          <div className="rounded-2xl bg-card border border-black/5 shadow-sm p-6 mb-6">
+            <h2 className="font-display text-lg font-semibold mb-4">About</h2>
+            <dl className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+              {skater.height_cm && (
+                <div>
+                  <dt className="text-xs text-text-secondary">Height</dt>
+                  <dd className="mt-0.5">{skater.height_cm} cm</dd>
+                </div>
+              )}
+              {skater.hometown && (
+                <div>
+                  <dt className="text-xs text-text-secondary">Hometown</dt>
+                  <dd className="mt-0.5">{skater.hometown}</dd>
+                </div>
+              )}
+              {skater.started_skating && (
+                <div>
+                  <dt className="text-xs text-text-secondary">Started Skating</dt>
+                  <dd className="mt-0.5">{skater.started_skating}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        )}
 
         {/* Event History */}
         <section>

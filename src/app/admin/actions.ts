@@ -3,6 +3,11 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { calculateFantasyPoints } from "@/lib/scoring";
+import {
+  deriveIsuSlug,
+  scrapeIsuProfile,
+  scrapeMultipleProfiles,
+} from "@/lib/isu-scraper";
 
 async function requireAdmin() {
   const supabase = createServerSupabaseClient();
@@ -806,6 +811,10 @@ export async function fetchSkaters({
 const ALLOWED_SKATER_FIELDS = new Set([
   "name", "country", "discipline", "world_ranking",
   "current_price", "is_active", "photo_url",
+  "isu_slug", "date_of_birth", "height_cm", "hometown",
+  "started_skating", "coaches", "choreographer",
+  "sp_music", "fs_music", "season_best_sp", "season_best_fs",
+  "personal_best_sp", "personal_best_fs", "isu_bio_updated_at",
 ]);
 
 export async function updateSkater(
@@ -864,4 +873,132 @@ export async function deleteSkater(skaterId: string) {
   const { error } = await admin.from("skaters").delete().eq("id", skaterId);
   if (error) return { success: false, error: error.message };
   return { success: true };
+}
+
+// ---------- Generate ISU Slugs ----------
+
+export async function generateIsuSlugs() {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data: skaters, error } = await admin
+    .from("skaters")
+    .select("id, name")
+    .is("isu_slug", null);
+
+  if (error) return { success: false, error: error.message };
+  if (!skaters || skaters.length === 0) {
+    return { success: true, summary: "All skaters already have slugs" };
+  }
+
+  let updated = 0;
+  for (const s of skaters) {
+    const slug = deriveIsuSlug(s.name);
+    await admin.from("skaters").update({ isu_slug: slug }).eq("id", s.id);
+    updated++;
+  }
+
+  return { success: true, summary: `Generated slugs for ${updated} skater(s)` };
+}
+
+// ---------- Sync Single ISU Profile ----------
+
+export async function syncIsuProfile(skaterId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data: skater } = await admin
+    .from("skaters")
+    .select("id, name, isu_slug")
+    .eq("id", skaterId)
+    .single();
+
+  if (!skater) return { success: false, error: "Skater not found" };
+
+  const slug = skater.isu_slug || deriveIsuSlug(skater.name);
+
+  try {
+    const data = await scrapeIsuProfile(slug);
+
+    const { error } = await admin
+      .from("skaters")
+      .update({
+        isu_slug: slug,
+        ...data,
+        isu_bio_updated_at: new Date().toISOString(),
+      })
+      .eq("id", skaterId);
+
+    if (error) return { success: false, error: error.message };
+    return { success: true, summary: `Synced ${skater.name}` };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+// ---------- Bulk Sync ISU Profiles ----------
+
+export async function bulkSyncIsuProfiles(discipline?: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  let query = admin
+    .from("skaters")
+    .select("id, name, isu_slug")
+    .eq("is_active", true);
+
+  if (discipline && discipline !== "all") {
+    query = query.eq("discipline", discipline);
+  }
+
+  const { data: skaters, error } = await query;
+  if (error) return { success: false, error: error.message, details: [] };
+  if (!skaters || skaters.length === 0) {
+    return { success: true, summary: "No active skaters found", details: [] };
+  }
+
+  // Ensure all skaters have slugs
+  const withSlugs = skaters.map((s) => ({
+    ...s,
+    isu_slug: s.isu_slug || deriveIsuSlug(s.name),
+  }));
+
+  const results = await scrapeMultipleProfiles(withSlugs);
+
+  const log: string[] = [];
+  let successCount = 0;
+  let errorCount = 0;
+
+  for (const r of results) {
+    if (r.data) {
+      const { error: updateErr } = await admin
+        .from("skaters")
+        .update({
+          isu_slug: withSlugs.find((s) => s.id === r.id)!.isu_slug,
+          ...r.data,
+          isu_bio_updated_at: new Date().toISOString(),
+        })
+        .eq("id", r.id);
+
+      if (updateErr) {
+        log.push(`ERROR ${r.name}: ${updateErr.message}`);
+        errorCount++;
+      } else {
+        log.push(`OK ${r.name}`);
+        successCount++;
+      }
+    } else {
+      log.push(`ERROR ${r.name}: ${r.error}`);
+      errorCount++;
+    }
+  }
+
+  return {
+    success: true,
+    summary: `${successCount} synced, ${errorCount} failed out of ${results.length}`,
+    details: log,
+  };
 }

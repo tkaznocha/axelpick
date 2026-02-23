@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { fetchSkaters, updateSkater, deleteSkater } from "../actions";
+import {
+  fetchSkaters,
+  updateSkater,
+  deleteSkater,
+  generateIsuSlugs,
+  syncIsuProfile,
+  bulkSyncIsuProfiles,
+} from "../actions";
 import { InlineEditField, ConfirmDialog } from "./shared";
 
 interface Skater {
@@ -14,6 +21,8 @@ interface Skater {
   is_active: boolean;
   season_best_score: number | null;
   personal_best_score: number | null;
+  isu_slug: string | null;
+  isu_bio_updated_at: string | null;
 }
 
 const DISCIPLINE_OPTIONS = [
@@ -37,6 +46,9 @@ export function SkatersTab() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ success: boolean; text: string } | null>(null);
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [bulkSyncing, setBulkSyncing] = useState(false);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [syncLog, setSyncLog] = useState<string[] | null>(null);
 
   // Debounce search
   useEffect(() => {
@@ -88,6 +100,36 @@ export function SkatersTab() {
     setDeleteId(null);
   }
 
+  async function handleBulkSync() {
+    setBulkSyncing(true);
+    setSyncLog(null);
+    setMessage(null);
+    // First generate slugs for any skaters missing them
+    await generateIsuSlugs();
+    const res = await bulkSyncIsuProfiles(discipline !== "all" ? discipline : undefined);
+    if (res.success) {
+      setMessage({ success: true, text: res.summary ?? "Sync complete" });
+      setSyncLog(res.details ?? []);
+    } else {
+      setMessage({ success: false, text: res.error ?? "Bulk sync failed" });
+    }
+    setBulkSyncing(false);
+    loadSkaters();
+  }
+
+  async function handleSingleSync(skaterId: string) {
+    setSyncingId(skaterId);
+    setMessage(null);
+    const res = await syncIsuProfile(skaterId);
+    if (res.success) {
+      setMessage({ success: true, text: res.summary ?? "Synced" });
+    } else {
+      setMessage({ success: false, text: res.error ?? "Sync failed" });
+    }
+    setSyncingId(null);
+    loadSkaters();
+  }
+
   const totalPages = Math.ceil(total / 50);
 
   return (
@@ -98,12 +140,12 @@ export function SkatersTab() {
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search skaters..."
-          className="flex-1 rounded-xl border border-black/10 bg-background px-4 py-3 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald"
+          className="flex-1 min-w-[200px] rounded-xl border border-black/10 bg-background px-4 py-3 text-sm outline-none focus:border-emerald focus:ring-1 focus:ring-emerald"
         />
         <select
           value={discipline}
@@ -114,7 +156,21 @@ export function SkatersTab() {
             <option key={d.value} value={d.value}>{d.label}</option>
           ))}
         </select>
+        <button
+          onClick={handleBulkSync}
+          disabled={bulkSyncing}
+          className="rounded-xl bg-sky-600 px-4 py-3 text-sm font-medium text-white hover:bg-sky-700 disabled:opacity-50"
+        >
+          {bulkSyncing ? "Syncing ISU..." : "Bulk ISU Sync"}
+        </button>
       </div>
+
+      {syncLog && (
+        <details className="rounded-xl border border-black/10 bg-black/[0.02] p-3">
+          <summary className="text-sm font-medium cursor-pointer">Sync Log ({syncLog.length} entries)</summary>
+          <pre className="mt-2 text-xs max-h-60 overflow-auto whitespace-pre-wrap">{syncLog.join("\n")}</pre>
+        </details>
+      )}
 
       <p className="text-sm text-text-secondary">
         {loading ? "Loading..." : `${total} skater(s) found`}
@@ -138,8 +194,22 @@ export function SkatersTab() {
                 {!s.is_active && (
                   <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-600">Inactive</span>
                 )}
+                {s.isu_bio_updated_at ? (
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700" title={s.isu_bio_updated_at}>
+                    ISU {new Date(s.isu_bio_updated_at).toLocaleDateString()}
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">Not synced</span>
+                )}
               </div>
               <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => handleSingleSync(s.id)}
+                  disabled={syncingId === s.id}
+                  className="rounded-lg border border-sky-200 px-2.5 py-1 text-xs font-medium text-sky-700 hover:bg-sky-50 disabled:opacity-50"
+                >
+                  {syncingId === s.id ? "Syncing..." : "Sync ISU"}
+                </button>
                 <button
                   onClick={() => setEditingId(editingId === s.id ? null : s.id)}
                   className="rounded-lg border border-black/10 px-2.5 py-1 text-xs font-medium text-text-secondary hover:bg-black/5"
@@ -210,6 +280,12 @@ export function SkatersTab() {
                     ]}
                     onSave={(v) => handleFieldUpdate(s.id, "is_active", v)}
                     displayFormatter={(v) => (v === "true" ? "Active" : "Inactive")}
+                  />
+                </EditRow>
+                <EditRow label="ISU Slug">
+                  <InlineEditField
+                    value={s.isu_slug ?? ""}
+                    onSave={(v) => handleFieldUpdate(s.id, "isu_slug", v)}
                   />
                 </EditRow>
               </div>

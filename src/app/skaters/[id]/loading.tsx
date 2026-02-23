@@ -22,6 +22,39 @@ export default function SkaterDetailLoading() {
         ))}
       </div>
 
+      {/* Segment scores grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="rounded-xl bg-black/5 h-20" />
+        ))}
+      </div>
+
+      {/* Programs & Coaching card */}
+      <div className="rounded-2xl bg-black/5 p-6 mb-6">
+        <div className="h-5 w-44 bg-black/5 rounded-lg mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i}>
+              <div className="h-3 w-20 bg-black/5 rounded mb-1" />
+              <div className="h-4 w-full bg-black/5 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* About card */}
+      <div className="rounded-2xl bg-black/5 p-6 mb-6">
+        <div className="h-5 w-20 bg-black/5 rounded-lg mb-4" />
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i}>
+              <div className="h-3 w-16 bg-black/5 rounded mb-1" />
+              <div className="h-4 w-24 bg-black/5 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Event history */}
       <div className="h-6 w-36 bg-black/5 rounded-lg mb-4" />
       <div className="space-y-3">
