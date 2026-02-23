@@ -16,6 +16,7 @@ export default function LandingPage() {
         {/* Nav */}
         <nav className="landing-nav">
           <a className="nav-brand" href="#">
+            <img src="/logo.png" alt="" width={32} height={32} className="nav-brand-logo" />
             <span className="w-axel">Axel</span>
             <span className="w-pick">Pick</span>
             <span className="dot" />

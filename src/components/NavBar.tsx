@@ -97,6 +97,7 @@ export default function NavBar({ displayName, avatarUrl }: { displayName: string
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2">
+            <img src="/logo.png" alt="" width={28} height={28} className="flex-shrink-0" />
             <span className="font-display text-lg font-bold aurora-text">
               Axel Pick
             </span>
