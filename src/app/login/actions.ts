@@ -95,7 +95,6 @@ export async function signup(formData: FormData) {
 export async function signInWithGoogle() {
   const supabase = createClient();
   const origin = getAppOrigin();
-  console.log("[DEBUG] getAppOrigin:", origin, "APP_URL:", process.env.APP_URL, "VERCEL_URL:", process.env.VERCEL_URL);
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
