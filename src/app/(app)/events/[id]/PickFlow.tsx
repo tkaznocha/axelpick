@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState, useTransition } from "react";
 import { track } from "@vercel/analytics";
 import SkaterCard, { type SkaterEntry } from "@/components/SkaterCard";
 import BudgetBar from "@/components/BudgetBar";
-import { addPick, removePick, replaceWithdrawnPick } from "./actions";
+import { addPick, removePick, clearAllPicks, replaceWithdrawnPick } from "./actions";
 
 type SortKey = "price_desc" | "price_asc" | "ranking" | "name";
 
@@ -214,10 +214,53 @@ export default function PickFlow({
     });
   }
 
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  function handleClearAll() {
+    startTransition(async () => {
+      const res = await clearAllPicks(eventId);
+      if (res.success) {
+        setPicked(new Set());
+        setError(null);
+        track("picks_cleared", { event_id: eventId });
+      } else {
+        setError(res.error ?? "Failed to clear picks");
+      }
+      setShowClearConfirm(false);
+    });
+  }
+
   const atLimit = picked.size >= picksLimit;
 
   return (
     <div className="pb-24">
+      {/* Clear picks confirmation dialog */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-sm rounded-2xl bg-card p-6 shadow-xl border border-black/5">
+            <h3 className="font-display text-lg font-semibold">Clear all picks?</h3>
+            <p className="mt-2 text-sm text-text-secondary">
+              This will remove all {picked.size} pick{picked.size !== 1 ? "s" : ""} from your roster. You can re-pick skaters afterwards.
+            </p>
+            <div className="mt-5 flex gap-3 justify-end">
+              <button
+                onClick={() => setShowClearConfirm(false)}
+                className="rounded-xl px-4 py-2 text-sm font-medium text-text-secondary hover:bg-black/5 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleClearAll}
+                disabled={isSaving}
+                className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {isSaving ? "Clearing..." : "Clear all"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Withdrawal replacement banner */}
       {inReplacementMode && !deadlinePassed && !replacementSuccess && (
         <div className="mb-4 rounded-lg bg-amber-50 p-4 border border-amber-200">
@@ -303,11 +346,21 @@ export default function PickFlow({
         </select>
       </div>
 
-      {/* Count */}
-      <p className="mb-3 text-sm text-text-secondary">
-        {filtered.length} skater{filtered.length !== 1 ? "s" : ""}
-        {discipline !== "all" ? ` in ${discipline === "ice_dance" ? "ice dance" : discipline}` : ""}
-      </p>
+      {/* Count + clear */}
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-sm text-text-secondary">
+          {filtered.length} skater{filtered.length !== 1 ? "s" : ""}
+          {discipline !== "all" ? ` in ${discipline === "ice_dance" ? "ice dance" : discipline}` : ""}
+        </p>
+        {picked.size > 0 && !isLocked && !inReplacementMode && (
+          <button
+            onClick={() => setShowClearConfirm(true)}
+            className="text-xs font-medium text-red-600 hover:text-red-700 transition-colors"
+          >
+            Clear all picks
+          </button>
+        )}
+      </div>
 
       {/* Entry list */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

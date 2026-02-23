@@ -148,6 +148,48 @@ export async function removePick(eventId: string, skaterId: string) {
   return { success: true };
 }
 
+export async function clearAllPicks(eventId: string) {
+  const supabase = createServerSupabaseClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return { success: false, error: "Not authenticated" };
+  }
+  const user = session.user;
+
+  const { data: event } = await supabase
+    .from("events")
+    .select("id, picks_lock_at, status")
+    .eq("id", eventId)
+    .single();
+
+  if (!event) {
+    return { success: false, error: "Event not found" };
+  }
+
+  if (event.status !== "upcoming") {
+    return { success: false, error: "Event is no longer accepting picks" };
+  }
+  if (event.picks_lock_at && new Date(event.picks_lock_at) <= new Date()) {
+    return { success: false, error: "Picks are locked for this event" };
+  }
+
+  const { error } = await supabase
+    .from("user_picks")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("event_id", eventId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
 export async function replaceWithdrawnPick(
   eventId: string,
   withdrawnSkaterId: string,

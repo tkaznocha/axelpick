@@ -47,8 +47,6 @@ export async function fetchLeagueRosters(
   }
 
   // Verify event is locked
-  const admin = createAdminClient();
-
   const { data: event } = await admin
     .from("events")
     .select("id, status, picks_lock_at")
