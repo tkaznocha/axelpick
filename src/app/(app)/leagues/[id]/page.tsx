@@ -1,8 +1,7 @@
-import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import CopyInviteLink from "./CopyInviteLink";
 import EventRosters from "./EventRosters";
-import AppShell from "@/components/AppShell";
 import UserAvatar from "@/components/UserAvatar";
 
 export default async function LeaguePage({
@@ -26,7 +25,7 @@ export default async function LeaguePage({
   if (!league) redirect("/leagues");
 
   // Check membership + fetch remaining data in parallel
-  const [{ data: membership }, { data: members }, { data: lockedEvents }, { data: avatarRow }] =
+  const [{ data: membership }, { data: members }, { data: lockedEvents }] =
     await Promise.all([
       supabase
         .from("league_members")
@@ -45,11 +44,6 @@ export default async function LeaguePage({
         .select("id, name, status")
         .in("status", ["locked", "in_progress", "completed"])
         .order("start_date", { ascending: false }),
-      supabase
-        .from("users")
-        .select("avatar_url")
-        .eq("id", user.id)
-        .single(),
     ]);
 
   if (!membership) {
@@ -77,10 +71,8 @@ export default async function LeaguePage({
     .map((u, i) => ({ ...u, rank: i + 1 }));
 
   const isCreator = league.created_by === user.id;
-  const displayName = getDisplayName(user);
 
   return (
-    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       {/* League header */}
       <div className="mb-6">
@@ -171,7 +163,6 @@ export default async function LeaguePage({
         currentUserId={user.id}
       />
     </main>
-    </AppShell>
   );
 }
 

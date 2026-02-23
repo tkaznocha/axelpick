@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTransition, useState } from "react";
-import { markNotificationRead } from "@/app/dashboard/actions";
+import { markNotificationRead } from "@/app/(app)/dashboard/actions";
 
 interface Notification {
   id: string;

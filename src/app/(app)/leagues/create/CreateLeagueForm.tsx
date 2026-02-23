@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { track } from "@vercel/analytics";
-import { createLeague } from "@/app/leagues/actions";
+import { createLeague } from "@/app/(app)/leagues/actions";
 
 export default function CreateLeagueForm() {
   const [isPending, startTransition] = useTransition();

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { track } from "@vercel/analytics";
-import { joinLeague } from "@/app/leagues/actions";
+import { joinLeague } from "@/app/(app)/leagues/actions";
 
 export default function JoinLeagueButton({ inviteCode }: { inviteCode: string }) {
   const [isPending, startTransition] = useTransition();

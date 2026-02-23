@@ -3,7 +3,6 @@ import Link from "next/link";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import NotificationBanner from "@/components/NotificationBanner";
-import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -57,7 +56,6 @@ export default async function DashboardPage() {
   });
 
   return (
-    <AppShell displayName={displayName} avatarUrl={profile?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-8">
@@ -233,6 +231,5 @@ export default async function DashboardPage() {
         )}
       </section>
     </main>
-    </AppShell>
   );
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
-import AppShell from "@/components/AppShell";
 import UserAvatar from "@/components/UserAvatar";
 
 export const metadata: Metadata = { title: "Leaderboard" };
@@ -30,10 +29,7 @@ export default async function LeaderboardPage() {
   // Find current user's rank
   const currentUserEntry = leaderboard.find((u) => u.isCurrentUser);
 
-  const displayName = getDisplayName(user);
-
   return (
-    <AppShell displayName={displayName} avatarUrl={currentUserEntry?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       <div className="flex items-center gap-2.5 mb-2">
         <div className="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center">
@@ -144,7 +140,6 @@ export default async function LeaderboardPage() {
         </div>
       )}
     </main>
-    </AppShell>
   );
 }
 

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
-import AppShell from "@/components/AppShell";
 import UserAvatar from "@/components/UserAvatar";
 import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
@@ -38,7 +37,6 @@ export default async function SettingsPage() {
     : null;
 
   return (
-    <AppShell displayName={displayName} avatarUrl={profile?.avatar_url ?? null}>
       <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -92,6 +90,5 @@ export default async function SettingsPage() {
           </div>
         </section>
       </main>
-    </AppShell>
   );
 }

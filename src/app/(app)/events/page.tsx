@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
-import AppShell from "@/components/AppShell";
 import EventCard from "@/components/EventCard";
 
 export const metadata: Metadata = { title: "Events" };
@@ -13,7 +12,7 @@ export default async function EventsPage() {
   if (!user) redirect("/login");
 
   // Run all data queries in parallel
-  const [{ data: allEvents }, { data: userPicks }, { data: avatarRow }] = await Promise.all([
+  const [{ data: allEvents }, { data: userPicks }] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, event_type, location, start_date, end_date, picks_limit, budget, points_multiplier, status")
@@ -22,11 +21,6 @@ export default async function EventsPage() {
       .from("user_picks")
       .select("event_id, points_earned")
       .eq("user_id", user.id),
-    supabase
-      .from("users")
-      .select("avatar_url")
-      .eq("id", user.id)
-      .single(),
   ]);
 
   // Build lookup map: eventId → { pickCount, totalPoints }
@@ -38,7 +32,6 @@ export default async function EventsPage() {
     pickMap.set(pick.event_id, entry);
   }
 
-  const displayName = getDisplayName(user);
   const events = allEvents ?? [];
 
   // Group events by status
@@ -49,7 +42,6 @@ export default async function EventsPage() {
     .reverse(); // most recent first
 
   return (
-    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
       <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold">Events</h1>
@@ -130,6 +122,5 @@ export default async function EventsPage() {
           </div>
         )}
       </main>
-    </AppShell>
   );
 }

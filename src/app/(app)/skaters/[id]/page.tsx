@@ -1,7 +1,6 @@
-import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import AppShell from "@/components/AppShell";
 
 const disciplineColors: Record<string, string> = {
   men: "bg-sky-50 text-sky-700",
@@ -31,7 +30,7 @@ export default async function SkaterPage({ params }: { params: { id: string } })
   if (!user) redirect("/login");
 
   // Run all data queries in parallel
-  const [{ data: skater }, { data: entries }, { data: results }, { data: avatarRow }] = await Promise.all([
+  const [{ data: skater }, { data: entries }, { data: results }] = await Promise.all([
     supabase.from("skaters").select("*").eq("id", params.id).single(),
     supabase
       .from("event_entries")
@@ -42,16 +41,9 @@ export default async function SkaterPage({ params }: { params: { id: string } })
       .select("event_id, final_placement, total_score, sp_score, fs_score, falls, is_personal_best, fantasy_points_final, events(id, name, start_date)")
       .eq("skater_id", params.id)
       .order("events(start_date)", { ascending: false }),
-    supabase
-      .from("users")
-      .select("avatar_url")
-      .eq("id", user.id)
-      .single(),
   ]);
 
   if (!skater) notFound();
-
-  const displayName = getDisplayName(user);
 
   const priceM = (skater.current_price / 1_000_000).toFixed(1);
 
@@ -100,7 +92,6 @@ export default async function SkaterPage({ params }: { params: { id: string } })
   });
 
   return (
-    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
       <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
         {/* Back link */}
         <Link
@@ -341,6 +332,5 @@ export default async function SkaterPage({ params }: { params: { id: string } })
           )}
         </section>
       </main>
-    </AppShell>
   );
 }

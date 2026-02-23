@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
-import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = { title: "My Leagues" };
 
@@ -12,18 +11,10 @@ export default async function LeaguesPage() {
 
   const supabase = createServerSupabaseClient();
 
-  // Fetch user's leagues + avatar in parallel
-  const [{ data: memberships }, { data: avatarRow }] = await Promise.all([
-    supabase
-      .from("league_members")
-      .select("league_id, leagues(id, name, created_by, created_at)")
-      .eq("user_id", user.id),
-    supabase
-      .from("users")
-      .select("avatar_url")
-      .eq("id", user.id)
-      .single(),
-  ]);
+  const { data: memberships } = await supabase
+    .from("league_members")
+    .select("league_id, leagues(id, name, created_by, created_at)")
+    .eq("user_id", user.id);
 
   const leagues = (memberships ?? []).map((m) => {
     const l = m.leagues as unknown as {
@@ -40,10 +31,7 @@ export default async function LeaguesPage() {
     };
   });
 
-  const displayName = getDisplayName(user);
-
   return (
-    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
@@ -117,6 +105,5 @@ export default async function LeaguesPage() {
         </div>
       )}
     </main>
-    </AppShell>
   );
 }

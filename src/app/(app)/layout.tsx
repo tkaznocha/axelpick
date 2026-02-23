@@ -1,25 +1,30 @@
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import AppShell from "@/components/AppShell";
-import CreateLeagueForm from "./CreateLeagueForm";
 
-export default async function CreateLeaguePage() {
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const user = await getAuthUser();
-  const displayName = user ? getDisplayName(user) : "Skater";
 
+  let displayName = "Skater";
   let avatarUrl: string | null = null;
+
   if (user) {
     const supabase = createServerSupabaseClient();
     const { data } = await supabase
       .from("users")
-      .select("avatar_url")
+      .select("display_name, avatar_url")
       .eq("id", user.id)
       .single();
+    displayName = data?.display_name || getDisplayName(user);
     avatarUrl = data?.avatar_url ?? null;
   }
 
   return (
     <AppShell displayName={displayName} avatarUrl={avatarUrl}>
-      <CreateLeagueForm />
+      {children}
     </AppShell>
   );
 }

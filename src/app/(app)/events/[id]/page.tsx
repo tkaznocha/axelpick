@@ -1,8 +1,7 @@
-import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
+import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import PicksLockTime from "@/components/PicksLockTime";
-import AppShell from "@/components/AppShell";
 
 const PickFlow = dynamic(() => import("./PickFlow"), {
   loading: () => (
@@ -30,7 +29,6 @@ export default async function EventPage({
     { data: entries },
     { data: pendingReplacements },
     { data: existingPicks },
-    { data: avatarRow },
   ] = await Promise.all([
     supabase.from("events").select("*").eq("id", params.id).single(),
     supabase
@@ -49,11 +47,6 @@ export default async function EventPage({
       .select("skater_id")
       .eq("user_id", user.id)
       .eq("event_id", params.id),
-    supabase
-      .from("users")
-      .select("avatar_url")
-      .eq("id", user.id)
-      .single(),
   ]);
 
   if (!event) notFound();
@@ -102,10 +95,7 @@ export default async function EventPage({
         ? "Championship"
         : "Grand Prix";
 
-  const displayName = getDisplayName(user);
-
   return (
-    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto overflow-x-hidden">
       {/* Event header */}
       <div className="mb-8 rounded-2xl bg-card p-6 border border-black/5 shadow-sm">
@@ -216,6 +206,5 @@ export default async function EventPage({
         replacementDeadline={event.replacement_deadline ?? null}
       />
     </main>
-    </AppShell>
   );
 }
