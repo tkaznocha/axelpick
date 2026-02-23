@@ -52,6 +52,7 @@ export async function createLeague(formData: FormData) {
     .single();
 
   if (leagueError) {
+    console.error("[createLeague] league insert failed:", leagueError);
     return { error: "Failed to create league. Please try again." };
   }
 
@@ -59,9 +60,10 @@ export async function createLeague(formData: FormData) {
   const admin = createAdminClient();
   const { error: joinError } = await admin
     .from("league_members")
-    .insert({ league_id: league.id, user_id: user.id });
+    .upsert({ league_id: league.id, user_id: user.id });
 
   if (joinError) {
+    console.error("[createLeague] league_members upsert failed:", joinError);
     return { error: "League created but failed to join. Please try again." };
   }
 

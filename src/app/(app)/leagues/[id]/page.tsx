@@ -72,7 +72,14 @@ export default async function LeaguePage({
     ]);
 
   if (!membership) {
-    redirect(`/leagues/join/${league.invite_code}`);
+    // Self-heal: if user is the league creator, auto-add them as member
+    if (league.created_by === user.id) {
+      await admin
+        .from("league_members")
+        .upsert({ league_id: league.id, user_id: user.id });
+    } else {
+      redirect(`/leagues/join/${league.invite_code}`);
+    }
   }
 
   // Build leaderboard sorted by points
