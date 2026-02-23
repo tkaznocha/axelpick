@@ -78,39 +78,13 @@ export default function LandingPage() {
             Pick your skaters, track placements live, and watch your score
             climb. Here&apos;s what it looks like.
           </p>
-          <div className="preview-grid">
-            <div className="preview-frame">
-              <div className="placeholder-icon">
-                <svg viewBox="0 0 24 24">
-                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                </svg>
-              </div>
-              <span className="placeholder-label">Skater Pick Screen</span>
-              <span className="placeholder-sub">Screenshot coming soon</span>
-            </div>
-            <div className="preview-frame">
-              <div className="placeholder-icon">
-                <svg viewBox="0 0 24 24">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                </svg>
-              </div>
-              <span className="placeholder-label">Live Scoring</span>
-              <span className="placeholder-sub">Screenshot coming soon</span>
-            </div>
-            <div className="preview-frame tall">
-              <div className="placeholder-icon">
-                <svg viewBox="0 0 24 24">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                </svg>
-              </div>
-              <span className="placeholder-label">
-                Leaderboard &amp; Results
-              </span>
-              <span className="placeholder-sub">Video coming soon</span>
-            </div>
+          <div className="preview-screenshot">
+            <img
+              src="/landingscreen.png"
+              alt="Axel Pick skater pick screen showing ISU World Championships 2026"
+              width={860}
+              height={0}
+            />
           </div>
         </section>
 
