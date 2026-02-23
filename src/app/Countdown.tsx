@@ -27,7 +27,7 @@ export default function Countdown() {
 
   return (
     <div className="cd-row">
-      <span className="cd-label">Preview round opens in</span>
+      <span className="cd-label">Rosters lock in</span>
       <div className="cd-digits">
         <div className="cd-unit">
           <div className="cd-num">{time.d}</div>
