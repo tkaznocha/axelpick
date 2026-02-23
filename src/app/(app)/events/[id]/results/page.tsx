@@ -1,6 +1,28 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect, notFound } from "next/navigation";
 import TrackEvent from "@/components/TrackEvent";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const supabase = createAdminClient();
+  const { data: event } = await supabase
+    .from("events")
+    .select("name")
+    .eq("id", params.id)
+    .single();
+
+  if (!event) return { title: "Results Not Found" };
+
+  return {
+    title: `Results \u2014 ${event.name}`,
+    description: `Full results and fantasy point breakdown for ${event.name} on Axel Pick.`,
+  };
+}
 
 const placementMap: Record<number, number> = {
   1: 25, 2: 18, 3: 15, 4: 12, 5: 10,

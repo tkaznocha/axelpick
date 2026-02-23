@@ -1,6 +1,28 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 import JoinLeagueButton from "./JoinLeagueButton";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { code: string };
+}): Promise<Metadata> {
+  const supabase = createAdminClient();
+  const { data: league } = await supabase
+    .from("leagues")
+    .select("name")
+    .eq("invite_code", params.code.toUpperCase().trim())
+    .single();
+
+  if (!league) return { title: "Join League" };
+
+  return {
+    title: `Join ${league.name}`,
+    description: `You've been invited to join ${league.name} on Axel Pick. Fantasy figure skating with friends.`,
+  };
+}
 
 export default async function JoinLeaguePage({
   params,

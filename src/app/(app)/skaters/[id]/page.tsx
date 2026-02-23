@@ -1,6 +1,37 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+
+const disciplineLabelsMeta: Record<string, string> = {
+  men: "Men's Singles",
+  women: "Women's Singles",
+  pairs: "Pairs",
+  ice_dance: "Ice Dance",
+};
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const supabase = createAdminClient();
+  const { data: skater } = await supabase
+    .from("skaters")
+    .select("name, country, discipline")
+    .eq("id", params.id)
+    .single();
+
+  if (!skater) return { title: "Skater Not Found" };
+
+  const discipline = disciplineLabelsMeta[skater.discipline] ?? skater.discipline;
+
+  return {
+    title: skater.name,
+    description: `${skater.name} \u2014 ${skater.country} \u00B7 ${discipline}. View stats, scores, and event history on Axel Pick.`,
+  };
+}
 
 const disciplineColors: Record<string, string> = {
   men: "bg-sky-50 text-sky-700",

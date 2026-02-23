@@ -1,11 +1,39 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import Countdown from "./Countdown";
 import ScrollReveal from "./ScrollReveal";
 import "@/styles/landing.css";
 
+export const metadata: Metadata = {
+  title: "Axel Pick — Fantasy Figure Skating",
+  description:
+    "The first real fantasy game for figure skating. Pick your team before each ISU event, earn points from real placements and clean programs, and compete on the leaderboard. Free forever, no ads.",
+  openGraph: {
+    title: "Axel Pick — Fantasy Figure Skating",
+    description:
+      "The first real fantasy game for figure skating. Pick your team, earn points from real ISU results, and compete with friends.",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Axel Pick",
+  url: "https://axelpick.app",
+  description:
+    "Fantasy figure skating — pick your skaters, earn points from real ISU competition results, and compete on the leaderboard.",
+  applicationCategory: "GameApplication",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  author: { "@type": "Organization", name: "Axel Pick", url: "https://axelpick.app" },
+};
+
 export default function LandingPage() {
   return (
     <div className="landing">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="aurora-bar" />
       <div className="noise" />
 
@@ -239,7 +267,7 @@ export default function LandingPage() {
             >
               X / Twitter
             </a>
-            <a href="mailto:hello@axelpick.app">Contact</a>
+            <a href="mailto:support@axelpick.app">Contact</a>
           </div>
         </footer>
       </div>

@@ -1,8 +1,30 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 import CopyInviteLink from "./CopyInviteLink";
 import EventRosters from "./EventRosters";
 import UserAvatar from "@/components/UserAvatar";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const supabase = createAdminClient();
+  const { data: league } = await supabase
+    .from("leagues")
+    .select("name")
+    .eq("id", params.id)
+    .single();
+
+  if (!league) return { title: "League Not Found" };
+
+  return {
+    title: league.name,
+    description: `${league.name} league on Axel Pick. Compete with friends in fantasy figure skating.`,
+  };
+}
 
 export default async function LeaguePage({
   params,

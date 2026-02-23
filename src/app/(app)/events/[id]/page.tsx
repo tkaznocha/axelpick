@@ -1,7 +1,39 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect, notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import PicksLockTime from "@/components/PicksLockTime";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const supabase = createAdminClient();
+  const { data: event } = await supabase
+    .from("events")
+    .select("name, location, start_date, end_date")
+    .eq("id", params.id)
+    .single();
+
+  if (!event) return { title: "Event Not Found" };
+
+  const start = new Date(event.start_date).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
+  const end = new Date(event.end_date).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return {
+    title: event.name,
+    description: `${event.location} \u00B7 ${start} \u2013 ${end}. Pick your skaters and compete in this event on Axel Pick.`,
+  };
+}
 
 const PickFlow = dynamic(() => import("./PickFlow"), {
   loading: () => (

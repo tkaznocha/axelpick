@@ -22,6 +22,20 @@ export const metadata: Metadata = {
   description:
     "Pick your skaters, earn points from real results, and compete on the leaderboard.",
   metadataBase: new URL("https://axelpick.app"),
+  openGraph: {
+    type: "website",
+    siteName: "Axel Pick",
+    title: "Axel Pick — Fantasy Figure Skating",
+    description:
+      "Pick your skaters, earn points from real results, and compete on the leaderboard.",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Axel Pick — Fantasy Figure Skating",
+    description:
+      "Pick your skaters, earn points from real results, and compete on the leaderboard.",
+  },
 };
 
 export const viewport: Viewport = {
