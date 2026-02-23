@@ -62,12 +62,21 @@ function SkaterIcon({ className }: { className?: string }) {
   );
 }
 
+function BookIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+    </svg>
+  );
+}
+
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: DashboardIcon },
   { href: "/events", label: "Events", icon: CalendarIcon },
   { href: "/skaters", label: "Skaters", icon: SkaterIcon },
   { href: "/leaderboard", label: "Leaderboard", icon: TrophyIcon },
   { href: "/leagues", label: "My Leagues", icon: UsersIcon },
+  { href: "/how-to-play", label: "How to Play", icon: BookIcon },
 ];
 
 export default function NavBar({ displayName, avatarUrl }: { displayName: string; avatarUrl?: string | null }) {
