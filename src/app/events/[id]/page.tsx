@@ -102,7 +102,7 @@ export default async function EventPage({
 
   return (
     <AppShell displayName={displayName}>
-    <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
+    <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto overflow-x-hidden">
       {/* Event header */}
       <div className="mb-8 rounded-2xl bg-card p-6 border border-black/5 shadow-sm">
         <div className="flex items-center gap-3 mb-3">
