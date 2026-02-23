@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
+import { getAuthUser } from "@/lib/supabase-server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 import JoinLeagueButton from "./JoinLeagueButton";
@@ -32,12 +32,12 @@ export default async function JoinLeaguePage({
   const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  const supabase = createServerSupabaseClient();
+  const admin = createAdminClient();
 
   // Case-insensitive lookup
   const normalizedCode = params.code.toUpperCase().trim();
 
-  const { data: league } = await supabase
+  const { data: league } = await admin
     .from("leagues")
     .select("id, name, invite_code, created_by")
     .eq("invite_code", normalizedCode)
@@ -59,7 +59,7 @@ export default async function JoinLeaguePage({
   }
 
   // Check if already a member → redirect to league page
-  const { data: membership } = await supabase
+  const { data: membership } = await admin
     .from("league_members")
     .select("league_id")
     .eq("league_id", league.id)
@@ -71,7 +71,7 @@ export default async function JoinLeaguePage({
   }
 
   // Get member count
-  const { count } = await supabase
+  const { count } = await admin
     .from("league_members")
     .select("*", { count: "exact", head: true })
     .eq("league_id", league.id);

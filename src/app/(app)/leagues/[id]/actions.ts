@@ -33,8 +33,9 @@ export async function fetchLeagueRosters(
   }
   const user = session.user;
 
-  // Verify league membership (RLS ensures user can only see leagues they belong to)
-  const { data: membership } = await supabase
+  // Verify league membership
+  const admin = createAdminClient();
+  const { data: membership } = await admin
     .from("league_members")
     .select("league_id")
     .eq("league_id", leagueId)

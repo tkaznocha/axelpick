@@ -46,16 +46,19 @@ export default async function LeaguePage({
   if (!user) redirect("/login");
   if (!league) redirect("/leagues");
 
+  // Use admin client for league_members to bypass self-referencing RLS
+  const admin = createAdminClient();
+
   // Check membership + fetch remaining data in parallel
   const [{ data: membership }, { data: members }, { data: lockedEvents }] =
     await Promise.all([
-      supabase
+      admin
         .from("league_members")
         .select("league_id")
         .eq("league_id", league.id)
         .eq("user_id", user.id)
         .single(),
-      supabase
+      admin
         .from("league_members")
         .select(
           "user_id, users(id, display_name, avatar_url, total_season_points)"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
+import { getAuthUser } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = { title: "My Leagues" };
@@ -9,9 +10,9 @@ export default async function LeaguesPage() {
   const user = await getAuthUser();
   if (!user) redirect("/login");
 
-  const supabase = createServerSupabaseClient();
+  const admin = createAdminClient();
 
-  const { data: memberships } = await supabase
+  const { data: memberships } = await admin
     .from("league_members")
     .select("league_id, leagues(id, name, created_by, created_at)")
     .eq("user_id", user.id);

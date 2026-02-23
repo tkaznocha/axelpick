@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 import NotificationBanner from "@/components/NotificationBanner";
 
@@ -37,7 +38,7 @@ export default async function DashboardPage() {
       .eq("is_read", false)
       .order("created_at", { ascending: false })
       .limit(10),
-    supabase
+    createAdminClient()
       .from("league_members")
       .select("league_id, leagues(id, name, created_by)")
       .eq("user_id", user.id)

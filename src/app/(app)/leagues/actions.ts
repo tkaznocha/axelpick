@@ -1,6 +1,7 @@
 "use server";
 
 import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 
 const CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -54,8 +55,9 @@ export async function createLeague(formData: FormData) {
     return { error: "Failed to create league. Please try again." };
   }
 
-  // Auto-join the creator
-  const { error: joinError } = await supabase
+  // Auto-join the creator (use admin client to bypass self-referencing RLS)
+  const admin = createAdminClient();
+  const { error: joinError } = await admin
     .from("league_members")
     .insert({ league_id: league.id, user_id: user.id });
 
@@ -88,8 +90,11 @@ export async function joinLeague(inviteCode: string) {
     return { error: "League not found" };
   }
 
+  // Use admin client to bypass self-referencing RLS on league_members
+  const admin = createAdminClient();
+
   // Check if already a member
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .from("league_members")
     .select("league_id")
     .eq("league_id", league.id)
@@ -100,7 +105,7 @@ export async function joinLeague(inviteCode: string) {
     redirect(`/leagues/${league.id}`);
   }
 
-  const { error } = await supabase
+  const { error } = await admin
     .from("league_members")
     .insert({ league_id: league.id, user_id: user.id });
 
