@@ -23,12 +23,28 @@ export async function updateDisplayName(formData: FormData) {
     return { error: "Display name must be 1\u201350 characters" };
   }
 
+  // Case-insensitive uniqueness check
+  const { data: existing } = await supabase
+    .from("users")
+    .select("id")
+    .ilike("display_name", displayName)
+    .neq("id", user.id)
+    .limit(1)
+    .maybeSingle();
+
+  if (existing) {
+    return { error: "That display name is already taken" };
+  }
+
   const { error } = await supabase
     .from("users")
     .update({ display_name: displayName })
     .eq("id", user.id);
 
   if (error) {
+    if (error.code === "23505") {
+      return { error: "That display name is already taken" };
+    }
     return { error: "Failed to update display name. Please try again." };
   }
 

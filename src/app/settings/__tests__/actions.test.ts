@@ -18,12 +18,13 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { updateDisplayName, changePassword } from "../actions";
 
 // ── Helpers ──────────────────────────────────────────────────────────
-function chain(data: unknown) {
+function chain(data: unknown, overrides?: Record<string, () => unknown>) {
   const result = Promise.resolve({ data, error: null });
   const obj: Record<string, unknown> = {};
   const proxy: unknown = new Proxy(obj, {
     get(_target, prop) {
       if (prop === "then") return result.then.bind(result);
+      if (overrides && typeof prop === "string" && prop in overrides) return overrides[prop];
       return () => proxy;
     },
   });
@@ -32,8 +33,16 @@ function chain(data: unknown) {
 
 function mockClient(
   session: { user: { id: string } } | null,
-  opts: { updateError?: boolean; authError?: boolean } = {}
+  opts: { updateError?: boolean; authError?: boolean; duplicateName?: boolean } = {}
 ) {
+  const fromFn = vi.fn();
+
+  // First from() call: uniqueness check (select → ilike → neq → limit → maybeSingle)
+  // Second from() call: update
+  fromFn
+    .mockReturnValueOnce(chain(opts.duplicateName ? { id: "other" } : null))
+    .mockReturnValue(chain(opts.updateError ? undefined : { id: "u1" }));
+
   const client = {
     auth: {
       getSession: vi.fn().mockResolvedValue({ data: { session } }),
@@ -41,9 +50,7 @@ function mockClient(
         error: opts.authError ? { message: "fail" } : null,
       }),
     },
-    from: vi.fn(() =>
-      chain(opts.updateError ? undefined : { id: "u1" })
-    ),
+    from: fromFn,
   };
   vi.mocked(createServerSupabaseClient).mockReturnValue(client as never);
   return client;
@@ -79,6 +86,12 @@ describe("updateDisplayName", () => {
       formData({ displayName: "A".repeat(51) })
     );
     expect(res).toEqual({ error: "Display name must be 1\u201350 characters" });
+  });
+
+  it("returns error when name is already taken", async () => {
+    mockClient({ user: USER }, { duplicateName: true });
+    const res = await updateDisplayName(formData({ displayName: "Taken" }));
+    expect(res).toEqual({ error: "That display name is already taken" });
   });
 
   it("returns success for valid name", async () => {

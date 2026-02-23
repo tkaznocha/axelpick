@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { createAdminClient } from "@/lib/supabase-admin";
 
 function createClient() {
   const cookieStore = cookies();
@@ -51,6 +52,19 @@ export async function signup(formData: FormData) {
   const displayName = (formData.get("displayName") as string)?.trim();
   if (!displayName || displayName.length < 1 || displayName.length > 50) {
     redirect("/login?error=" + encodeURIComponent("Display name must be 1-50 characters"));
+  }
+
+  // Case-insensitive uniqueness check (admin client needed — user isn't authenticated yet)
+  const admin = createAdminClient();
+  const { data: existing } = await admin
+    .from("users")
+    .select("id")
+    .ilike("display_name", displayName)
+    .limit(1)
+    .maybeSingle();
+
+  if (existing) {
+    redirect("/login?error=" + encodeURIComponent("That display name is already taken"));
   }
 
   const email = formData.get("email") as string;
