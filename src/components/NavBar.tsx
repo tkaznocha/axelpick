@@ -52,9 +52,19 @@ function UsersIcon({ className }: { className?: string }) {
   );
 }
 
+function SkaterIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="5" />
+      <path d="M20 21a8 8 0 1 0-16 0" />
+    </svg>
+  );
+}
+
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: DashboardIcon },
   { href: "/events", label: "Events", icon: CalendarIcon },
+  { href: "/skaters", label: "Skaters", icon: SkaterIcon },
   { href: "/leaderboard", label: "Leaderboard", icon: TrophyIcon },
   { href: "/leagues", label: "Leagues", icon: UsersIcon },
 ];
