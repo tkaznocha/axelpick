@@ -39,14 +39,6 @@ const disciplines = [
 
 type SortKey = "ranking" | "price_desc" | "price_asc" | "name";
 
-function countryFlag(code: string): string {
-  const upper = code.toUpperCase().slice(0, 2);
-  if (upper.length !== 2) return code;
-  return String.fromCodePoint(
-    ...upper.split("").map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
-  );
-}
-
 export default function SkaterList({ skaters }: { skaters: Skater[] }) {
   const [discipline, setDiscipline] = useState("all");
   const [search, setSearch] = useState("");
@@ -156,8 +148,8 @@ export default function SkaterList({ skaters }: { skaters: Skater[] }) {
                 className="block w-full rounded-xl p-4 shadow-sm border border-black/5 bg-card hover:border-black/10 hover:shadow-md transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-lg">
-                    {countryFlag(skater.country)}
+                  <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-sm font-semibold text-text-secondary">
+                    {skater.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">

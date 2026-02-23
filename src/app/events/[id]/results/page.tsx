@@ -15,14 +15,6 @@ function ordinal(n: number): string {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-function countryFlag(code: string): string {
-  const upper = code.toUpperCase().slice(0, 2);
-  if (upper.length !== 2) return code;
-  return String.fromCodePoint(
-    ...upper.split("").map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
-  );
-}
-
 export default async function ResultsPage({
   params,
 }: {
@@ -185,7 +177,7 @@ export default async function ResultsPage({
                   {/* Skater info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-base">{countryFlag(r.skater?.country ?? "")}</span>
+                      <span className="text-sm font-semibold text-text-secondary">{r.skater?.name?.charAt(0)?.toUpperCase() ?? "?"}</span>
                       <span className="font-display font-semibold truncate">
                         {r.skater?.name}
                       </span>

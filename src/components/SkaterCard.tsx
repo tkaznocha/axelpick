@@ -32,15 +32,6 @@ const disciplineLabels: Record<string, string> = {
   ice_dance: "Dance",
 };
 
-// Simple country code -> flag emoji (expects 2-3 letter ISO codes)
-function countryFlag(code: string): string {
-  const upper = code.toUpperCase().slice(0, 2);
-  if (upper.length !== 2) return code;
-  return String.fromCodePoint(
-    ...upper.split("").map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
-  );
-}
-
 const SkaterCard = memo(function SkaterCard({
   entry,
   isPicked,
@@ -61,8 +52,8 @@ const SkaterCard = memo(function SkaterCard({
     return (
       <div className="w-full text-left rounded-xl p-4 shadow-sm border border-red-200 bg-red-50/50 opacity-60 cursor-not-allowed">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-lg">
-            {countryFlag(skater.country)}
+          <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-sm font-semibold text-text-secondary">
+            {skater.name.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -103,8 +94,8 @@ const SkaterCard = memo(function SkaterCard({
     >
       <div className="flex items-center gap-3">
         {/* Photo placeholder */}
-        <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-lg">
-          {countryFlag(skater.country)}
+        <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-sm font-semibold text-text-secondary">
+          {skater.name.charAt(0).toUpperCase()}
         </div>
 
         {/* Info */}

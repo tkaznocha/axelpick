@@ -17,14 +17,6 @@ const disciplineLabels: Record<string, string> = {
   ice_dance: "Dance",
 };
 
-function countryFlag(code: string): string {
-  const upper = code.toUpperCase().slice(0, 2);
-  if (upper.length !== 2) return code;
-  return String.fromCodePoint(
-    ...upper.split("").map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)
-  );
-}
-
 type LockedEvent = {
   id: string;
   name: string;
@@ -201,10 +193,10 @@ export default function EventRosters({
                           isCurrentUser ? "bg-emerald-100/50" : "bg-black/[0.02]"
                         }`}
                       >
-                        {/* Flag */}
-                        <span className="text-lg flex-shrink-0">
-                          {countryFlag(pick.country)}
-                        </span>
+                        {/* Initials */}
+                        <div className="h-8 w-8 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-xs font-semibold text-text-secondary">
+                          {pick.skater_name?.charAt(0)?.toUpperCase() ?? "?"}
+                        </div>
 
                         {/* Skater info */}
                         <div className="flex-1 min-w-0">
