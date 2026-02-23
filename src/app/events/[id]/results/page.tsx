@@ -182,7 +182,7 @@ export default async function ResultsPage({
                   {/* Skater info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-text-secondary">{r.skater?.name?.charAt(0)?.toUpperCase() ?? "?"}</span>
+                      <span className="text-sm font-semibold text-text-secondary">{r.skater?.name?.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) ?? "?"}</span>
                       <span className="font-display font-semibold truncate">
                         {r.skater?.name}
                       </span>

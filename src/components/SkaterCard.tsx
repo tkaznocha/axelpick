@@ -53,7 +53,7 @@ const SkaterCard = memo(function SkaterCard({
       <div className="w-full text-left rounded-xl p-4 shadow-sm border border-red-200 bg-red-50/50 opacity-60 cursor-not-allowed">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-sm font-semibold text-text-secondary">
-            {skater.name.charAt(0).toUpperCase()}
+            {skater.name.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2)}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ const SkaterCard = memo(function SkaterCard({
       <div className="flex items-center gap-3">
         {/* Photo placeholder */}
         <div className="h-12 w-12 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-sm font-semibold text-text-secondary">
-          {skater.name.charAt(0).toUpperCase()}
+          {skater.name.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2)}
         </div>
 
         {/* Info */}
