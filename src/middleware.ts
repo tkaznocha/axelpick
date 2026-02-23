@@ -30,11 +30,15 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh the session — this is required for Server Components to read
-  // an up-to-date session cookie.
+  // Read the session from the cookie. The Supabase client will automatically
+  // refresh an expired token using the refresh token (only makes a network call
+  // when the JWT has actually expired, ~once per hour). For the vast majority of
+  // requests this is a local cookie read with zero latency.
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const user = session?.user ?? null;
 
   // Redirect unauthenticated users away from protected routes
   const protectedPaths = ["/dashboard", "/events", "/leaderboard", "/leagues", "/admin"];
