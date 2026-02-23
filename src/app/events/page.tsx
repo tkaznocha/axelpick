@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import EventCard from "@/components/EventCard";
+
+export const metadata: Metadata = { title: "Events" };
 
 export default async function EventsPage() {
   const supabase = createServerSupabaseClient();

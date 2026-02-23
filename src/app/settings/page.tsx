@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
@@ -5,6 +6,8 @@ import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import DeleteAccountSection from "./DeleteAccountSection";
 import { logout } from "@/app/login/actions";
+
+export const metadata: Metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
   const user = await getAuthUser();

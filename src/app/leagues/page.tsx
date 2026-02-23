@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
+
+export const metadata: Metadata = { title: "My Leagues" };
 
 export default async function LeaguesPage() {
   const user = await getAuthUser();

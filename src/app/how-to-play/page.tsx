@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import AppShell from "@/components/AppShell";
 import TrackEvent from "@/components/TrackEvent";
+
+export const metadata: Metadata = { title: "How to Play" };
 
 export default async function HowToPlayPage() {
   const user = await getAuthUser();

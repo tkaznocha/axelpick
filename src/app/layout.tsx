@@ -25,7 +25,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Axel Pick — Fantasy Figure Skating",
+  title: { default: "Axel Pick — Fantasy Figure Skating", template: "%s | Axel Pick" },
   description:
     "Pick your skaters, earn points from real results, and compete on the leaderboard.",
   metadataBase: new URL("https://axelpick.app"),

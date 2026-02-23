@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
+
+export const metadata: Metadata = { title: "Leaderboard" };
 
 export default async function LeaderboardPage() {
   const supabase = createServerSupabaseClient();
