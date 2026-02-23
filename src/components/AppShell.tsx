@@ -1,14 +1,26 @@
+import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import NavBar from "./NavBar";
 
-export default function AppShell({
+export default async function AppShell({
   displayName = "Skater",
-  avatarUrl,
   children,
 }: {
   displayName?: string;
-  avatarUrl?: string | null;
   children: React.ReactNode;
 }) {
+  const user = await getAuthUser();
+  let avatarUrl: string | null = null;
+
+  if (user) {
+    const supabase = createServerSupabaseClient();
+    const { data } = await supabase
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .single();
+    avatarUrl = data?.avatar_url ?? null;
+  }
+
   return (
     <>
       <div className="app-aurora-bar" />
