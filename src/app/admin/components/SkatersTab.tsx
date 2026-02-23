@@ -23,6 +23,18 @@ interface Skater {
   personal_best_score: number | null;
   isu_slug: string | null;
   isu_bio_updated_at: string | null;
+  date_of_birth: string | null;
+  height_cm: number | null;
+  hometown: string | null;
+  started_skating: number | null;
+  coaches: string | null;
+  choreographer: string | null;
+  sp_music: string | null;
+  fs_music: string | null;
+  season_best_sp: number | null;
+  season_best_fs: number | null;
+  personal_best_sp: number | null;
+  personal_best_fs: number | null;
 }
 
 const DISCIPLINE_OPTIONS = [
@@ -73,8 +85,9 @@ export function SkatersTab() {
 
   async function handleFieldUpdate(skaterId: string, field: string, value: string) {
     let parsed: unknown = value;
-    if (["current_price", "world_ranking"].includes(field)) parsed = value ? parseInt(value, 10) : null;
-    if (["season_best_score", "personal_best_score"].includes(field)) parsed = value ? parseFloat(value) : null;
+    if (["current_price", "world_ranking", "height_cm", "started_skating"].includes(field)) parsed = value ? parseInt(value, 10) : null;
+    if (["season_best_score", "personal_best_score", "season_best_sp", "season_best_fs", "personal_best_sp", "personal_best_fs"].includes(field)) parsed = value ? parseFloat(value) : null;
+    if (["date_of_birth", "hometown", "coaches", "choreographer", "sp_music", "fs_music", "isu_slug"].includes(field)) parsed = value || null;
     if (field === "is_active") parsed = value === "true";
 
     const res = await updateSkater(skaterId, { [field]: parsed });
@@ -286,6 +299,87 @@ export function SkatersTab() {
                   <InlineEditField
                     value={s.isu_slug ?? ""}
                     onSave={(v) => handleFieldUpdate(s.id, "isu_slug", v)}
+                  />
+                </EditRow>
+                <div className="col-span-2 border-t border-black/5 pt-2 mt-1">
+                  <span className="text-xs font-medium text-text-secondary">ISU Profile Data</span>
+                </div>
+                <EditRow label="Date of Birth">
+                  <InlineEditField
+                    value={s.date_of_birth ?? ""}
+                    onSave={(v) => handleFieldUpdate(s.id, "date_of_birth", v)}
+                  />
+                </EditRow>
+                <EditRow label="Height (cm)">
+                  <InlineEditField
+                    value={s.height_cm ?? ""}
+                    type="number"
+                    onSave={(v) => handleFieldUpdate(s.id, "height_cm", v)}
+                  />
+                </EditRow>
+                <EditRow label="Hometown">
+                  <InlineEditField
+                    value={s.hometown ?? ""}
+                    onSave={(v) => handleFieldUpdate(s.id, "hometown", v)}
+                  />
+                </EditRow>
+                <EditRow label="Started Skating">
+                  <InlineEditField
+                    value={s.started_skating ?? ""}
+                    type="number"
+                    onSave={(v) => handleFieldUpdate(s.id, "started_skating", v)}
+                  />
+                </EditRow>
+                <EditRow label="Coaches">
+                  <InlineEditField
+                    value={s.coaches ?? ""}
+                    onSave={(v) => handleFieldUpdate(s.id, "coaches", v)}
+                  />
+                </EditRow>
+                <EditRow label="Choreographer">
+                  <InlineEditField
+                    value={s.choreographer ?? ""}
+                    onSave={(v) => handleFieldUpdate(s.id, "choreographer", v)}
+                  />
+                </EditRow>
+                <EditRow label="SP Music">
+                  <InlineEditField
+                    value={s.sp_music ?? ""}
+                    onSave={(v) => handleFieldUpdate(s.id, "sp_music", v)}
+                  />
+                </EditRow>
+                <EditRow label="FS Music">
+                  <InlineEditField
+                    value={s.fs_music ?? ""}
+                    onSave={(v) => handleFieldUpdate(s.id, "fs_music", v)}
+                  />
+                </EditRow>
+                <EditRow label="Season Best SP">
+                  <InlineEditField
+                    value={s.season_best_sp ?? ""}
+                    type="number"
+                    onSave={(v) => handleFieldUpdate(s.id, "season_best_sp", v)}
+                  />
+                </EditRow>
+                <EditRow label="Season Best FS">
+                  <InlineEditField
+                    value={s.season_best_fs ?? ""}
+                    type="number"
+                    onSave={(v) => handleFieldUpdate(s.id, "season_best_fs", v)}
+                  />
+                </EditRow>
+                <EditRow label="Personal Best SP">
+                  <InlineEditField
+                    value={s.personal_best_sp ?? ""}
+                    type="number"
+                    onSave={(v) => handleFieldUpdate(s.id, "personal_best_sp", v)}
+                  />
+                </EditRow>
+                <EditRow label="Personal Best FS">
+                  <InlineEditField
+                    value={s.personal_best_fs ?? ""}
+                    type="number"
+                    onSave={(v) => handleFieldUpdate(s.id, "personal_best_fs", v)}
                   />
                 </EditRow>
               </div>
