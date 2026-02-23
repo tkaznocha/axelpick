@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import { track } from "@vercel/analytics";
 import SkaterCard, { type SkaterEntry } from "@/components/SkaterCard";
 import BudgetBar from "@/components/BudgetBar";
@@ -120,7 +120,7 @@ export default function PickFlow({
     return list;
   }, [entries, discipline, sort, search]);
 
-  function togglePick(skaterId: string) {
+  const togglePick = useCallback(function togglePick(skaterId: string) {
     if (inReplacementMode) {
       // In replacement mode, select/deselect replacement candidate
       setReplacementPick((prev) => (prev === skaterId ? null : skaterId));
@@ -176,7 +176,16 @@ export default function PickFlow({
         });
       }
     });
-  }
+  }, [inReplacementMode, isLocked, picked, picksLimit, entries, eventId, budget, budgetSpent, startTransition]);
+
+  // Stable per-skater callbacks so SkaterCard memo works
+  const toggleCallbacks = useMemo(() => {
+    const map = new Map<string, () => void>();
+    for (const entry of entries) {
+      map.set(entry.skater_id, () => togglePick(entry.skater_id));
+    }
+    return map;
+  }, [entries, togglePick]);
 
   function handleReplacement() {
     if (!replacingFor || !replacementPick) return;
@@ -317,7 +326,7 @@ export default function PickFlow({
                   ? true
                   : picked.has(entry.skater_id) && !isWithdrawn
               }
-              onToggle={() => togglePick(entry.skater_id)}
+              onToggle={toggleCallbacks.get(entry.skater_id)!}
               disabled={
                 isWithdrawn ||
                 (inReplacementMode

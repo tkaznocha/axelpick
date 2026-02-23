@@ -112,6 +112,27 @@ body {
   100% { opacity: 0.06; transform: scale(0.98) translateX(-20px); }
 }
 
+/* Fixed background-attachment is expensive on mobile — disable it */
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
+/* Disable decorative animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .app-aurora-glow,
+  .app-aurora-glow-mid,
+  .app-aurora-glow-btm {
+    animation: none;
+    will-change: auto;
+  }
+
+  .app-noise {
+    display: none;
+  }
+}
+
 /* Noise texture for app pages — matches landing page */
 .app-noise {
   position: fixed;
