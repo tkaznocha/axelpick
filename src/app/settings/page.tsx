@@ -6,6 +6,7 @@ import UserAvatar from "@/components/UserAvatar";
 import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import DeleteAccountSection from "./DeleteAccountSection";
+import SignOutButton from "./SignOutButton";
 import { logout } from "@/app/login/actions";
 
 export const metadata: Metadata = { title: "Settings" };
@@ -85,12 +86,7 @@ export default async function SettingsPage() {
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <form action={logout}>
-              <button
-                type="submit"
-                className="rounded-xl border border-black/10 px-5 py-2.5 text-sm font-display font-semibold text-text-secondary transition-colors hover:bg-black/5"
-              >
-                Sign out
-              </button>
+              <SignOutButton />
             </form>
             <DeleteAccountSection />
           </div>
