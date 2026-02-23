@@ -50,7 +50,7 @@ export default async function LeaguePage({
   const admin = createAdminClient();
 
   // Check membership + fetch remaining data in parallel
-  const [{ data: membership }, { data: members }, { data: lockedEvents }] =
+  const [membershipResult, membersResult, { data: lockedEvents }] =
     await Promise.all([
       admin
         .from("league_members")
@@ -71,12 +71,21 @@ export default async function LeaguePage({
         .order("start_date", { ascending: false }),
     ]);
 
+  const { data: membership, error: membershipError } = membershipResult;
+  const { data: members, error: membersError } = membersResult;
+
+  console.log("[LeaguePage] league_id:", league.id, "user_id:", user.id,
+    "created_by:", league.created_by, "membership:", membership,
+    "membershipError:", membershipError, "membersCount:", members?.length,
+    "membersError:", membersError);
+
   if (!membership) {
     // Self-heal: if user is the league creator, auto-add them as member
     if (league.created_by === user.id) {
-      await admin
+      const { error: healError } = await admin
         .from("league_members")
         .upsert({ league_id: league.id, user_id: user.id });
+      console.log("[LeaguePage] self-heal upsert for creator, error:", healError);
     } else {
       redirect(`/leagues/join/${league.invite_code}`);
     }
