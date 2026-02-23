@@ -12,6 +12,8 @@ interface Skater {
   current_price: number;
   season_best_score: number | null;
   personal_best_score: number | null;
+  season_best_sp: number | null;
+  season_best_fs: number | null;
   is_active: boolean;
 }
 
@@ -140,6 +142,11 @@ export default function SkaterList({ skaters }: { skaters: Skater[] }) {
         <div className="space-y-3">
           {filtered.map((skater) => {
             const priceM = (skater.current_price / 1_000_000).toFixed(1);
+            const seasonBest =
+              skater.season_best_score ??
+              (skater.season_best_sp != null && skater.season_best_fs != null
+                ? Number(skater.season_best_sp) + Number(skater.season_best_fs)
+                : null);
             return (
               <Link
                 key={skater.id}
@@ -174,11 +181,11 @@ export default function SkaterList({ skaters }: { skaters: Skater[] }) {
                         </span>
                       )}
                     </div>
-                    {(skater.season_best_score || skater.personal_best_score) && (
+                    {(seasonBest || skater.personal_best_score) && (
                       <div className="flex items-center gap-2 mt-0.5">
-                        {skater.season_best_score && (
+                        {seasonBest != null && (
                           <span className="text-xs text-text-secondary">
-                            SB: <span className="font-mono font-medium text-text-primary">{skater.season_best_score.toFixed(2)}</span>
+                            SB: <span className="font-mono font-medium text-text-primary">{seasonBest.toFixed(2)}</span>
                           </span>
                         )}
                         {skater.personal_best_score && (

@@ -66,7 +66,7 @@ export default async function EventPage({
     supabase
       .from("event_entries")
       .select(
-        "skater_id, price_at_event, is_withdrawn, skaters(id, name, country, discipline, world_ranking, photo_url, season_best_score, personal_best_score)"
+        "skater_id, price_at_event, is_withdrawn, skaters(id, name, country, discipline, world_ranking, photo_url, season_best_score, personal_best_score, season_best_sp, season_best_fs)"
       )
       .eq("event_id", params.id),
     supabase
@@ -97,6 +97,8 @@ export default async function EventPage({
       photo_url: string | null;
       season_best_score: number | null;
       personal_best_score: number | null;
+      season_best_sp: number | null;
+      season_best_fs: number | null;
     },
   }));
 

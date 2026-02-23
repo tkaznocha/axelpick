@@ -15,6 +15,8 @@ export interface SkaterEntry {
     photo_url: string | null;
     season_best_score: number | null;
     personal_best_score: number | null;
+    season_best_sp: number | null;
+    season_best_fs: number | null;
   };
 }
 
@@ -47,6 +49,11 @@ const SkaterCard = memo(function SkaterCard({
 }) {
   const { skater, price_at_event } = entry;
   const priceM = (price_at_event / 1_000_000).toFixed(1);
+  const seasonBest =
+    skater.season_best_score ??
+    (skater.season_best_sp != null && skater.season_best_fs != null
+      ? Number(skater.season_best_sp) + Number(skater.season_best_fs)
+      : null);
 
   if (isWithdrawn) {
     return (
@@ -127,11 +134,11 @@ const SkaterCard = memo(function SkaterCard({
               </span>
             )}
           </div>
-          {(skater.season_best_score || skater.personal_best_score) && (
+          {(seasonBest || skater.personal_best_score) && (
             <div className="flex items-center gap-2 mt-0.5">
-              {skater.season_best_score && (
+              {seasonBest != null && (
                 <span className="text-xs text-text-secondary">
-                  SB: <span className="font-mono font-medium text-text-primary">{skater.season_best_score.toFixed(2)}</span>
+                  SB: <span className="font-mono font-medium text-text-primary">{seasonBest.toFixed(2)}</span>
                 </span>
               )}
               {skater.personal_best_score && (

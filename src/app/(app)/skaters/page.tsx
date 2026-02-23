@@ -12,7 +12,7 @@ export default async function SkatersPage() {
     getAuthUser(),
     supabase
       .from("skaters")
-      .select("id, name, country, discipline, world_ranking, current_price, season_best_score, personal_best_score, is_active")
+      .select("id, name, country, discipline, world_ranking, current_price, season_best_score, personal_best_score, season_best_sp, season_best_fs, is_active")
       .eq("is_active", true)
       .order("world_ranking", { ascending: true, nullsFirst: false }),
   ]);
