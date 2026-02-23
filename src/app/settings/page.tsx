@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
+import UserAvatar from "@/components/UserAvatar";
 import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import DeleteAccountSection from "./DeleteAccountSection";
@@ -36,7 +37,7 @@ export default async function SettingsPage() {
     : null;
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={profile?.avatar_url}>
       <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -49,9 +50,7 @@ export default async function SettingsPage() {
         {/* Profile card */}
         <section className="rounded-2xl bg-card p-6 shadow-sm border border-black/5 mb-6">
           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-black/5">
-            <div className="h-14 w-14 rounded-full aurora-gradient flex items-center justify-center text-xl font-semibold text-white shrink-0">
-              {displayName.charAt(0).toUpperCase()}
-            </div>
+            <UserAvatar avatarUrl={profile?.avatar_url} displayName={displayName} size="lg" gradient />
             <div>
               <p className="font-display font-semibold text-lg">{displayName}</p>
               {memberSince && (
@@ -62,7 +61,7 @@ export default async function SettingsPage() {
             </div>
           </div>
 
-          <ProfileForm displayName={displayName} email={email} />
+          <ProfileForm displayName={displayName} email={email} avatarUrl={profile?.avatar_url ?? null} userId={user.id} />
         </section>
 
         {/* Change Password — only for email/password users */}

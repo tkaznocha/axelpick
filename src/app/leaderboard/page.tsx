@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
+import UserAvatar from "@/components/UserAvatar";
 
 export const metadata: Metadata = { title: "Leaderboard" };
 
@@ -101,9 +102,7 @@ export default async function LeaderboardPage() {
               </div>
 
               {/* Avatar */}
-              <div className="h-9 w-9 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-sm font-semibold text-text-secondary">
-                {entry.display_name?.charAt(0)?.toUpperCase() ?? "?"}
-              </div>
+              <UserAvatar avatarUrl={entry.avatar_url} displayName={entry.display_name ?? "?"} size="md" />
 
               {/* Name */}
               <div className="flex-1 min-w-0">

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import CopyInviteLink from "./CopyInviteLink";
 import EventRosters from "./EventRosters";
 import AppShell from "@/components/AppShell";
+import UserAvatar from "@/components/UserAvatar";
 
 export default async function LeaguePage({
   params,
@@ -125,9 +126,7 @@ export default async function LeaguePage({
                 </div>
 
                 {/* Avatar */}
-                <div className="h-9 w-9 flex-shrink-0 rounded-full bg-black/5 flex items-center justify-center text-sm font-semibold text-text-secondary">
-                  {entry.display_name?.charAt(0)?.toUpperCase() ?? "?"}
-                </div>
+                <UserAvatar avatarUrl={entry.avatar_url} displayName={entry.display_name ?? "?"} size="md" />
 
                 {/* Name */}
                 <div className="flex-1 min-w-0">

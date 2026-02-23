@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { logout } from "@/app/login/actions";
+import UserAvatar from "@/components/UserAvatar";
 
 function DashboardIcon({ className }: { className?: string }) {
   return (
@@ -69,7 +70,7 @@ const NAV_LINKS = [
   { href: "/leagues", label: "Leagues", icon: UsersIcon },
 ];
 
-export default function NavBar({ displayName }: { displayName: string }) {
+export default function NavBar({ displayName, avatarUrl }: { displayName: string; avatarUrl?: string | null }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -116,9 +117,7 @@ export default function NavBar({ displayName }: { displayName: string }) {
           {/* Desktop right side */}
           <div className="hidden md:flex items-center gap-3">
             <Link href="/settings" className="flex items-center gap-2 rounded-lg px-2 py-1 transition-colors hover:bg-black/[0.03]">
-              <div className="h-7 w-7 rounded-full aurora-gradient flex items-center justify-center text-xs font-semibold text-white">
-                {displayName.charAt(0).toUpperCase()}
-              </div>
+              <UserAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" gradient />
               <span className="text-sm text-text-secondary">{displayName}</span>
             </Link>
             <form action={logout}>
@@ -174,9 +173,7 @@ export default function NavBar({ displayName }: { displayName: string }) {
             </div>
             <div className="mt-3 pt-3 border-t border-black/5 flex items-center justify-between">
               <Link href="/settings" className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
-                <div className="h-7 w-7 rounded-full aurora-gradient flex items-center justify-center text-xs font-semibold text-white">
-                  {displayName.charAt(0).toUpperCase()}
-                </div>
+                <UserAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" gradient />
                 <span className="text-sm text-text-secondary">{displayName}</span>
               </Link>
               <form action={logout}>

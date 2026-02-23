@@ -68,6 +68,38 @@ export async function changePassword(formData: FormData) {
   return { success: true };
 }
 
+export async function updateAvatar(avatarUrl: string) {
+  const supabase = createServerSupabaseClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return { error: "Not authenticated" };
+  }
+
+  // Validate the URL belongs to our Supabase Storage
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  if (!avatarUrl.startsWith(`${supabaseUrl}/storage/`)) {
+    return { error: "Invalid avatar URL" };
+  }
+
+  const { error } = await supabase
+    .from("users")
+    .update({ avatar_url: avatarUrl })
+    .eq("id", session.user.id);
+
+  if (error) {
+    return { error: "Failed to update avatar. Please try again." };
+  }
+
+  revalidatePath("/settings");
+  revalidatePath("/dashboard");
+  revalidatePath("/leaderboard");
+  return { success: true };
+}
+
 export async function deleteAccount() {
   const supabase = createServerSupabaseClient();
 
@@ -81,6 +113,9 @@ export async function deleteAccount() {
   const user = session.user;
 
   const admin = createAdminClient();
+
+  // Delete avatar from storage
+  await admin.storage.from("avatars").remove([`${user.id}/avatar.jpg`]);
 
   // Delete user data from public tables (cascading order)
   await admin.from("user_picks").delete().eq("user_id", user.id);
