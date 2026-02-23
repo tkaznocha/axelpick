@@ -110,28 +110,25 @@ export default function NavBar({ displayName, avatarUrl }: { displayName: string
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  title={link.label}
+                  className={`flex items-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive(link.href)
                       ? "bg-emerald-50 text-emerald-700"
                       : "text-text-secondary hover:text-text-primary hover:bg-black/[0.03]"
                   }`}
                 >
                   <Icon className="opacity-70" />
-                  {link.label}
+                  <span className="hidden lg:inline">{link.label}</span>
                 </Link>
               );
             })}
           </div>
 
           {/* Desktop right side */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link href="/settings" className="flex items-center gap-2 rounded-lg px-2 py-1 transition-colors hover:bg-black/[0.03]">
+          <div className="hidden md:flex items-center">
+            <Link href="/settings" className="flex items-center rounded-lg px-2 py-1 transition-colors hover:bg-black/[0.03]" title="Settings">
               <UserAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" gradient />
-              <span className="text-sm text-text-secondary">{displayName}</span>
             </Link>
-            <form action={logout}>
-              <SignOutButton />
-            </form>
           </div>
 
           {/* Mobile hamburger */}
