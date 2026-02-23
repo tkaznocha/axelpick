@@ -120,8 +120,8 @@ function LoginForm() {
                 name="password"
                 type="password"
                 required
-                minLength={6}
-                placeholder="At least 6 characters"
+                minLength={8}
+                placeholder="At least 8 characters"
                 className="w-full rounded-xl border border-black/10 bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-emerald focus:ring-1 focus:ring-emerald"
               />
             </div>

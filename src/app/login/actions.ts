@@ -3,8 +3,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 import { createAdminClient } from "@/lib/supabase-admin";
+import { getAppOrigin } from "@/lib/url";
 
 function createClient() {
   const cookieStore = cookies();
@@ -70,6 +70,10 @@ export async function signup(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
+  if (!password || password.length < 8) {
+    redirect("/login?error=" + encodeURIComponent("Password must be at least 8 characters"));
+  }
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -90,9 +94,7 @@ export async function signup(formData: FormData) {
 
 export async function signInWithGoogle() {
   const supabase = createClient();
-  const host = headers().get("x-forwarded-host") ?? headers().get("host");
-  const proto = headers().get("x-forwarded-proto") ?? "https";
-  const origin = `${proto}://${host}`;
+  const origin = getAppOrigin();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
