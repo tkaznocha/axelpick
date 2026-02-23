@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import AppShell from "@/components/AppShell";
 import TrackEvent from "@/components/TrackEvent";
@@ -176,15 +175,6 @@ export default async function HowToPlayPage() {
         </div>
       </Section>
 
-      {/* CTA */}
-      <div className="text-center py-12">
-        <Link
-          href="/login"
-          className="inline-block rounded-xl aurora-gradient px-8 py-3.5 font-display font-semibold text-white text-sm transition-all hover:shadow-lg hover:shadow-emerald/20"
-        >
-          Start Playing
-        </Link>
-      </div>
     </main>
     </AppShell>
   );
