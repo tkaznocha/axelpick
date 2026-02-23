@@ -23,6 +23,7 @@
 
 html {
   color-scheme: light;
+  overflow-x: hidden;
 }
 
 body {

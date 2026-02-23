@@ -44,7 +44,7 @@ export default function LandingPage() {
 
         {/* Hero */}
         <section className="landing-hero">
-          <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 32px" }}>
+          <div className="landing-section">
             <h1>
               Your skaters.
               <br />
