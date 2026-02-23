@@ -67,7 +67,7 @@ const NAV_LINKS = [
   { href: "/events", label: "Events", icon: CalendarIcon },
   { href: "/skaters", label: "Skaters", icon: SkaterIcon },
   { href: "/leaderboard", label: "Leaderboard", icon: TrophyIcon },
-  { href: "/leagues", label: "Leagues", icon: UsersIcon },
+  { href: "/leagues", label: "My Leagues", icon: UsersIcon },
 ];
 
 export default function NavBar({ displayName, avatarUrl }: { displayName: string; avatarUrl?: string | null }) {
