@@ -166,6 +166,7 @@ export default function NavBar({ displayName, avatarUrl }: { displayName: string
                   <Link
                     key={link.href}
                     href={link.href}
+                    onClick={() => setMenuOpen(false)}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive(link.href)
                         ? "bg-emerald-50 text-emerald-700"
@@ -179,7 +180,7 @@ export default function NavBar({ displayName, avatarUrl }: { displayName: string
               })}
             </div>
             <div className="mt-3 pt-3 border-t border-black/5 flex items-center justify-between">
-              <Link href="/settings" className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
+              <Link href="/settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
                 <UserAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" gradient />
                 <span className="text-sm text-text-secondary">{displayName}</span>
               </Link>
