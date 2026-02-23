@@ -1,0 +1,355 @@
+{
+  "season": "2025-2026",
+  "events": ["GP France", "Skate America", "Skate Canada", "NHK Trophy", "Cup of China", "Finlandia Trophy", "GP Final"],
+  "men": [
+    { "skater_name": "Ilia Malinin", "country": "USA", "current_price": 15000000, "results": [
+      { "event": "GP France", "placement": 1, "score": 321.00 },
+      { "event": "Skate Canada", "placement": 1, "score": 333.81 },
+      { "event": "GP Final", "placement": 1, "score": 332.29 }
+    ]},
+    { "skater_name": "Yuma Kagiyama", "country": "JPN", "current_price": 14250000, "results": [
+      { "event": "NHK Trophy", "placement": 1, "score": 287.24 },
+      { "event": "Finlandia Trophy", "placement": 1, "score": 270.45 },
+      { "event": "GP Final", "placement": 2, "score": 302.41 }
+    ]},
+    { "skater_name": "Mikhail Shaidorov", "country": "KAZ", "current_price": 13500000, "results": [
+      { "event": "Skate America", "placement": 2, "score": 251.09 },
+      { "event": "Cup of China", "placement": 3, "score": 262.67 },
+      { "event": "GP Final", "placement": 6, "score": 242.19 }
+    ]},
+    { "skater_name": "Shun Sato", "country": "JPN", "current_price": 12750000, "results": [
+      { "event": "Cup of China", "placement": 1, "score": 278.12 },
+      { "event": "NHK Trophy", "placement": 2, "score": 285.71 },
+      { "event": "GP Final", "placement": 3, "score": 292.08 }
+    ]},
+    { "skater_name": "Adam Siao Him Fa", "country": "FRA", "current_price": 12000000, "results": [
+      { "event": "GP France", "placement": 2, "score": 280.95 },
+      { "event": "Finlandia Trophy", "placement": 2, "score": 256.98 },
+      { "event": "GP Final", "placement": 5, "score": 258.64 }
+    ]},
+    { "skater_name": "Kevin Aymoz", "country": "FRA", "current_price": 12000000, "results": [
+      { "event": "Skate America", "placement": 1, "score": 253.53 },
+      { "event": "Skate Canada", "placement": 10, "score": 230.10 }
+    ]},
+    { "skater_name": "Nika Egadze", "country": "GEO", "current_price": 11600000, "results": [
+      { "event": "GP France", "placement": 3, "score": 259.41 },
+      { "event": "Skate Canada", "placement": 5, "score": 247.95 }
+    ]},
+    { "skater_name": "Lukas Britschgi", "country": "SUI", "current_price": 11200000, "results": [
+      { "event": "GP France", "placement": 4, "score": 249.04 },
+      { "event": "NHK Trophy", "placement": 3, "score": 246.94 }
+    ]},
+    { "skater_name": "Daniel Grassl", "country": "ITA", "current_price": 10800000, "results": [
+      { "event": "Skate America", "placement": 5, "score": 236.44 },
+      { "event": "Cup of China", "placement": 2, "score": 269.43 },
+      { "event": "GP Final", "placement": 4, "score": 288.72 }
+    ]},
+    { "skater_name": "Kao Miura", "country": "JPN", "current_price": 10400000, "results": [
+      { "event": "GP France", "placement": 10, "score": 209.57 },
+      { "event": "Skate Canada", "placement": 3, "score": 253.69 }
+    ]},
+    { "skater_name": "Matteo Rizzo", "country": "ITA", "current_price": 10000000, "results": [
+      { "event": "NHK Trophy", "placement": 7, "score": 229.60 },
+      { "event": "Finlandia Trophy", "placement": 7, "score": 229.55 }
+    ]},
+    { "skater_name": "Junhwan Cha", "country": "KOR", "current_price": 8800000, "results": [
+      { "event": "NHK Trophy", "placement": 5, "score": 230.26 },
+      { "event": "Cup of China", "placement": 8, "score": 217.53 }
+    ]},
+    { "skater_name": "Aleksandr Selevko", "country": "EST", "current_price": 8400000, "results": [
+      { "event": "Skate Canada", "placement": 2, "score": 257.21 }
+    ]},
+    { "skater_name": "Adam Hagara", "country": "SVK", "current_price": 7400000, "results": [
+      { "event": "NHK Trophy", "placement": 6, "score": 230.00 }
+    ]},
+    { "skater_name": "Deniss Vasiljevs", "country": "LAT", "current_price": 7200000, "results": [
+      { "event": "Cup of China", "placement": 10, "score": 204.51 },
+      { "event": "Finlandia Trophy", "placement": 10, "score": 210.08 }
+    ]},
+    { "skater_name": "Andrew Torgashev", "country": "USA", "current_price": 7000000, "results": [
+      { "event": "GP France", "placement": 6, "score": 233.36 },
+      { "event": "NHK Trophy", "placement": 9, "score": 212.01 }
+    ]},
+    { "skater_name": "Vladimir Litvintsev", "country": "AZE", "current_price": 6600000, "results": [
+      { "event": "Skate America", "placement": 6, "score": 231.84 },
+      { "event": "Cup of China", "placement": 6, "score": 222.64 }
+    ]},
+    { "skater_name": "Jin Boyang", "country": "CHN", "current_price": 6400000, "results": [
+      { "event": "NHK Trophy", "placement": 4, "score": 239.05 },
+      { "event": "Cup of China", "placement": 5, "score": 232.81 }
+    ]},
+    { "skater_name": "Stephen Gogolev", "country": "CAN", "current_price": 6200000, "results": [
+      { "event": "Skate Canada", "placement": 8, "score": 236.48 },
+      { "event": "Finlandia Trophy", "placement": 3, "score": 253.61 }
+    ]},
+    { "skater_name": "Vladimir Samoilov", "country": "POL", "current_price": 4800000, "results": [
+      { "event": "Skate Canada", "placement": 11, "score": 225.33 }
+    ]},
+    { "skater_name": "Hyungyeom Kim", "country": "KOR", "current_price": 4600000, "results": [] },
+    { "skater_name": "Fedirs Kuliss", "country": "LAT", "current_price": 4200000, "results": [] },
+    { "skater_name": "Maxim Naumov", "country": "USA", "current_price": 3600000, "results": [
+      { "event": "GP France", "placement": 9, "score": 226.74 }
+    ]},
+    { "skater_name": "Donovan Carrillo", "country": "MEX", "current_price": 3900000, "results": [] },
+    { "skater_name": "Tomas-Llorenc Guarino Sabate", "country": "ESP", "current_price": 3100000, "results": [] },
+    { "skater_name": "Andreas Nordeback", "country": "SWE", "current_price": 3300000, "results": [
+      { "event": "Finlandia Trophy", "placement": 9, "score": 212.61 }
+    ]},
+    { "skater_name": "Yu-Hsiang Li", "country": "TPE", "current_price": 2600000, "results": [] },
+    { "skater_name": "Kyrylo Marsak", "country": "UKR", "current_price": 2100000, "results": [] },
+    { "skater_name": "Petr Gumennik", "country": "AIN", "current_price": 10000000, "results": [] }
+  ],
+  "women": [
+    { "skater_name": "Kaori Sakamoto", "country": "JPN", "current_price": 15000000, "results": [
+      { "event": "GP France", "placement": 2, "score": 224.23 },
+      { "event": "NHK Trophy", "placement": 1, "score": 227.18 },
+      { "event": "GP Final", "placement": 3, "score": 218.80 }
+    ]},
+    { "skater_name": "Alysa Liu", "country": "USA", "current_price": 14250000, "results": [
+      { "event": "Skate America", "placement": 1, "score": 214.27 },
+      { "event": "Cup of China", "placement": 2, "score": 212.07 },
+      { "event": "GP Final", "placement": 1, "score": 222.49 }
+    ]},
+    { "skater_name": "Mone Chiba", "country": "JPN", "current_price": 13500000, "results": [
+      { "event": "Skate Canada", "placement": 1, "score": 217.23 },
+      { "event": "Finlandia Trophy", "placement": 1, "score": 217.22 },
+      { "event": "GP Final", "placement": 5, "score": 210.22 }
+    ]},
+    { "skater_name": "Amber Glenn", "country": "USA", "current_price": 12750000, "results": [
+      { "event": "Cup of China", "placement": 1, "score": 214.78 },
+      { "event": "Finlandia Trophy", "placement": 2, "score": 213.41 },
+      { "event": "GP Final", "placement": 4, "score": 211.50 }
+    ]},
+    { "skater_name": "Isabeau Levito", "country": "USA", "current_price": 12000000, "results": [
+      { "event": "GP France", "placement": 4, "score": 212.71 },
+      { "event": "Skate Canada", "placement": 2, "score": 209.77 }
+    ]},
+    { "skater_name": "Anastasiia Gubanova", "country": "GEO", "current_price": 11600000, "results": [
+      { "event": "Skate America", "placement": 3, "score": 204.69 },
+      { "event": "Cup of China", "placement": 4, "score": 197.88 }
+    ]},
+    { "skater_name": "Lara Naki Gutmann", "country": "ITA", "current_price": 10800000, "results": [
+      { "event": "Skate America", "placement": 4, "score": 204.29 },
+      { "event": "Skate Canada", "placement": 5, "score": 192.05 }
+    ]},
+    { "skater_name": "Ami Nakai", "country": "JPN", "current_price": 10400000, "results": [
+      { "event": "GP France", "placement": 1, "score": 227.08 },
+      { "event": "Skate Canada", "placement": 3, "score": 203.09 },
+      { "event": "GP Final", "placement": 2, "score": 220.89 }
+    ]},
+    { "skater_name": "Nina Pinzarrone", "country": "BEL", "current_price": 10000000, "results": [] },
+    { "skater_name": "Niina Petrokina", "country": "EST", "current_price": 9600000, "results": [] },
+    { "skater_name": "Sofia Samodelkina", "country": "KAZ", "current_price": 7800000, "results": [
+      { "event": "NHK Trophy", "placement": 2, "score": 200.00 }
+    ]},
+    { "skater_name": "Madeline Schizas", "country": "CAN", "current_price": 7600000, "results": [
+      { "event": "Skate Canada", "placement": 9, "score": 166.64 },
+      { "event": "Finlandia Trophy", "placement": 5, "score": 188.60 }
+    ]},
+    { "skater_name": "Loena Hendrickx", "country": "BEL", "current_price": 7400000, "results": [
+      { "event": "NHK Trophy", "placement": 3, "score": 198.97 },
+      { "event": "Finlandia Trophy", "placement": -1, "score": null, "note": "WD" }
+    ]},
+    { "skater_name": "Lorine Schild", "country": "FRA", "current_price": 7200000, "results": [
+      { "event": "GP France", "placement": 5, "score": 189.31 },
+      { "event": "Finlandia Trophy", "placement": 8, "score": 175.63 }
+    ]},
+    { "skater_name": "Haein Lee", "country": "KOR", "current_price": 7000000, "results": [
+      { "event": "Skate America", "placement": 8, "score": 172.99 },
+      { "event": "Cup of China", "placement": 9, "score": 177.32 }
+    ]},
+    { "skater_name": "Jia Shin", "country": "KOR", "current_price": 6600000, "results": [
+      { "event": "GP France", "placement": 7, "score": 182.33 },
+      { "event": "Cup of China", "placement": 5, "score": 195.43 }
+    ]},
+    { "skater_name": "Kimmy Repond", "country": "SUI", "current_price": 6400000, "results": [] },
+    { "skater_name": "Ekaterina Kurakova", "country": "POL", "current_price": 5600000, "results": [
+      { "event": "Skate America", "placement": 10, "score": 163.77 }
+    ]},
+    { "skater_name": "Iida Karhunen", "country": "FIN", "current_price": 5200000, "results": [
+      { "event": "Finlandia Trophy", "placement": 6, "score": 180.17 }
+    ]},
+    { "skater_name": "Julia Sauter", "country": "ROU", "current_price": 4600000, "results": [] },
+    { "skater_name": "Olga Mikutina", "country": "AUT", "current_price": 4400000, "results": [] },
+    { "skater_name": "Mariia Seniuk", "country": "ISR", "current_price": 4300000, "results": [
+      { "event": "Skate Canada", "placement": 8, "score": 171.75 }
+    ]},
+    { "skater_name": "Livia Kaiser", "country": "SUI", "current_price": 4100000, "results": [
+      { "event": "GP France", "placement": 12, "score": 134.83 },
+      { "event": "NHK Trophy", "placement": 12, "score": 134.21 }
+    ]},
+    { "skater_name": "Ruiyang Zhang", "country": "CHN", "current_price": 3600000, "results": [
+      { "event": "Cup of China", "placement": 7, "score": 179.54 }
+    ]},
+    { "skater_name": "Kristen Spours", "country": "GBR", "current_price": 3100000, "results": [] },
+    { "skater_name": "Alexandra Feigin", "country": "BUL", "current_price": 3300000, "results": [] },
+    { "skater_name": "Meda Variakojyte", "country": "LTU", "current_price": 2600000, "results": [] },
+    { "skater_name": "Adeliia Petrosian", "country": "AIN", "current_price": 10000000, "results": [] },
+    { "skater_name": "Viktoriia Safonova", "country": "AIN", "current_price": 10000000, "results": [] }
+  ],
+  "pairs": [
+    { "skater_name": "Riku Miura / Ryuichi Kihara", "country": "JPN", "current_price": 15000000, "results": [
+      { "event": "Skate America", "placement": 1, "score": 215.99 },
+      { "event": "GP France", "placement": 1, "score": 219.15 },
+      { "event": "GP Final", "placement": 1, "score": 225.21 }
+    ]},
+    { "skater_name": "Minerva Fabienne Hase / Nikita Volodin", "country": "GER", "current_price": 14250000, "results": [
+      { "event": "Skate Canada", "placement": 2, "score": 207.18 },
+      { "event": "Finlandia Trophy", "placement": 1, "score": 206.88 },
+      { "event": "GP Final", "placement": 3, "score": 221.25 }
+    ]},
+    { "skater_name": "Anastasiia Metelkina / Luka Berulava", "country": "GEO", "current_price": 13500000, "results": [
+      { "event": "Skate America", "placement": 2, "score": 195.73 },
+      { "event": "Cup of China", "placement": 1, "score": 217.24 },
+      { "event": "GP Final", "placement": 4, "score": 211.53 }
+    ]},
+    { "skater_name": "Sara Conti / Niccolo Macii", "country": "ITA", "current_price": 12750000, "results": [
+      { "event": "NHK Trophy", "placement": 1, "score": 208.58 },
+      { "event": "Cup of China", "placement": 2, "score": 209.88 },
+      { "event": "GP Final", "placement": 2, "score": 223.28 }
+    ]},
+    { "skater_name": "Deanna Stellato-Dudek / Maxime Deschamps", "country": "CAN", "current_price": 12000000, "results": [
+      { "event": "GP France", "placement": 2, "score": 197.66 },
+      { "event": "Skate Canada", "placement": 1, "score": 213.40 },
+      { "event": "GP Final", "placement": 6, "score": 194.36 }
+    ]},
+    { "skater_name": "Maria Pavlova / Alexei Sviatchenko", "country": "HUN", "current_price": 11600000, "results": [
+      { "event": "GP France", "placement": 3, "score": 192.76 },
+      { "event": "NHK Trophy", "placement": 2, "score": 207.28 },
+      { "event": "GP Final", "placement": 5, "score": 208.33 }
+    ]},
+    { "skater_name": "Ellie Kam / Danny O'Shea", "country": "USA", "current_price": 11200000, "results": [
+      { "event": "Skate Canada", "placement": 3, "score": 199.11 },
+      { "event": "Finlandia Trophy", "placement": 3, "score": 199.09 }
+    ]},
+    { "skater_name": "Rebecca Ghilardi / Filippo Ambrosini", "country": "ITA", "current_price": 10800000, "results": [
+      { "event": "Cup of China", "placement": 5, "score": 186.85 },
+      { "event": "Finlandia Trophy", "placement": 7, "score": 167.88 }
+    ]},
+    { "skater_name": "Lia Pereira / Trennt Michaud", "country": "CAN", "current_price": 10400000, "results": [
+      { "event": "Skate Canada", "placement": 4, "score": 186.54 },
+      { "event": "Finlandia Trophy", "placement": 5, "score": 191.33 }
+    ]},
+    { "skater_name": "Annika Hocke / Robert Kunkel", "country": "GER", "current_price": 10000000, "results": [
+      { "event": "Skate America", "placement": 5, "score": 176.56 },
+      { "event": "Cup of China", "placement": 6, "score": 183.74 }
+    ]},
+    { "skater_name": "Emily Chan / Spencer Akira Howe", "country": "USA", "current_price": 9600000, "results": [
+      { "event": "Skate America", "placement": 4, "score": 180.02 },
+      { "event": "NHK Trophy", "placement": 6, "score": 187.40 }
+    ]},
+    { "skater_name": "Anastasia Vaipan-Law / Luke Digby", "country": "GBR", "current_price": 9200000, "results": [
+      { "event": "Skate Canada", "placement": 6, "score": 167.94 }
+    ]},
+    { "skater_name": "Ioulia Chtchetinina / Michal Wozniak", "country": "POL", "current_price": 8800000, "results": [
+      { "event": "Skate Canada", "placement": 8, "score": 163.22 },
+      { "event": "Finlandia Trophy", "placement": 8, "score": 155.59 }
+    ]},
+    { "skater_name": "Yuna Nagaoka / Sumitada Moriguchi", "country": "JPN", "current_price": 8400000, "results": [
+      { "event": "NHK Trophy", "placement": 4, "score": 202.11 },
+      { "event": "Finlandia Trophy", "placement": 4, "score": 193.12 }
+    ]},
+    { "skater_name": "Daria Danilova / Michel Tsiba", "country": "NED", "current_price": 7800000, "results": [
+      { "event": "NHK Trophy", "placement": 7, "score": 155.20 }
+    ]},
+    { "skater_name": "Camille Kovalev / Pavel Kovalev", "country": "FRA", "current_price": 7400000, "results": [
+      { "event": "GP France", "placement": 6, "score": 160.62 },
+      { "event": "NHK Trophy", "placement": -1, "score": null, "note": "WD" }
+    ]},
+    { "skater_name": "Anastasiia Golubeva / Hektor Giotopoulos Moore", "country": "AUS", "current_price": 6200000, "results": [] },
+    { "skater_name": "Sui Wenjing / Han Cong", "country": "CHN", "current_price": 5400000, "results": [
+      { "event": "NHK Trophy", "placement": 3, "score": 203.79 },
+      { "event": "Cup of China", "placement": 3, "score": 202.92 }
+    ]},
+    { "skater_name": "Karina Akopova / Nikita Rakhmanin", "country": "ARM", "current_price": 4900000, "results": [
+      { "event": "Skate America", "placement": 6, "score": 170.98 }
+    ]}
+  ],
+  "ice_dance": [
+    { "skater_name": "Lilah Fear / Lewis Gibson", "country": "GBR", "current_price": 15000000, "results": [
+      { "event": "GP France", "placement": 2, "score": 210.24 },
+      { "event": "NHK Trophy", "placement": 1, "score": 205.88 },
+      { "event": "GP Final", "placement": 3, "score": 208.81 }
+    ]},
+    { "skater_name": "Madison Chock / Evan Bates", "country": "USA", "current_price": 14250000, "results": [
+      { "event": "Skate America", "placement": 1, "score": 212.58 },
+      { "event": "Cup of China", "placement": 1, "score": 208.25 },
+      { "event": "GP Final", "placement": 1, "score": 220.42 }
+    ]},
+    { "skater_name": "Charlene Guignard / Marco Fabbri", "country": "ITA", "current_price": 13500000, "results": [
+      { "event": "GP France", "placement": 4, "score": 195.98 },
+      { "event": "NHK Trophy", "placement": 2, "score": 198.67 }
+    ]},
+    { "skater_name": "Piper Gilles / Paul Poirier", "country": "CAN", "current_price": 12750000, "results": [
+      { "event": "Skate Canada", "placement": 1, "score": 202.89 },
+      { "event": "Finlandia Trophy", "placement": 2, "score": 202.11 },
+      { "event": "GP Final", "placement": 4, "score": 208.75 }
+    ]},
+    { "skater_name": "Evgeniia Lopareva / Geoffrey Brissaud", "country": "FRA", "current_price": 12000000, "results": [
+      { "event": "Skate America", "placement": 3, "score": 192.61 },
+      { "event": "Cup of China", "placement": 3, "score": 196.60 }
+    ]},
+    { "skater_name": "Emilea Zingas / Vadym Kolesnik", "country": "USA", "current_price": 12000000, "results": [
+      { "event": "Cup of China", "placement": 2, "score": 202.27 },
+      { "event": "Finlandia Trophy", "placement": 3, "score": 196.02 },
+      { "event": "GP Final", "placement": 6, "score": 193.61 }
+    ]},
+    { "skater_name": "Allison Reed / Saulius Ambrulevicius", "country": "LTU", "current_price": 11600000, "results": [
+      { "event": "GP France", "placement": 3, "score": 201.05 },
+      { "event": "Skate Canada", "placement": 2, "score": 200.92 },
+      { "event": "GP Final", "placement": 5, "score": 199.61 }
+    ]},
+    { "skater_name": "Christina Carreira / Anthony Ponomarenko", "country": "USA", "current_price": 11200000, "results": [
+      { "event": "Skate America", "placement": 5, "score": 186.03 },
+      { "event": "Skate Canada", "placement": 4, "score": 191.23 }
+    ]},
+    { "skater_name": "Olivia Smart / Tim Dieck", "country": "ESP", "current_price": 10800000, "results": [
+      { "event": "Cup of China", "placement": 4, "score": 187.51 },
+      { "event": "Finlandia Trophy", "placement": 4, "score": 192.06 }
+    ]},
+    { "skater_name": "Marjorie Lajoie / Zachary Lagha", "country": "CAN", "current_price": 10000000, "results": [
+      { "event": "Skate America", "placement": 2, "score": 197.16 },
+      { "event": "Skate Canada", "placement": 3, "score": 192.41 }
+    ]},
+    { "skater_name": "Diana Davis / Gleb Smolkin", "country": "GEO", "current_price": 9600000, "results": [
+      { "event": "GP France", "placement": 5, "score": 194.27 },
+      { "event": "Finlandia Trophy", "placement": 6, "score": 184.13 }
+    ]},
+    { "skater_name": "Juulia Turkkila / Matthias Versluis", "country": "FIN", "current_price": 9200000, "results": [] },
+    { "skater_name": "Hannah Lim / Ye Quan", "country": "KOR", "current_price": 8800000, "results": [
+      { "event": "Skate Canada", "placement": 6, "score": 180.41 },
+      { "event": "Cup of China", "placement": 5, "score": 185.79 }
+    ]},
+    { "skater_name": "Natalie Taschlerova / Filip Taschler", "country": "CZE", "current_price": 8000000, "results": [
+      { "event": "NHK Trophy", "placement": 4, "score": 183.33 },
+      { "event": "Finlandia Trophy", "placement": 8, "score": 172.95 }
+    ]},
+    { "skater_name": "Katerina Mrazkova / Daniel Mrazek", "country": "CZE", "current_price": 7600000, "results": [
+      { "event": "Skate America", "placement": 7, "score": 176.04 },
+      { "event": "Skate Canada", "placement": 5, "score": 181.19 }
+    ]},
+    { "skater_name": "Marie-Jade Lauriault / Romain Le Gac", "country": "CAN", "current_price": 7400000, "results": [
+      { "event": "GP France", "placement": 6, "score": 186.49 },
+      { "event": "Skate Canada", "placement": 7, "score": 179.41 }
+    ]},
+    { "skater_name": "Laurence Fournier Beaudry / Guillaume Cizeron", "country": "FRA", "current_price": 7000000, "results": [
+      { "event": "GP France", "placement": 1, "score": 211.02 },
+      { "event": "Finlandia Trophy", "placement": 1, "score": 204.18 },
+      { "event": "GP Final", "placement": 2, "score": 214.25 }
+    ]},
+    { "skater_name": "Jennifer Janse van Rensburg / Benjamin Steffan", "country": "GER", "current_price": 6800000, "results": [
+      { "event": "Skate Canada", "placement": 8, "score": 178.28 },
+      { "event": "NHK Trophy", "placement": 7, "score": 177.54 }
+    ]},
+    { "skater_name": "Holly Harris / Jason Chan", "country": "AUS", "current_price": 6000000, "results": [] },
+    { "skater_name": "Phebe Bekker / James Hernandez", "country": "GBR", "current_price": 4900000, "results": [
+      { "event": "Skate America", "placement": 8, "score": 173.16 },
+      { "event": "Finlandia Trophy", "placement": 10, "score": 165.60 }
+    ]},
+    { "skater_name": "Shiyue Wang / Xinyu Liu", "country": "CHN", "current_price": 4600000, "results": [
+      { "event": "Cup of China", "placement": 7, "score": 165.71 }
+    ]},
+    { "skater_name": "Sofia Val / Asaf Kazimov", "country": "ESP", "current_price": 4300000, "results": [] },
+    { "skater_name": "Milla Ruud Reitan / Nikolaj Majorov", "country": "SWE", "current_price": 3900000, "results": [] }
+  ]
+}
