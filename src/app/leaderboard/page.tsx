@@ -3,17 +3,19 @@ import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 
 export default async function LeaderboardPage() {
-  const user = await getAuthUser();
-  if (!user) redirect("/login");
-
   const supabase = createServerSupabaseClient();
 
-  // Fetch top 100 users sorted by season points
-  const { data: users } = await supabase
-    .from("users")
-    .select("id, display_name, avatar_url, total_season_points")
-    .order("total_season_points", { ascending: false })
-    .limit(100);
+  // Fetch auth + leaderboard data in parallel
+  const [user, { data: users }] = await Promise.all([
+    getAuthUser(),
+    supabase
+      .from("users")
+      .select("id, display_name, avatar_url, total_season_points")
+      .order("total_season_points", { ascending: false })
+      .limit(100),
+  ]);
+
+  if (!user) redirect("/login");
 
   const leaderboard = (users ?? []).map((u, i) => ({
     ...u,

@@ -659,6 +659,32 @@
   transform: translateY(0);
 }
 
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .landing .aurora-glow {
+    animation: none;
+  }
+  .landing .noise {
+    display: none;
+  }
+  .landing-hero h1,
+  .landing-hero .lead,
+  .signup-block {
+    animation: none;
+  }
+  .anim-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .signup-label .pulse {
+    animation: none;
+  }
+  .event-badge .dot {
+    animation: none;
+  }
+}
+
 /* Responsive */
 @media (max-width: 680px) {
   .landing-hero { padding-top: 80px; padding-bottom: 60px; }

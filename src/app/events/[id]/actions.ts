@@ -14,12 +14,26 @@ export async function addPick(eventId: string, skaterId: string) {
     return { success: false, error: "Not authenticated" };
   }
 
-  // Fetch event to validate
-  const { data: event } = await supabase
-    .from("events")
-    .select("id, picks_limit, budget, picks_lock_at, status")
-    .eq("id", eventId)
-    .single();
+  // Fetch event, entry, and existing picks in parallel
+  const [{ data: event }, { data: entry }, { data: existingPicks }] =
+    await Promise.all([
+      supabase
+        .from("events")
+        .select("id, picks_limit, budget, picks_lock_at, status")
+        .eq("id", eventId)
+        .single(),
+      supabase
+        .from("event_entries")
+        .select("skater_id, price_at_event, is_withdrawn")
+        .eq("event_id", eventId)
+        .eq("skater_id", skaterId)
+        .single(),
+      supabase
+        .from("user_picks")
+        .select("skater_id")
+        .eq("user_id", user.id)
+        .eq("event_id", eventId),
+    ]);
 
   if (!event) {
     return { success: false, error: "Event not found" };
@@ -33,27 +47,12 @@ export async function addPick(eventId: string, skaterId: string) {
     return { success: false, error: "Picks are locked for this event" };
   }
 
-  // Verify skater is in the event and not withdrawn
-  const { data: entry } = await supabase
-    .from("event_entries")
-    .select("skater_id, price_at_event, is_withdrawn")
-    .eq("event_id", eventId)
-    .eq("skater_id", skaterId)
-    .single();
-
   if (!entry) {
     return { success: false, error: "Skater is not in this event" };
   }
   if (entry.is_withdrawn) {
     return { success: false, error: "Skater has withdrawn from this event" };
   }
-
-  // Fetch existing picks
-  const { data: existingPicks } = await supabase
-    .from("user_picks")
-    .select("skater_id")
-    .eq("user_id", user.id)
-    .eq("event_id", eventId);
 
   const currentPicks = existingPicks ?? [];
 
@@ -67,18 +66,20 @@ export async function addPick(eventId: string, skaterId: string) {
     return { success: false, error: "Pick limit reached" };
   }
 
-  // Check budget
+  // Check budget — use the entry price we already fetched + existing picks
   const currentIds = currentPicks.map((p) => p.skater_id);
-  const { data: currentEntries } = await supabase
-    .from("event_entries")
-    .select("price_at_event")
-    .eq("event_id", eventId)
-    .in("skater_id", [...currentIds, skaterId]);
-
-  const totalCost = (currentEntries ?? []).reduce(
-    (sum, e) => sum + e.price_at_event,
-    0
-  );
+  let totalCost = entry.price_at_event;
+  if (currentIds.length > 0) {
+    const { data: currentEntries } = await supabase
+      .from("event_entries")
+      .select("price_at_event")
+      .eq("event_id", eventId)
+      .in("skater_id", currentIds);
+    totalCost += (currentEntries ?? []).reduce(
+      (sum, e) => sum + e.price_at_event,
+      0
+    );
+  }
   if (totalCost > event.budget) {
     return {
       success: false,

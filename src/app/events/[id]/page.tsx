@@ -1,8 +1,18 @@
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect, notFound } from "next/navigation";
-import PickFlow from "./PickFlow";
+import dynamic from "next/dynamic";
 import PicksLockTime from "@/components/PicksLockTime";
 import AppShell from "@/components/AppShell";
+
+const PickFlow = dynamic(() => import("./PickFlow"), {
+  loading: () => (
+    <div className="grid gap-3 sm:grid-cols-2 animate-pulse">
+      {Array.from({ length: 6 }, (_, i) => (
+        <div key={i} className="rounded-xl bg-black/5 h-28" />
+      ))}
+    </div>
+  ),
+});
 
 export default async function EventPage({
   params,

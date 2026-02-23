@@ -9,46 +9,46 @@ export default async function LeaguePage({
 }: {
   params: { id: string };
 }) {
-  const user = await getAuthUser();
-  if (!user) redirect("/login");
-
   const supabase = createServerSupabaseClient();
 
-  // Fetch league first (needed to check existence)
-  const { data: league } = await supabase
-    .from("leagues")
-    .select("id, name, invite_code, created_by, created_at")
-    .eq("id", params.id)
-    .single();
+  // Fetch auth + league data in parallel
+  const [user, { data: league }] = await Promise.all([
+    getAuthUser(),
+    supabase
+      .from("leagues")
+      .select("id, name, invite_code, created_by, created_at")
+      .eq("id", params.id)
+      .single(),
+  ]);
 
-  if (!league) {
-    redirect("/leagues");
-  }
+  if (!user) redirect("/login");
+  if (!league) redirect("/leagues");
 
-  // Check membership
-  const { data: membership } = await supabase
-    .from("league_members")
-    .select("league_id")
-    .eq("league_id", league.id)
-    .eq("user_id", user.id)
-    .single();
+  // Check membership + fetch remaining data in parallel
+  const [{ data: membership }, { data: members }, { data: lockedEvents }] =
+    await Promise.all([
+      supabase
+        .from("league_members")
+        .select("league_id")
+        .eq("league_id", league.id)
+        .eq("user_id", user.id)
+        .single(),
+      supabase
+        .from("league_members")
+        .select(
+          "user_id, users(id, display_name, avatar_url, total_season_points)"
+        )
+        .eq("league_id", league.id),
+      supabase
+        .from("events")
+        .select("id, name, status")
+        .in("status", ["locked", "in_progress", "completed"])
+        .order("start_date", { ascending: false }),
+    ]);
 
   if (!membership) {
     redirect(`/leagues/join/${league.invite_code}`);
   }
-
-  // Run remaining queries in parallel
-  const [{ data: members }, { data: lockedEvents }] = await Promise.all([
-    supabase
-      .from("league_members")
-      .select("user_id, users(id, display_name, avatar_url, total_season_points)")
-      .eq("league_id", league.id),
-    supabase
-      .from("events")
-      .select("id, name, status")
-      .in("status", ["locked", "in_progress", "completed"])
-      .order("start_date", { ascending: false }),
-  ]);
 
   // Build leaderboard sorted by points
   const leaderboard = (members ?? [])

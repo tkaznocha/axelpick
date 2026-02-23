@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { track } from "@vercel/analytics";
 
 export default function TrackEvent({
@@ -10,8 +10,13 @@ export default function TrackEvent({
   name: string;
   data?: Record<string, string | number | boolean>;
 }) {
+  const tracked = useRef(false);
+
   useEffect(() => {
-    track(name, data);
+    if (!tracked.current) {
+      tracked.current = true;
+      track(name, data);
+    }
   }, [name, data]);
 
   return null;

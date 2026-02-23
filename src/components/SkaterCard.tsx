@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 export interface SkaterEntry {
   skater_id: string;
   price_at_event: number;
@@ -30,7 +32,7 @@ const disciplineLabels: Record<string, string> = {
   ice_dance: "Dance",
 };
 
-// Simple country code → flag emoji (expects 2-3 letter ISO codes)
+// Simple country code -> flag emoji (expects 2-3 letter ISO codes)
 function countryFlag(code: string): string {
   const upper = code.toUpperCase().slice(0, 2);
   if (upper.length !== 2) return code;
@@ -39,7 +41,7 @@ function countryFlag(code: string): string {
   );
 }
 
-export default function SkaterCard({
+const SkaterCard = memo(function SkaterCard({
   entry,
   isPicked,
   onToggle,
@@ -157,4 +159,6 @@ export default function SkaterCard({
       </div>
     </button>
   );
-}
+});
+
+export default SkaterCard;
