@@ -138,10 +138,10 @@ export default function TermsPage() {
           <p>
             If you have questions about these Terms, contact us at{" "}
             <a
-              href="mailto:hello@axelpick.app"
+              href="mailto:support@axelpick.app"
               className="text-emerald hover:underline"
             >
-              hello@axelpick.app
+              support@axelpick.app
             </a>
             .
           </p>

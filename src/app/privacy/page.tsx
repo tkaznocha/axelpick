@@ -16,7 +16,7 @@ export default function PrivacyPage() {
 
       <h1 className="font-display text-4xl font-bold mb-3">Privacy Policy</h1>
       <p className="text-sm text-text-secondary mb-12">
-        Last updated: February 22, 2026
+        Last updated: February 23, 2026
       </p>
 
       <div className="space-y-10 text-sm leading-relaxed text-text-secondary">
@@ -37,10 +37,6 @@ export default function PrivacyPage() {
             <li>
               <strong className="text-text-primary">Account information:</strong>{" "}
               email address and display name when you create an account
-            </li>
-            <li>
-              <strong className="text-text-primary">Waitlist:</strong> email
-              address if you sign up for early access
             </li>
             <li>
               <strong className="text-text-primary">Game data:</strong> your
@@ -71,9 +67,6 @@ export default function PrivacyPage() {
             <li>Provide and operate the fantasy league</li>
             <li>Display your name on leaderboards and within leagues</li>
             <li>Send you notifications about events, results, and your picks</li>
-            <li>
-              Notify waitlist subscribers when the Service becomes available
-            </li>
             <li>Monitor and improve Service performance and reliability</li>
           </ul>
           <p className="mt-3">
@@ -142,9 +135,8 @@ export default function PrivacyPage() {
         <Section title="6. Data Retention">
           <p>
             We retain your account and game data for as long as your account is
-            active. Waitlist emails are retained until the Service launches or
-            you request removal. If you delete your account, we will remove your
-            personal information within 30 days.
+            active. If you delete your account, we will remove your personal
+            information within 30 days.
           </p>
         </Section>
 
@@ -175,10 +167,10 @@ export default function PrivacyPage() {
           <p className="mt-3">
             To exercise any of these rights, contact us at{" "}
             <a
-              href="mailto:hello@axelpick.app"
+              href="mailto:support@axelpick.app"
               className="text-emerald hover:underline"
             >
-              hello@axelpick.app
+              support@axelpick.app
             </a>
             .
           </p>
@@ -215,10 +207,10 @@ export default function PrivacyPage() {
           <p>
             For questions or concerns about this Privacy Policy, contact us at{" "}
             <a
-              href="mailto:hello@axelpick.app"
+              href="mailto:support@axelpick.app"
               className="text-emerald hover:underline"
             >
-              hello@axelpick.app
+              support@axelpick.app
             </a>
             .
           </p>
