@@ -316,6 +316,11 @@ export default function PickFlow({
           const isReplacementCandidate =
             inReplacementMode && !isWithdrawn && !picked.has(entry.skater_id);
           const isSelectedReplacement = replacementPick === entry.skater_id;
+          const budgetRemaining = budget - budgetSpent;
+          const tooExpensive =
+            !picked.has(entry.skater_id) &&
+            !isSelectedReplacement &&
+            entry.price_at_event > budgetRemaining;
 
           return (
             <SkaterCard
@@ -330,8 +335,8 @@ export default function PickFlow({
               disabled={
                 isWithdrawn ||
                 (inReplacementMode
-                  ? deadlinePassed || (!isReplacementCandidate && !isSelectedReplacement)
-                  : isLocked || (atLimit && !picked.has(entry.skater_id)))
+                  ? deadlinePassed || (!isReplacementCandidate && !isSelectedReplacement) || tooExpensive
+                  : isLocked || (atLimit && !picked.has(entry.skater_id)) || tooExpensive)
               }
               isWithdrawn={isWithdrawn}
             />
