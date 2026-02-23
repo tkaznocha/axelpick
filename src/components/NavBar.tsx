@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 import { logout } from "@/app/login/actions";
 
 function DashboardIcon({ className }: { className?: string }) {
@@ -111,12 +112,7 @@ export default function NavBar({ displayName }: { displayName: string }) {
               <span className="text-sm text-text-secondary">{displayName}</span>
             </Link>
             <form action={logout}>
-              <button
-                type="submit"
-                className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-text-secondary transition-colors hover:bg-black/5"
-              >
-                Sign out
-              </button>
+              <SignOutButton />
             </form>
           </div>
 
@@ -174,17 +170,31 @@ export default function NavBar({ displayName }: { displayName: string }) {
                 <span className="text-sm text-text-secondary">{displayName}</span>
               </Link>
               <form action={logout}>
-                <button
-                  type="submit"
-                  className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-text-secondary transition-colors hover:bg-black/5"
-                >
-                  Sign out
-                </button>
+                <SignOutButton />
               </form>
             </div>
           </div>
         )}
       </div>
     </nav>
+  );
+}
+
+function SignOutButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="flex items-center gap-1.5 rounded-lg border border-black/10 px-3 py-1.5 text-xs text-text-secondary transition-colors hover:bg-black/5 disabled:opacity-60"
+    >
+      {pending && (
+        <svg className="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+      )}
+      {pending ? "Signing out..." : "Sign out"}
+    </button>
   );
 }
