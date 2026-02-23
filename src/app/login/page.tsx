@@ -25,6 +25,7 @@ function LoginForm() {
       <div className="w-full max-w-md">
         {/* Logo / Header */}
         <div className="mb-8 text-center">
+          <img src="/logo.png" alt="" width={48} height={48} className="mx-auto mb-3" />
           <h1 className="font-display text-4xl font-bold aurora-text">
             Axel Pick
           </h1>

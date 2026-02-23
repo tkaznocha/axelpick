@@ -19,7 +19,6 @@ export default function LandingPage() {
             <img src="/logo.png" alt="" width={32} height={32} className="nav-brand-logo" />
             <span className="w-axel">Axel</span>
             <span className="w-pick">Pick</span>
-            <span className="dot" />
           </a>
           <span className="nav-tag">Fantasy Figure Skating</span>
         </nav>
