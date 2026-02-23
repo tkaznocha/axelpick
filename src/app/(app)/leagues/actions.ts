@@ -29,11 +29,14 @@ export async function createLeague(formData: FormData) {
     return { error: "League name must be 50 characters or less" };
   }
 
+  // Use admin client for all DB operations to bypass RLS issues
+  const admin = createAdminClient();
+
   // Generate a unique invite code (retry on collision)
   let inviteCode = generateInviteCode();
   let retries = 5;
   while (retries > 0) {
-    const { data: existing } = await supabase
+    const { data: existing } = await admin
       .from("leagues")
       .select("id")
       .eq("invite_code", inviteCode)
@@ -45,7 +48,7 @@ export async function createLeague(formData: FormData) {
   }
 
   // Insert the league
-  const { data: league, error: leagueError } = await supabase
+  const { data: league, error: leagueError } = await admin
     .from("leagues")
     .insert({ name, invite_code: inviteCode, created_by: user.id })
     .select("id")
@@ -56,8 +59,7 @@ export async function createLeague(formData: FormData) {
     return { error: "Failed to create league. Please try again." };
   }
 
-  // Auto-join the creator (use admin client to bypass self-referencing RLS)
-  const admin = createAdminClient();
+  // Auto-join the creator
   const { error: joinError } = await admin
     .from("league_members")
     .upsert({ league_id: league.id, user_id: user.id });
