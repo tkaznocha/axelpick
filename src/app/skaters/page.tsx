@@ -20,10 +20,16 @@ export default async function SkatersPage() {
 
   if (!user) redirect("/login");
 
+  const { data: avatarRow } = await supabase
+    .from("users")
+    .select("avatar_url")
+    .eq("id", user.id)
+    .single();
+
   const displayName = getDisplayName(user);
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
       <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
         <div className="mb-6">
           <h1 className="font-display text-3xl font-bold">Skaters</h1>

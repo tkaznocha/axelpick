@@ -57,7 +57,7 @@ export default async function DashboardPage() {
   });
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={profile?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-8">

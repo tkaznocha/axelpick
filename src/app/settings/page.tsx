@@ -37,7 +37,7 @@ export default async function SettingsPage() {
     : null;
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={profile?.avatar_url ?? null}>
       <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">

@@ -26,7 +26,7 @@ export default async function ResultsPage({
   if (!user) redirect("/login");
 
   // Run all data queries in parallel
-  const [{ data: event }, { data: results }, { data: userPicks }] = await Promise.all([
+  const [{ data: event }, { data: results }, { data: userPicks }, { data: avatarRow }] = await Promise.all([
     supabase.from("events").select("*").eq("id", params.id).single(),
     supabase
       .from("results")
@@ -38,6 +38,11 @@ export default async function ResultsPage({
       .select("skater_id, points_earned")
       .eq("user_id", user.id)
       .eq("event_id", params.id),
+    supabase
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .single(),
   ]);
 
   if (!event) notFound();
@@ -89,7 +94,7 @@ export default async function ResultsPage({
   const displayName = getDisplayName(user);
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
       <TrackEvent name="results_viewed" data={{ event_id: params.id }} />
 

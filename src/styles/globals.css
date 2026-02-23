@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 :root {
+  /* System monospace stack (replaces JetBrains Mono web font) */
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
   /* Brand colors */
   --emerald: #00A572;
   --sky: #0C8DCC;

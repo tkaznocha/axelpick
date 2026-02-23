@@ -30,6 +30,7 @@ export default async function EventPage({
     { data: entries },
     { data: pendingReplacements },
     { data: existingPicks },
+    { data: avatarRow },
   ] = await Promise.all([
     supabase.from("events").select("*").eq("id", params.id).single(),
     supabase
@@ -48,6 +49,11 @@ export default async function EventPage({
       .select("skater_id")
       .eq("user_id", user.id)
       .eq("event_id", params.id),
+    supabase
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .single(),
   ]);
 
   if (!event) notFound();
@@ -99,7 +105,7 @@ export default async function EventPage({
   const displayName = getDisplayName(user);
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto overflow-x-hidden">
       {/* Event header */}
       <div className="mb-8 rounded-2xl bg-card p-6 border border-black/5 shadow-sm">

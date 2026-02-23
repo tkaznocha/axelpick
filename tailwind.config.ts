@@ -39,7 +39,7 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "'SF Mono'", "Menlo", "Consolas", "'Liberation Mono'", "'Courier New'", "monospace"],
       },
       backgroundImage: {
         aurora: "linear-gradient(135deg, #00C78A, #0EA5E9, #A78BFA)",

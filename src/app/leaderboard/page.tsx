@@ -33,7 +33,7 @@ export default async function LeaderboardPage() {
   const displayName = getDisplayName(user);
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={currentUserEntry?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       <div className="flex items-center gap-2.5 mb-2">
         <div className="h-9 w-9 rounded-xl bg-amber-50 flex items-center justify-center">

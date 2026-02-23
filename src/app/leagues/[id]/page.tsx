@@ -26,7 +26,7 @@ export default async function LeaguePage({
   if (!league) redirect("/leagues");
 
   // Check membership + fetch remaining data in parallel
-  const [{ data: membership }, { data: members }, { data: lockedEvents }] =
+  const [{ data: membership }, { data: members }, { data: lockedEvents }, { data: avatarRow }] =
     await Promise.all([
       supabase
         .from("league_members")
@@ -45,6 +45,11 @@ export default async function LeaguePage({
         .select("id, name, status")
         .in("status", ["locked", "in_progress", "completed"])
         .order("start_date", { ascending: false }),
+      supabase
+        .from("users")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .single(),
     ]);
 
   if (!membership) {
@@ -75,7 +80,7 @@ export default async function LeaguePage({
   const displayName = getDisplayName(user);
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
     <main className="min-h-screen p-6 md:p-8 max-w-2xl mx-auto">
       {/* League header */}
       <div className="mb-6">

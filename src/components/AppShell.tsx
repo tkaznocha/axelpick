@@ -3,22 +3,26 @@ import NavBar from "./NavBar";
 
 export default async function AppShell({
   displayName = "Skater",
+  avatarUrl,
   children,
 }: {
   displayName?: string;
+  avatarUrl?: string | null;
   children: React.ReactNode;
 }) {
-  const user = await getAuthUser();
-  let avatarUrl: string | null = null;
-
-  if (user) {
-    const supabase = createServerSupabaseClient();
-    const { data } = await supabase
-      .from("users")
-      .select("avatar_url")
-      .eq("id", user.id)
-      .single();
-    avatarUrl = data?.avatar_url ?? null;
+  // Only fetch avatar from DB if the caller didn't provide it
+  let resolvedAvatarUrl = avatarUrl ?? null;
+  if (resolvedAvatarUrl === null && avatarUrl === undefined) {
+    const user = await getAuthUser();
+    if (user) {
+      const supabase = createServerSupabaseClient();
+      const { data } = await supabase
+        .from("users")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .single();
+      resolvedAvatarUrl = data?.avatar_url ?? null;
+    }
   }
 
   return (
@@ -29,7 +33,7 @@ export default async function AppShell({
       <div className="app-aurora-glow-btm" />
       <div className="app-noise" />
       <div style={{ position: "relative", zIndex: 1 }}>
-        <NavBar displayName={displayName} avatarUrl={avatarUrl} />
+        <NavBar displayName={displayName} avatarUrl={resolvedAvatarUrl} />
         {children}
       </div>
     </>

@@ -14,18 +14,25 @@ export default async function JoinLeaguePage({
   const supabase = createServerSupabaseClient();
   const displayName = getDisplayName(user);
 
-  // Case-insensitive lookup
+  // Case-insensitive lookup + avatar in parallel
   const normalizedCode = params.code.toUpperCase().trim();
 
-  const { data: league } = await supabase
-    .from("leagues")
-    .select("id, name, invite_code, created_by")
-    .eq("invite_code", normalizedCode)
-    .single();
+  const [{ data: league }, { data: avatarRow }] = await Promise.all([
+    supabase
+      .from("leagues")
+      .select("id, name, invite_code, created_by")
+      .eq("invite_code", normalizedCode)
+      .single(),
+    supabase
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .single(),
+  ]);
 
   if (!league) {
     return (
-      <AppShell displayName={displayName}>
+      <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
       <main className="min-h-screen p-6 md:p-8 max-w-lg mx-auto">
         <div className="rounded-xl bg-card p-8 text-center border border-black/5">
           <p className="font-display text-xl font-semibold mb-2">

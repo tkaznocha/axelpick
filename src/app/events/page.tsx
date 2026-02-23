@@ -13,7 +13,7 @@ export default async function EventsPage() {
   if (!user) redirect("/login");
 
   // Run all data queries in parallel
-  const [{ data: allEvents }, { data: userPicks }] = await Promise.all([
+  const [{ data: allEvents }, { data: userPicks }, { data: avatarRow }] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, event_type, location, start_date, end_date, picks_limit, budget, points_multiplier, status")
@@ -22,6 +22,11 @@ export default async function EventsPage() {
       .from("user_picks")
       .select("event_id, points_earned")
       .eq("user_id", user.id),
+    supabase
+      .from("users")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .single(),
   ]);
 
   // Build lookup map: eventId → { pickCount, totalPoints }
@@ -44,7 +49,7 @@ export default async function EventsPage() {
     .reverse(); // most recent first
 
   return (
-    <AppShell displayName={displayName}>
+    <AppShell displayName={displayName} avatarUrl={avatarRow?.avatar_url ?? null}>
       <main className="min-h-screen p-6 md:p-8 max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold">Events</h1>
