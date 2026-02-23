@@ -7,12 +7,13 @@ export async function addPick(eventId: string, skaterId: string) {
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     return { success: false, error: "Not authenticated" };
   }
+  const user = session.user;
 
   // Fetch event, entry, and existing picks in parallel
   const [{ data: event }, { data: entry }, { data: existingPicks }] =
@@ -105,12 +106,13 @@ export async function removePick(eventId: string, skaterId: string) {
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     return { success: false, error: "Not authenticated" };
   }
+  const user = session.user;
 
   // Fetch event to validate
   const { data: event } = await supabase
@@ -153,10 +155,11 @@ export async function replaceWithdrawnPick(
 ) {
   const supabase = createServerSupabaseClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) return { success: false, error: "Not authenticated" };
+  if (!session) return { success: false, error: "Not authenticated" };
+  const user = session.user;
 
   // Use admin client for mutations (picks are locked, RLS would block INSERT)
   const admin = createAdminClient();

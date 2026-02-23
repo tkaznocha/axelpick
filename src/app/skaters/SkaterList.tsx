@@ -152,6 +152,7 @@ export default function SkaterList({ skaters }: { skaters: Skater[] }) {
               <Link
                 key={skater.id}
                 href={`/skaters/${skater.id}`}
+                prefetch={false}
                 className="block w-full rounded-xl p-4 shadow-sm border border-black/5 bg-card hover:border-black/10 hover:shadow-md transition-all"
               >
                 <div className="flex items-center gap-3">

@@ -21,21 +21,17 @@ export default async function EventPage({
 }) {
   const supabase = createServerSupabaseClient();
 
-  // Start auth + event query in parallel (event doesn't need user.id)
-  const [user, { data: event }] = await Promise.all([
-    getAuthUser(),
-    supabase.from("events").select("*").eq("id", params.id).single(),
-  ]);
-
+  const user = await getAuthUser();
   if (!user) redirect("/login");
-  if (!event) notFound();
 
-  // Run remaining queries in parallel (these need user.id)
+  // Run all data queries in parallel
   const [
+    { data: event },
     { data: entries },
     { data: pendingReplacements },
     { data: existingPicks },
   ] = await Promise.all([
+    supabase.from("events").select("*").eq("id", params.id).single(),
     supabase
       .from("event_entries")
       .select(
@@ -53,6 +49,8 @@ export default async function EventPage({
       .eq("user_id", user.id)
       .eq("event_id", params.id),
   ]);
+
+  if (!event) notFound();
 
   // Reshape entries for the client — Supabase returns skaters as object, not array
   const entryList = (entries ?? []).map((e: Record<string, unknown>) => ({

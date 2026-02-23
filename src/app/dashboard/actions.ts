@@ -5,10 +5,11 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 export async function markNotificationRead(notificationId: string) {
   const supabase = createServerSupabaseClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) return { success: false };
+  if (!session) return { success: false };
+  const user = session.user;
 
   await supabase
     .from("notifications")

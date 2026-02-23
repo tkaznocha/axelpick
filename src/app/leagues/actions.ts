@@ -15,9 +15,10 @@ export async function createLeague(formData: FormData) {
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) redirect("/login");
+  const user = session.user;
 
   const name = (formData.get("name") as string)?.trim();
   if (!name || name.length === 0) {
@@ -69,9 +70,10 @@ export async function joinLeague(inviteCode: string) {
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session) redirect("/login");
+  const user = session.user;
 
   // Case-insensitive lookup: normalize to uppercase
   const normalizedCode = inviteCode.toUpperCase().trim();

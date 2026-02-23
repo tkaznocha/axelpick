@@ -7,15 +7,15 @@ import { calculateFantasyPoints } from "@/lib/scoring";
 async function requireAdmin() {
   const supabase = createServerSupabaseClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
   const adminIds = (process.env.ADMIN_USER_ID ?? "").split(",").map((s) => s.trim());
-  if (!user || !adminIds.includes(user.id)) {
+  if (!session || !adminIds.includes(session.user.id)) {
     throw new Error("Unauthorized");
   }
 
-  return user;
+  return session.user;
 }
 
 // ---------- Create Event ----------

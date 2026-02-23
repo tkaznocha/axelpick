@@ -10,25 +10,22 @@ export const metadata: Metadata = { title: "Dashboard" };
 export default async function DashboardPage() {
   const supabase = createServerSupabaseClient();
 
-  // Start auth + events query in parallel (events doesn't need user.id)
-  const [user, { data: upcomingEvents }] = await Promise.all([
-    getAuthUser(),
+  const user = await getAuthUser();
+  if (!user) redirect("/login");
+
+  // Run all data queries in parallel (auth is instant cookie read)
+  const [
+    { data: upcomingEvents },
+    { data: profile },
+    { data: unreadNotifications },
+    { data: memberships },
+  ] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, location, start_date, end_date, event_type, status, picks_limit, budget")
       .in("status", ["upcoming", "locked"])
       .order("start_date", { ascending: true })
       .limit(3),
-  ]);
-
-  if (!user) redirect("/login");
-
-  // Run user-specific queries in parallel
-  const [
-    { data: profile },
-    { data: unreadNotifications },
-    { data: memberships },
-  ] = await Promise.all([
     supabase
       .from("users")
       .select("display_name, avatar_url, total_season_points")

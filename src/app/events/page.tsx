@@ -9,22 +9,20 @@ export const metadata: Metadata = { title: "Events" };
 export default async function EventsPage() {
   const supabase = createServerSupabaseClient();
 
-  // Phase 1: auth + all events in parallel
-  const [user, { data: allEvents }] = await Promise.all([
-    getAuthUser(),
+  const user = await getAuthUser();
+  if (!user) redirect("/login");
+
+  // Run all data queries in parallel
+  const [{ data: allEvents }, { data: userPicks }] = await Promise.all([
     supabase
       .from("events")
       .select("id, name, event_type, location, start_date, end_date, picks_limit, budget, points_multiplier, status")
       .order("start_date", { ascending: true }),
+    supabase
+      .from("user_picks")
+      .select("event_id, points_earned")
+      .eq("user_id", user.id),
   ]);
-
-  if (!user) redirect("/login");
-
-  // Phase 2: user's picks across all events
-  const { data: userPicks } = await supabase
-    .from("user_picks")
-    .select("event_id, points_earned")
-    .eq("user_id", user.id);
 
   // Build lookup map: eventId → { pickCount, totalPoints }
   const pickMap = new Map<string, { pickCount: number; totalPoints: number }>();

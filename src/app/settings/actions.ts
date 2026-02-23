@@ -9,12 +9,13 @@ export async function updateDisplayName(formData: FormData) {
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     return { error: "Not authenticated" };
   }
+  const user = session.user;
 
   const displayName = (formData.get("displayName") as string)?.trim();
 
@@ -40,10 +41,10 @@ export async function changePassword(formData: FormData) {
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     return { error: "Not authenticated" };
   }
 
@@ -71,12 +72,13 @@ export async function deleteAccount() {
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     return { error: "Not authenticated" };
   }
+  const user = session.user;
 
   const admin = createAdminClient();
 

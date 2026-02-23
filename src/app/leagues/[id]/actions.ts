@@ -25,12 +25,13 @@ export async function fetchLeagueRosters(
   const supabase = createServerSupabaseClient();
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     return { success: false, error: "Not authenticated" };
   }
+  const user = session.user;
 
   // Verify league membership (RLS ensures user can only see leagues they belong to)
   const { data: membership } = await supabase

@@ -89,7 +89,7 @@ export default function EventCard({ event, pickCount, totalPoints }: EventCardPr
 
   if (isLive) {
     return (
-      <Link href={`/events/${event.id}`} className="block rounded-2xl aurora-gradient p-px shadow-lg shadow-emerald/10 transition-all hover:shadow-xl hover:-translate-y-px">
+      <Link href={`/events/${event.id}`} prefetch={false} className="block rounded-2xl aurora-gradient p-px shadow-lg shadow-emerald/10 transition-all hover:shadow-xl hover:-translate-y-px">
         <div className="rounded-2xl bg-card p-5">
           {card}
         </div>
@@ -100,6 +100,7 @@ export default function EventCard({ event, pickCount, totalPoints }: EventCardPr
   return (
     <Link
       href={`/events/${event.id}`}
+      prefetch={false}
       className={`block rounded-xl bg-card p-5 shadow-sm border border-black/5 transition-all hover:shadow-md hover:-translate-y-px ${
         isCompleted ? "" : "card-accent-sky"
       }`}

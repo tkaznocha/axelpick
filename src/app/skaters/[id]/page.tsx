@@ -35,19 +35,12 @@ function countryFlag(code: string): string {
 export default async function SkaterPage({ params }: { params: { id: string } }) {
   const supabase = createServerSupabaseClient();
 
-  // Phase 1: auth + skater
-  const [user, { data: skater }] = await Promise.all([
-    getAuthUser(),
-    supabase.from("skaters").select("*").eq("id", params.id).single(),
-  ]);
-
+  const user = await getAuthUser();
   if (!user) redirect("/login");
-  if (!skater) notFound();
 
-  const displayName = getDisplayName(user);
-
-  // Phase 2: event history
-  const [{ data: entries }, { data: results }] = await Promise.all([
+  // Run all data queries in parallel
+  const [{ data: skater }, { data: entries }, { data: results }] = await Promise.all([
+    supabase.from("skaters").select("*").eq("id", params.id).single(),
     supabase
       .from("event_entries")
       .select("event_id, price_at_event, is_withdrawn, events(id, name, start_date, status)")
@@ -58,6 +51,10 @@ export default async function SkaterPage({ params }: { params: { id: string } })
       .eq("skater_id", params.id)
       .order("events(start_date)", { ascending: false }),
   ]);
+
+  if (!skater) notFound();
+
+  const displayName = getDisplayName(user);
 
   const priceM = (skater.current_price / 1_000_000).toFixed(1);
 
