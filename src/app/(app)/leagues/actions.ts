@@ -72,6 +72,73 @@ export async function createLeague(formData: FormData) {
   redirect(`/leagues/${league.id}`);
 }
 
+export async function renameLeague(leagueId: string, newName: string) {
+  const supabase = createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) redirect("/login");
+
+  const name = newName.trim();
+  if (!name || name.length === 0) {
+    return { error: "League name is required" };
+  }
+  if (name.length > 50) {
+    return { error: "League name must be 50 characters or less" };
+  }
+
+  const admin = createAdminClient();
+
+  // Verify user is the creator
+  const { data: league } = await admin
+    .from("leagues")
+    .select("id, created_by")
+    .eq("id", leagueId)
+    .single();
+
+  if (!league || league.created_by !== session.user.id) {
+    return { error: "Only the league creator can rename it" };
+  }
+
+  const { error } = await admin
+    .from("leagues")
+    .update({ name })
+    .eq("id", leagueId);
+
+  if (error) {
+    return { error: "Failed to rename league. Please try again." };
+  }
+
+  return { success: true };
+}
+
+export async function deleteLeague(leagueId: string) {
+  const supabase = createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) redirect("/login");
+
+  const admin = createAdminClient();
+
+  // Verify user is the creator
+  const { data: league } = await admin
+    .from("leagues")
+    .select("id, created_by")
+    .eq("id", leagueId)
+    .single();
+
+  if (!league || league.created_by !== session.user.id) {
+    return { error: "Only the league creator can delete it" };
+  }
+
+  // Delete members first (foreign key), then the league
+  await admin.from("league_members").delete().eq("league_id", leagueId);
+  const { error } = await admin.from("leagues").delete().eq("id", leagueId);
+
+  if (error) {
+    return { error: "Failed to delete league. Please try again." };
+  }
+
+  redirect("/leagues");
+}
+
 export async function joinLeague(inviteCode: string) {
   const supabase = createServerSupabaseClient();
 

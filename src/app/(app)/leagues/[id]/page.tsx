@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 import CopyInviteLink from "./CopyInviteLink";
 import EventRosters from "./EventRosters";
+import LeagueSettings from "./LeagueSettings";
 import UserAvatar from "@/components/UserAvatar";
 
 export async function generateMetadata({
@@ -71,21 +72,15 @@ export default async function LeaguePage({
         .order("start_date", { ascending: false }),
     ]);
 
-  const { data: membership, error: membershipError } = membershipResult;
-  const { data: members, error: membersError } = membersResult;
-
-  console.log("[LeaguePage] league_id:", league.id, "user_id:", user.id,
-    "created_by:", league.created_by, "membership:", membership,
-    "membershipError:", membershipError, "membersCount:", members?.length,
-    "membersError:", membersError);
+  const { data: membership } = membershipResult;
+  const { data: members } = membersResult;
 
   if (!membership) {
     // Self-heal: if user is the league creator, auto-add them as member
     if (league.created_by === user.id) {
-      const { error: healError } = await admin
+      await admin
         .from("league_members")
         .upsert({ league_id: league.id, user_id: user.id });
-      console.log("[LeaguePage] self-heal upsert for creator, error:", healError);
     } else {
       redirect(`/leagues/join/${league.invite_code}`);
     }
@@ -203,6 +198,11 @@ export default async function LeaguePage({
         lockedEvents={lockedEvents ?? []}
         currentUserId={user.id}
       />
+
+      {/* Creator settings */}
+      {isCreator && (
+        <LeagueSettings leagueId={league.id} currentName={league.name} />
+      )}
     </main>
   );
 }
