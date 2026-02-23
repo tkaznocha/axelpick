@@ -104,6 +104,11 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-tag:hover {
+  color: var(--text-lead);
 }
 
 /* Landing sections */

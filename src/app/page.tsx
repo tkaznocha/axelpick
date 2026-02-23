@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Countdown from "./Countdown";
-import SignupBlock from "./SignupBlock";
 import ScrollReveal from "./ScrollReveal";
 import "@/styles/landing.css";
 
@@ -20,7 +19,7 @@ export default function LandingPage() {
             <span className="w-axel">Axel</span>
             <span className="w-pick">Pick</span>
           </a>
-          <span className="nav-tag">Fantasy Figure Skating</span>
+          <a href="/login" className="nav-tag">Log in</a>
         </nav>
 
         {/* Hero */}
@@ -39,9 +38,7 @@ export default function LandingPage() {
               try it out before the full season kicks off this fall.
             </p>
 
-            <Suspense>
-              <SignupBlock id="hero" />
-            </Suspense>
+            <a href="/login" className="signup-btn">Play Now</a>
           </div>
         </section>
 
@@ -226,9 +223,7 @@ export default function LandingPage() {
             Try Axel Pick at Worlds in Prague — get a feel for the game before
             the full season launches in October.
           </p>
-          <Suspense>
-            <SignupBlock id="btm" />
-          </Suspense>
+          <a href="/login" className="signup-btn">Play Now</a>
         </section>
 
         {/* Footer */}
