@@ -34,6 +34,16 @@ export function deriveIsuSlug(name: string): string {
 const ISU_BASE = "https://isu-skating.com/figure-skating/skaters";
 
 /**
+ * Build the ISU profile URL. Pairs and ice dance pages live under /pairs/ prefix.
+ */
+function isuProfileUrl(slug: string, discipline?: string): string {
+  if (discipline === "pairs" || discipline === "ice_dance") {
+    return `${ISU_BASE}/pairs/${slug}/`;
+  }
+  return `${ISU_BASE}/${slug}/`;
+}
+
+/**
  * Parse an ISU date like "02 Dec 2004" → "2004-12-02"
  */
 function parseIsuDate(raw: string): string | null {
@@ -178,13 +188,15 @@ function parseScores($: cheerio.CheerioAPI): {
  * Scrape a single ISU skater profile page.
  */
 export async function scrapeIsuProfile(
-  slug: string
+  slug: string,
+  discipline?: string
 ): Promise<IsuProfileData> {
-  const url = `${ISU_BASE}/${slug}/`;
+  const url = isuProfileUrl(slug, discipline);
   const res = await fetch(url, {
     headers: {
       "User-Agent": "AxelPick/1.0 (fantasy skating app)",
     },
+    signal: AbortSignal.timeout(15000),
   });
 
   if (!res.ok) {
@@ -239,15 +251,15 @@ export interface BulkScrapeResult {
  * Scrape multiple ISU profiles sequentially with rate limiting.
  */
 export async function scrapeMultipleProfiles(
-  skaters: Array<{ id: string; name: string; isu_slug: string }>,
+  skaters: Array<{ id: string; name: string; isu_slug: string; discipline?: string }>,
   delayMs = 1500
 ): Promise<BulkScrapeResult[]> {
   const results: BulkScrapeResult[] = [];
 
   for (let i = 0; i < skaters.length; i++) {
-    const { id, name, isu_slug } = skaters[i];
+    const { id, name, isu_slug, discipline } = skaters[i];
     try {
-      const data = await scrapeIsuProfile(isu_slug);
+      const data = await scrapeIsuProfile(isu_slug, discipline);
       results.push({ id, name, data });
     } catch (err) {
       results.push({

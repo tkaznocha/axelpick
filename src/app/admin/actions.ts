@@ -909,7 +909,7 @@ export async function syncIsuProfile(skaterId: string) {
 
   const { data: skater } = await admin
     .from("skaters")
-    .select("id, name, isu_slug")
+    .select("id, name, isu_slug, discipline")
     .eq("id", skaterId)
     .single();
 
@@ -918,7 +918,7 @@ export async function syncIsuProfile(skaterId: string) {
   const slug = skater.isu_slug || deriveIsuSlug(skater.name);
 
   try {
-    const data = await scrapeIsuProfile(slug);
+    const data = await scrapeIsuProfile(slug, skater.discipline);
 
     const { error } = await admin
       .from("skaters")
@@ -947,7 +947,7 @@ export async function bulkSyncIsuProfiles(discipline?: string) {
 
   let query = admin
     .from("skaters")
-    .select("id, name, isu_slug")
+    .select("id, name, isu_slug, discipline")
     .eq("is_active", true);
 
   if (discipline && discipline !== "all") {
