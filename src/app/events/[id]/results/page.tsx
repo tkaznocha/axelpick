@@ -28,33 +28,28 @@ export default async function ResultsPage({
 }: {
   params: { id: string };
 }) {
-  const user = await getAuthUser();
-  if (!user) redirect("/login");
-
   const supabase = createServerSupabaseClient();
 
-  // Fetch event first (needed to check existence)
-  const { data: event } = await supabase
-    .from("events")
-    .select("*")
-    .eq("id", params.id)
-    .single();
-
-  if (!event) notFound();
-
-  // Run remaining queries in parallel
-  const [{ data: results }, { data: userPicks }] = await Promise.all([
+  // Start auth + non-user queries in parallel
+  const [user, { data: event }, { data: results }] = await Promise.all([
+    getAuthUser(),
+    supabase.from("events").select("*").eq("id", params.id).single(),
     supabase
       .from("results")
       .select("*, skaters(id, name, country, discipline)")
       .eq("event_id", params.id)
       .order("final_placement", { ascending: true }),
-    supabase
-      .from("user_picks")
-      .select("skater_id, points_earned")
-      .eq("user_id", user.id)
-      .eq("event_id", params.id),
   ]);
+
+  if (!user) redirect("/login");
+  if (!event) notFound();
+
+  // User-specific query
+  const { data: userPicks } = await supabase
+    .from("user_picks")
+    .select("skater_id, points_earned")
+    .eq("user_id", user.id)
+    .eq("event_id", params.id);
 
   const pickedIds = new Set((userPicks ?? []).map((p) => p.skater_id));
   const userTotal = (userPicks ?? []).reduce(

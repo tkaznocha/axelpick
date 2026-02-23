@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { logout } from "@/app/login/actions";
@@ -74,18 +75,18 @@ export default function NavBar({ displayName }: { displayName: string }) {
       <div className="bg-white/80 backdrop-blur-md border-b border-black/5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
           {/* Logo */}
-          <a href="/dashboard" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2">
             <span className="font-display text-lg font-bold aurora-text">
               Axel Pick
             </span>
-          </a>
+          </Link>
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-1">
             {NAV_LINKS.map((link) => {
               const Icon = link.icon;
               return (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
@@ -96,19 +97,19 @@ export default function NavBar({ displayName }: { displayName: string }) {
                 >
                   <Icon className="opacity-70" />
                   {link.label}
-                </a>
+                </Link>
               );
             })}
           </div>
 
           {/* Desktop right side */}
           <div className="hidden md:flex items-center gap-3">
-            <a href="/settings" className="flex items-center gap-2 rounded-lg px-2 py-1 transition-colors hover:bg-black/[0.03]">
+            <Link href="/settings" className="flex items-center gap-2 rounded-lg px-2 py-1 transition-colors hover:bg-black/[0.03]">
               <div className="h-7 w-7 rounded-full aurora-gradient flex items-center justify-center text-xs font-semibold text-white">
                 {displayName.charAt(0).toUpperCase()}
               </div>
               <span className="text-sm text-text-secondary">{displayName}</span>
-            </a>
+            </Link>
             <form action={logout}>
               <button
                 type="submit"
@@ -150,7 +151,7 @@ export default function NavBar({ displayName }: { displayName: string }) {
               {NAV_LINKS.map((link) => {
                 const Icon = link.icon;
                 return (
-                  <a
+                  <Link
                     key={link.href}
                     href={link.href}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -161,17 +162,17 @@ export default function NavBar({ displayName }: { displayName: string }) {
                   >
                     <Icon className="opacity-70" />
                     {link.label}
-                  </a>
+                  </Link>
                 );
               })}
             </div>
             <div className="mt-3 pt-3 border-t border-black/5 flex items-center justify-between">
-              <a href="/settings" className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
+              <Link href="/settings" className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
                 <div className="h-7 w-7 rounded-full aurora-gradient flex items-center justify-center text-xs font-semibold text-white">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm text-text-secondary">{displayName}</span>
-              </a>
+              </Link>
               <form action={logout}>
                 <button
                   type="submit"

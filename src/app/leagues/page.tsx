@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createServerSupabaseClient, getAuthUser, getDisplayName } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
@@ -51,18 +52,18 @@ export default async function LeaguesPage() {
             </p>
           </div>
         </div>
-        <a
+        <Link
           href="/leagues/create"
           className="rounded-xl aurora-gradient px-5 py-2.5 font-display text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           Create League
-        </a>
+        </Link>
       </div>
 
       {leagues.length > 0 ? (
         <div className="space-y-3">
           {leagues.map((league) => (
-            <a
+            <Link
               key={league.id}
               href={`/leagues/${league.id}`}
               className="block rounded-xl bg-card p-5 shadow-sm border border-black/5 card-accent-lavender transition-all hover:shadow-md hover:-translate-y-px"
@@ -81,7 +82,7 @@ export default async function LeaguesPage() {
                 </div>
                 <span className="text-text-secondary text-sm">&rarr;</span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       ) : (
@@ -97,12 +98,12 @@ export default async function LeaguesPage() {
           <p className="text-text-secondary mb-4">
             You&apos;re not in any leagues yet.
           </p>
-          <a
+          <Link
             href="/leagues/create"
             className="inline-block rounded-xl aurora-gradient px-6 py-3 font-display font-semibold text-white transition-opacity hover:opacity-90"
           >
             Create Your First League
-          </a>
+          </Link>
         </div>
       )}
     </main>

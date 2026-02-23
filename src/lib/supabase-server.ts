@@ -30,15 +30,16 @@ export function createServerSupabaseClient() {
 }
 
 /**
- * Cached getUser() — deduplicated within a single React render pass.
- * Middleware already refreshes the session; this just reads it.
+ * Read the current session from the cookie — no network round-trip.
+ * The middleware already called getUser() to validate & refresh the token,
+ * so by the time a Server Component runs the cookie is up-to-date.
  */
 export const getAuthUser = cache(async () => {
   const supabase = createServerSupabaseClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
+    data: { session },
+  } = await supabase.auth.getSession();
+  return session?.user ?? null;
 });
 
 /** Derive a display name from a Supabase user without a DB query. */
