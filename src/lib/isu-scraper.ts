@@ -59,40 +59,59 @@ function parseStartedSkating(raw: string): number | null {
 }
 
 /**
- * Build a map from <dt> text → <dd> text for the bio section.
+ * Build a map from bio label → value.
+ * ISU uses <li> with two <span> children: label span + value span.
  */
 function parseBioFields($: cheerio.CheerioAPI): Map<string, string> {
   const fields = new Map<string, string>();
-  $("dt").each((_, el) => {
-    const key = $(el).text().trim().toLowerCase();
-    const val = $(el).next("dd").text().trim();
-    if (key && val) fields.set(key, val);
+
+  // Primary: <li> with two <span> children (ISU current layout)
+  $("li").each((_, el) => {
+    const spans = $(el).find("span");
+    if (spans.length >= 2) {
+      const key = $(spans[0]).text().trim().toLowerCase();
+      const val = $(spans[1]).text().trim();
+      if (key && val) fields.set(key, val);
+    }
   });
+
+  // Fallback: <dt>/<dd> pairs
+  if (fields.size === 0) {
+    $("dt").each((_, el) => {
+      const key = $(el).text().trim().toLowerCase();
+      const val = $(el).next("dd").text().trim();
+      if (key && val) fields.set(key, val);
+    });
+  }
+
   return fields;
 }
 
 /**
  * Extract music from sections headed by h4 containing "Music".
+ * ISU layout: <h4>Music Short Program...</h4><div>Track A<br/>Track B</div>
  * Returns [spMusic, fsMusic].
  */
 function parseMusic($: cheerio.CheerioAPI): [string | null, string | null] {
   let spMusic: string | null = null;
   let fsMusic: string | null = null;
 
-  // Look for headings (h3, h4, h5) containing music info
-  $("h3, h4, h5").each((_, el) => {
+  $("h4").each((_, el) => {
     const heading = $(el).text().trim();
     if (!heading.toLowerCase().includes("music")) return;
 
-    // Gather text from siblings until next heading
-    const lines: string[] = [];
-    let sibling = $(el).next();
-    while (sibling.length && !sibling.is("h3, h4, h5")) {
-      const text = sibling.text().trim();
-      if (text) lines.push(text);
-      sibling = sibling.next();
+    // The music tracks are in the next sibling <div>, separated by <br/>
+    const nextDiv = $(el).next("div");
+    let musicText: string | null = null;
+    if (nextDiv.length) {
+      // Replace <br/> with newlines, then get text
+      const html = nextDiv.html() ?? "";
+      musicText =
+        html
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/<[^>]+>/g, "")
+          .trim() || null;
     }
-    const musicText = lines.join("\n") || null;
 
     const headingLower = heading.toLowerCase();
     if (
@@ -112,9 +131,8 @@ function parseMusic($: cheerio.CheerioAPI): [string | null, string | null] {
 }
 
 /**
- * Extract best scores. We look for text patterns like:
- * "Season Best Score Short Program" followed by event name, date, score.
- * Returns { season_best_sp, season_best_fs, personal_best_sp, personal_best_fs }
+ * Extract best scores from <table> rows.
+ * ISU layout: <tr><td>Personal Best Score Short Program</td><td>event</td><td>date</td><td>110.41</td></tr>
  */
 function parseScores($: cheerio.CheerioAPI): {
   season_best_sp: number | null;
@@ -129,40 +147,29 @@ function parseScores($: cheerio.CheerioAPI): {
     personal_best_fs: null as number | null,
   };
 
-  // Get full page text and find score patterns
-  const fullText = $("body").text();
-
-  // Match patterns like "Personal Best Score Short Program" or "Season Best Score Free Skating"
-  const patterns: Array<{
-    regex: RegExp;
-    key: keyof typeof scores;
-  }> = [
-    {
-      regex:
-        /personal\s+best\s+score\s+(?:short\s+program|rhythm\s+dance)[\s\S]*?(\d+\.\d+)/i,
-      key: "personal_best_sp",
-    },
-    {
-      regex:
-        /personal\s+best\s+score\s+(?:free\s+skating|free\s+dance)[\s\S]*?(\d+\.\d+)/i,
-      key: "personal_best_fs",
-    },
-    {
-      regex:
-        /season\s+best\s+score\s+(?:short\s+program|rhythm\s+dance)[\s\S]*?(\d+\.\d+)/i,
-      key: "season_best_sp",
-    },
-    {
-      regex:
-        /season\s+best\s+score\s+(?:free\s+skating|free\s+dance)[\s\S]*?(\d+\.\d+)/i,
-      key: "season_best_fs",
-    },
+  const labelMap: Array<{ pattern: RegExp; key: keyof typeof scores }> = [
+    { pattern: /personal\s+best\s+score\s+(?:short\s+program|rhythm\s+dance)/i, key: "personal_best_sp" },
+    { pattern: /personal\s+best\s+score\s+(?:free\s+skating|free\s+dance)/i, key: "personal_best_fs" },
+    { pattern: /season\s+best\s+score\s+(?:short\s+program|rhythm\s+dance)/i, key: "season_best_sp" },
+    { pattern: /season\s+best\s+score\s+(?:free\s+skating|free\s+dance)/i, key: "season_best_fs" },
   ];
 
-  for (const { regex, key } of patterns) {
-    const m = fullText.match(regex);
-    if (m) scores[key] = parseFloat(m[1]);
-  }
+  $("table tr").each((_, row) => {
+    const cells = $(row).find("td");
+    if (cells.length < 4) return;
+
+    const label = $(cells[0]).text().trim();
+    const scoreText = $(cells[cells.length - 1]).text().trim();
+    const scoreVal = parseFloat(scoreText);
+    if (isNaN(scoreVal)) return;
+
+    for (const { pattern, key } of labelMap) {
+      if (pattern.test(label)) {
+        scores[key] = scoreVal;
+        break;
+      }
+    }
+  });
 
   return scores;
 }
