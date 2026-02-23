@@ -1,9 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = headers().get("x-forwarded-host")
+    ? `${headers().get("x-forwarded-proto") ?? "https"}://${headers().get("x-forwarded-host")}`
+    : new URL(request.url).origin;
   const code = searchParams.get("code");
   const raw = searchParams.get("next") ?? "/dashboard";
   const next = /^\/[a-zA-Z0-9\-_/]*$/.test(raw) ? raw : "/dashboard";
