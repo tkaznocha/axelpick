@@ -230,6 +230,22 @@ export default async function DashboardPage() {
           </div>
         )}
       </section>
+
+      {/* Support */}
+      <section className="mt-8">
+        <a
+          href="https://buymeacoffee.com/axelpick"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-xl bg-card p-5 shadow-sm border border-black/5 transition-all hover:shadow-md hover:-translate-y-px text-center"
+        >
+          <p className="text-sm text-text-secondary">
+            Enjoying Axel Pick?{" "}
+            <span className="font-semibold text-text-primary">Buy us a coffee</span>{" "}
+            to help keep it running.
+          </p>
+        </a>
+      </section>
     </main>
   );
 }

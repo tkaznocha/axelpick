@@ -89,6 +89,22 @@ export default async function SettingsPage() {
             <DeleteAccountSection />
           </div>
         </section>
+
+        {/* Support */}
+        <section className="rounded-2xl bg-card p-6 shadow-sm border border-black/5 mt-6">
+          <h2 className="font-display font-semibold text-lg mb-1">Support Axel Pick</h2>
+          <p className="text-sm text-text-secondary mb-4">
+            Axel Pick is free to use. If you enjoy it, consider supporting us to help cover hosting and development costs.
+          </p>
+          <a
+            href="https://buymeacoffee.com/axelpick"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block rounded-xl bg-[#FFDD00] px-5 py-2.5 text-sm font-display font-semibold text-black transition-opacity hover:opacity-90"
+          >
+            Buy us a coffee
+          </a>
+        </section>
       </main>
   );
 }
