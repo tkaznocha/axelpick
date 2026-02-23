@@ -262,7 +262,7 @@ export default function PickFlow({
         />
 
         {/* Discipline filter */}
-        <div className="flex gap-1 rounded-xl bg-black/5 p-1">
+        <div className="flex gap-1 rounded-xl bg-black/5 p-1 max-w-full overflow-x-auto scrollbar-hide">
           <FilterChip
             active={discipline === "all"}
             onClick={() => {
@@ -385,7 +385,7 @@ function FilterChip({
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+      className={`flex-shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
         active
           ? "bg-card text-text-primary shadow-sm"
           : "text-text-secondary hover:text-text-primary"
