@@ -6,6 +6,7 @@ import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import DeleteAccountSection from "./DeleteAccountSection";
 import SignOutButton from "./SignOutButton";
+import FeedbackButton from "./FeedbackButton";
 import { logout } from "@/app/login/actions";
 
 export const metadata: Metadata = { title: "Settings" };
@@ -88,6 +89,15 @@ export default async function SettingsPage() {
             </form>
             <DeleteAccountSection />
           </div>
+        </section>
+
+        {/* Send Feedback */}
+        <section className="rounded-2xl bg-card p-6 shadow-sm border border-black/5 mt-6">
+          <h2 className="font-display font-semibold text-lg mb-1">Send Feedback</h2>
+          <p className="text-sm text-text-secondary mb-4">
+            Found a bug or have a suggestion? Let us know.
+          </p>
+          <FeedbackButton userEmail={email} />
         </section>
 
         {/* Support */}

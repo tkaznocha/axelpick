@@ -23,7 +23,7 @@ export default async function AppLayout({
   }
 
   return (
-    <AppShell displayName={displayName} avatarUrl={avatarUrl}>
+    <AppShell displayName={displayName} avatarUrl={avatarUrl} email={user?.email}>
       {children}
     </AppShell>
   );

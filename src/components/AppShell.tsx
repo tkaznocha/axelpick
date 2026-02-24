@@ -4,10 +4,12 @@ import NavBar from "./NavBar";
 export default async function AppShell({
   displayName = "Skater",
   avatarUrl,
+  email,
   children,
 }: {
   displayName?: string;
   avatarUrl?: string | null;
+  email?: string;
   children: React.ReactNode;
 }) {
   // Only fetch avatar from DB if the caller didn't provide it
@@ -33,7 +35,7 @@ export default async function AppShell({
       <div className="app-aurora-glow-btm" />
       <div className="app-noise" />
       <div style={{ position: "relative", zIndex: 1 }}>
-        <NavBar displayName={displayName} avatarUrl={resolvedAvatarUrl} />
+        <NavBar displayName={displayName} avatarUrl={resolvedAvatarUrl} email={email} />
         {children}
       </div>
     </>

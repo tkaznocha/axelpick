@@ -6,6 +6,15 @@ import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { logout } from "@/app/login/actions";
 import UserAvatar from "@/components/UserAvatar";
+import FeedbackModal from "@/components/FeedbackModal";
+
+function FeedbackIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
 
 function DashboardIcon({ className }: { className?: string }) {
   return (
@@ -79,9 +88,10 @@ const NAV_LINKS = [
   { href: "/how-to-play", label: "How to Play", icon: BookIcon },
 ];
 
-export default function NavBar({ displayName, avatarUrl }: { displayName: string; avatarUrl?: string | null }) {
+export default function NavBar({ displayName, avatarUrl, email }: { displayName: string; avatarUrl?: string | null; email?: string }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   function isActive(href: string) {
     if (href === "/dashboard") return pathname === "/dashboard";
@@ -126,7 +136,15 @@ export default function NavBar({ displayName, avatarUrl }: { displayName: string
           </div>
 
           {/* Desktop right side */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setFeedbackOpen(true)}
+              className="flex items-center rounded-lg px-2 py-1.5 text-text-secondary transition-colors hover:text-text-primary hover:bg-black/[0.03]"
+              title="Send feedback"
+            >
+              <FeedbackIcon className="opacity-70" />
+            </button>
             <Link href="/settings" className="flex items-center rounded-lg px-2 py-1 transition-colors hover:bg-black/[0.03]" title="Settings">
               <UserAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" gradient />
             </Link>
@@ -179,18 +197,29 @@ export default function NavBar({ displayName, avatarUrl }: { displayName: string
                 );
               })}
             </div>
-            <div className="mt-3 pt-3 border-t border-black/5 flex items-center justify-between">
-              <Link href="/settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
-                <UserAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" gradient />
-                <span className="text-sm text-text-secondary">{displayName}</span>
-              </Link>
-              <form action={logout}>
-                <SignOutButton />
-              </form>
+            <div className="mt-3 pt-3 border-t border-black/5 space-y-3">
+              <button
+                type="button"
+                onClick={() => { setMenuOpen(false); setFeedbackOpen(true); }}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-black/[0.03] transition-colors w-full"
+              >
+                <FeedbackIcon className="opacity-70" />
+                Send Feedback
+              </button>
+              <div className="flex items-center justify-between">
+                <Link href="/settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-lg px-1 py-1 transition-colors hover:bg-black/[0.03]">
+                  <UserAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" gradient />
+                  <span className="text-sm text-text-secondary">{displayName}</span>
+                </Link>
+                <form action={logout}>
+                  <SignOutButton />
+                </form>
+              </div>
             </div>
           </div>
         )}
       </div>
+      <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} userEmail={email} />
     </nav>
   );
 }
