@@ -47,14 +47,21 @@ export async function middleware(request: NextRequest) {
   );
   if (!user && isProtected) {
     const url = request.nextUrl.clone();
+    const returnTo = request.nextUrl.pathname;
     url.pathname = "/login";
+    url.search = "";
+    if (returnTo && returnTo !== "/dashboard") {
+      url.searchParams.set("next", returnTo);
+    }
     return NextResponse.redirect(url);
   }
 
   // Redirect authenticated users away from login/landing page
   if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    const next = request.nextUrl.searchParams.get("next");
+    url.pathname = next && /^\/[a-zA-Z0-9\-_/]*$/.test(next) ? next : "/dashboard";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

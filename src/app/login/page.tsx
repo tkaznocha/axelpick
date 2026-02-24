@@ -19,6 +19,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const message = searchParams.get("message");
+  const next = searchParams.get("next") ?? "";
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
@@ -55,7 +56,7 @@ function LoginForm() {
           {/* Google OAuth */}
           <form action={() => {
             track("login", { method: "google" });
-            return signInWithGoogle();
+            return signInWithGoogle(next || undefined);
           }}>
             <GoogleButton />
           </form>
@@ -72,6 +73,7 @@ function LoginForm() {
             track(mode === "login" ? "login" : "signup", { method: "email" });
             return mode === "login" ? login(formData) : signup(formData);
           }} className="space-y-4">
+            {next && <input type="hidden" name="next" value={next} />}
             {mode === "signup" && (
               <div>
                 <label
