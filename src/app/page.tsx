@@ -234,14 +234,7 @@ export default function LandingPage() {
           <div className="foot-links">
             <a href="/terms">Terms</a>
             <a href="/privacy">Privacy</a>
-            <a
-              href="https://x.com/axelpick"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              X / Twitter
-            </a>
-            <a href="mailto:support@axelpick.app">Contact</a>
+<a href="mailto:support@axelpick.app">Contact</a>
           </div>
         </footer>
       </div>
