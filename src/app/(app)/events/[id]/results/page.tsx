@@ -28,7 +28,7 @@ const placementMap: Record<number, number> = {
   1: 25, 2: 18, 3: 15, 4: 12, 5: 10,
   6: 8, 7: 6, 8: 4, 9: 2, 10: 1,
 };
-const spBonusMap: Record<number, number> = { 1: 5, 2: 3, 3: 1 };
+
 
 function ordinal(n: number): string {
   const s = ["th", "st", "nd", "rd"];
@@ -139,30 +139,10 @@ export default async function ResultsPage({
           {resultList.map((r) => {
             const isPicked = pickedIds.has(r.skater?.id);
             const placement = r.final_placement;
-            const spPlacement = r.sp_placement;
-            const falls = r.falls ?? 0;
-            const isPB = r.is_personal_best;
-            const isWD = r.is_withdrawal;
-
             // Build points breakdown
             const breakdown: string[] = [];
             if (placement && placementMap[placement]) {
               breakdown.push(`${ordinal(placement)}: +${placementMap[placement]}`);
-            }
-            if (spPlacement && spBonusMap[spPlacement]) {
-              breakdown.push(`SP ${ordinal(spPlacement)}: +${spBonusMap[spPlacement]}`);
-            }
-            if (falls === 0) {
-              breakdown.push("Clean: +3");
-            }
-            if (isPB) {
-              breakdown.push("PB: +5");
-            }
-            if (falls > 0) {
-              breakdown.push(`Falls(${falls}): −${falls * 2}`);
-            }
-            if (isWD) {
-              breakdown.push("WD: −10");
             }
 
             return (

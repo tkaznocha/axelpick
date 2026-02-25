@@ -22,17 +22,6 @@ export function calculateFantasyPoints(result: Result, event: Event) {
     points += placementMap[result.final_placement] || 0;
   }
 
-  const spBonusMap: Record<number, number> = { 1: 5, 2: 3, 3: 1 };
-  if (result.sp_placement) {
-    points += spBonusMap[result.sp_placement] || 0;
-  }
-
-  if (result.falls === 0) points += 3; // Clean skate bonus
-  if (result.is_personal_best) points += 5;
-
-  points -= result.falls * 2; // Fall penalty
-  if (result.is_withdrawal) points -= 10;
-
   return {
     raw: points,
     final: Math.round(points * event.points_multiplier),

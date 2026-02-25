@@ -11,8 +11,7 @@ export default function HowToPlayPage() {
       <h1 className="font-display text-4xl font-bold mb-3">How to Play</h1>
       <p className="text-lg text-text-secondary mb-12 max-w-xl">
         Pick your skaters from the entry list and stay within budget. Points are
-        based on placement, with bonuses for clean skates and personal bests.
-        Bigger events = more picks and bigger points.
+        based on final placement. Bigger events = more picks and bigger points.
       </p>
 
       {/* ===== Event Tiers ===== */}
@@ -92,37 +91,6 @@ export default function HowToPlayPage() {
               <p className="font-mono font-bold text-lg">{pts}</p>
             </div>
           ))}
-        </div>
-
-        {/* Bonuses */}
-        <h3 className="font-display font-semibold mb-3">Bonuses</h3>
-        <div className="grid gap-3 sm:grid-cols-3 mb-8">
-          <BonusCard
-            label="SP Top 3"
-            detail="1st: +5 / 2nd: +3 / 3rd: +1"
-            positive
-          />
-          <BonusCard
-            label="Clean Skate"
-            detail="0 falls in the event: +3"
-            positive
-          />
-          <BonusCard
-            label="Personal Best"
-            detail="Beat their PB score: +5"
-            positive
-          />
-        </div>
-
-        {/* Penalties */}
-        <h3 className="font-display font-semibold mb-3">Penalties</h3>
-        <div className="grid gap-3 sm:grid-cols-2 mb-4">
-          <BonusCard label="Fall" detail="-2 per fall" positive={false} />
-          <BonusCard
-            label="Withdrawal"
-            detail="Withdraw after SP: -10"
-            positive={false}
-          />
         </div>
 
         <p className="text-sm text-text-secondary mt-4">
@@ -241,35 +209,6 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className="flex items-center justify-between text-sm">
       <span className="text-text-secondary">{label}</span>
       <span className="font-mono font-semibold">{value}</span>
-    </div>
-  );
-}
-
-function BonusCard({
-  label,
-  detail,
-  positive,
-}: {
-  label: string;
-  detail: string;
-  positive: boolean;
-}) {
-  return (
-    <div
-      className={`rounded-xl p-4 border ${
-        positive
-          ? "bg-emerald-50 border-emerald/20"
-          : "bg-red-50 border-red-200"
-      }`}
-    >
-      <p
-        className={`font-display font-semibold text-sm ${
-          positive ? "text-emerald-700" : "text-red-700"
-        }`}
-      >
-        {label}
-      </p>
-      <p className="text-xs text-text-secondary mt-1">{detail}</p>
     </div>
   );
 }
