@@ -47,7 +47,7 @@ export default async function ResultsPage({
   if (!user) redirect("/login");
 
   // Run all data queries in parallel
-  const [{ data: event }, { data: results }, { data: userPicks }] = await Promise.all([
+  const [{ data: event }, { data: results }, { data: userPicks }, { data: facts }] = await Promise.all([
     supabase.from("events").select("*").eq("id", params.id).single(),
     supabase
       .from("results")
@@ -59,6 +59,12 @@ export default async function ResultsPage({
       .select("skater_id, points_earned")
       .eq("user_id", user.id)
       .eq("event_id", params.id),
+    supabase
+      .from("event_facts")
+      .select("id, fact_text, category")
+      .eq("event_id", params.id)
+      .eq("is_published", true)
+      .order("sort_order", { ascending: true }),
   ]);
 
   if (!event) notFound();
@@ -129,6 +135,40 @@ export default async function ResultsPage({
               {event.points_multiplier}× multiplier applied &middot;{" "}
               {pickedIds.size} skater{pickedIds.size !== 1 ? "s" : ""} picked
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Event Highlights */}
+      {facts && facts.length > 0 && (
+        <div className="mb-8">
+          <h2 className="font-display text-lg font-semibold mb-3">Event Highlights</h2>
+          <div className="space-y-2">
+            {facts.map((f) => (
+              <div
+                key={f.id}
+                className="rounded-xl bg-card border border-black/5 p-4 flex items-start gap-3"
+              >
+                {f.category && (
+                  <span
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                      ({
+                        surprise: "bg-amber-100 text-amber-700",
+                        popular: "bg-blue-100 text-blue-700",
+                        underdog: "bg-purple-100 text-purple-700",
+                        value: "bg-emerald-100 text-emerald-700",
+                        scoring: "bg-cyan-100 text-cyan-700",
+                        drama: "bg-red-100 text-red-700",
+                        strategy: "bg-indigo-100 text-indigo-700",
+                      } as Record<string, string>)[f.category] ?? "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {f.category}
+                  </span>
+                )}
+                <p className="text-sm">{f.fact_text}</p>
+              </div>
+            ))}
           </div>
         </div>
       )}

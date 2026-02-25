@@ -6,8 +6,9 @@ import { EntriesTab } from "./components/EntriesTab";
 import { ResultsTab } from "./components/ResultsTab";
 import { SkatersTab } from "./components/SkatersTab";
 import { WithdrawalsTab } from "./components/WithdrawalsTab";
+import { FactsTab } from "./components/FactsTab";
 
-type Tab = "events" | "entries" | "results" | "skaters" | "withdrawals";
+type Tab = "events" | "entries" | "results" | "skaters" | "withdrawals" | "facts";
 
 export function AdminPanel() {
   const [tab, setTab] = useState<Tab>("events");
@@ -27,6 +28,7 @@ export function AdminPanel() {
           ["results", "Results"],
           ["skaters", "Skaters"],
           ["withdrawals", "Withdrawals"],
+          ["facts", "Facts"],
         ] as const).map(([key, label]) => (
           <button
             key={key}
@@ -47,6 +49,7 @@ export function AdminPanel() {
       {tab === "results" && <ResultsTab />}
       {tab === "skaters" && <SkatersTab />}
       {tab === "withdrawals" && <WithdrawalsTab />}
+      {tab === "facts" && <FactsTab />}
     </main>
   );
 }

@@ -8,6 +8,7 @@ import {
   scrapeIsuProfile,
   scrapeMultipleProfiles,
 } from "@/lib/isu-scraper";
+import Anthropic from "@anthropic-ai/sdk";
 
 async function requireAdmin() {
   const supabase = createServerSupabaseClient();
@@ -1001,4 +1002,239 @@ export async function bulkSyncIsuProfiles(discipline?: string) {
     summary: `${successCount} synced, ${errorCount} failed out of ${results.length}`,
     details: log,
   };
+}
+
+// ---------- Event Facts: Get Stats ----------
+
+interface SkaterStat {
+  skater_name: string;
+  country: string;
+  price: number;
+  pick_count: number;
+  pick_pct: number;
+  placement: number | null;
+  fantasy_points: number;
+}
+
+export interface EventStats {
+  event_name: string;
+  total_users: number;
+  skaters: SkaterStat[];
+}
+
+export async function getEventStats(eventId: string): Promise<{
+  success: boolean;
+  error?: string;
+  stats?: EventStats;
+}> {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const [
+    { data: event },
+    { data: results },
+    { data: picks },
+    { data: entries },
+  ] = await Promise.all([
+    admin.from("events").select("id, name").eq("id", eventId).single(),
+    admin
+      .from("results")
+      .select("skater_id, final_placement, fantasy_points_final, skaters(id, name, country)")
+      .eq("event_id", eventId),
+    admin
+      .from("user_picks")
+      .select("user_id, skater_id")
+      .eq("event_id", eventId),
+    admin
+      .from("event_entries")
+      .select("skater_id, price_at_event")
+      .eq("event_id", eventId),
+  ]);
+
+  if (!event) return { success: false, error: "Event not found" };
+  if (!results || results.length === 0)
+    return { success: false, error: "No results for this event" };
+
+  const uniqueUsers = new Set((picks ?? []).map((p) => p.user_id));
+  const totalUsers = uniqueUsers.size;
+
+  // Count picks per skater
+  const pickCounts = new Map<string, number>();
+  for (const p of picks ?? []) {
+    pickCounts.set(p.skater_id, (pickCounts.get(p.skater_id) ?? 0) + 1);
+  }
+
+  // Price map from entries
+  const priceMap = new Map<string, number>();
+  for (const e of entries ?? []) {
+    priceMap.set(e.skater_id, e.price_at_event);
+  }
+
+  const skaters: SkaterStat[] = results.map((r) => {
+    const skater = r.skaters as unknown as { id: string; name: string; country: string };
+    const pickCount = pickCounts.get(r.skater_id) ?? 0;
+    return {
+      skater_name: skater.name,
+      country: skater.country,
+      price: priceMap.get(r.skater_id) ?? 0,
+      pick_count: pickCount,
+      pick_pct: totalUsers > 0 ? Math.round((pickCount / totalUsers) * 100) : 0,
+      placement: r.final_placement,
+      fantasy_points: r.fantasy_points_final ?? 0,
+    };
+  });
+
+  // Sort by placement
+  skaters.sort((a, b) => (a.placement ?? 999) - (b.placement ?? 999));
+
+  return {
+    success: true,
+    stats: { event_name: event.name, total_users: totalUsers, skaters },
+  };
+}
+
+// ---------- Event Facts: Generate via AI ----------
+
+export async function generateFacts(eventId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const statsRes = await getEventStats(eventId);
+  if (!statsRes.success || !statsRes.stats) {
+    return { success: false, error: statsRes.error ?? "Could not get stats" };
+  }
+
+  const { stats } = statsRes;
+
+  const prompt = `You are analyzing results from a figure skating fantasy game called "Axel Pick". Users pick skaters with a budget, and earn points based on placements.
+
+Here are the stats for "${stats.event_name}" (${stats.total_users} players):
+
+${stats.skaters
+  .map(
+    (s) =>
+      `- ${s.skater_name} (${s.country}): price $${s.price}, picked by ${s.pick_count} players (${s.pick_pct}%), finished ${s.placement ?? "N/A"}${s.placement ? getOrdinal(s.placement) : ""}, ${s.fantasy_points} fantasy pts`
+  )
+  .join("\n")}
+
+Generate 5-8 concise, interesting facts about this event's results vs player picks. Focus on surprises, popular picks, underdogs, value picks, and dramatic outcomes. Each fact should be 1-2 sentences max.
+
+Return ONLY a JSON array with objects containing "text" (the fact) and "category" (one of: surprise, popular, underdog, value, scoring, drama, strategy). No markdown, no explanation.`;
+
+  try {
+    const anthropic = new Anthropic();
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text =
+      response.content[0].type === "text" ? response.content[0].text : "";
+
+    let facts: { text: string; category: string }[];
+    try {
+      facts = JSON.parse(text);
+    } catch {
+      // Try extracting JSON from the response
+      const match = text.match(/\[[\s\S]*\]/);
+      if (!match) return { success: false, error: "Could not parse AI response" };
+      facts = JSON.parse(match[0]);
+    }
+
+    if (!Array.isArray(facts) || facts.length === 0) {
+      return { success: false, error: "AI returned no facts" };
+    }
+
+    // Delete previous unpublished facts for this event
+    await admin
+      .from("event_facts")
+      .delete()
+      .eq("event_id", eventId)
+      .eq("is_published", false);
+
+    // Insert new facts
+    const rows = facts.map((f, i) => ({
+      event_id: eventId,
+      fact_text: f.text,
+      category: f.category,
+      sort_order: i,
+      is_published: false,
+    }));
+
+    const { error } = await admin.from("event_facts").insert(rows);
+    if (error) return { success: false, error: error.message };
+
+    return { success: true, summary: `${facts.length} facts generated` };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+// ---------- Event Facts: Fetch ----------
+
+export async function fetchEventFacts(eventId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from("event_facts")
+    .select("*")
+    .eq("event_id", eventId)
+    .order("sort_order", { ascending: true });
+
+  if (error) return { success: false, error: error.message, facts: [] };
+  return { success: true, facts: data ?? [] };
+}
+
+// ---------- Event Facts: Update ----------
+
+export async function updateFact(
+  factId: string,
+  fields: {
+    fact_text?: string;
+    category?: string;
+    is_published?: boolean;
+    sort_order?: number;
+  }
+) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from("event_facts")
+    .update({ ...fields, edited_at: new Date().toISOString() })
+    .eq("id", factId);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Event Facts: Delete ----------
+
+export async function deleteFact(factId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin.from("event_facts").delete().eq("id", factId);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// ---------- Event Facts: Publish All ----------
+
+export async function publishAllFacts(eventId: string) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { error } = await admin
+    .from("event_facts")
+    .update({ is_published: true, edited_at: new Date().toISOString() })
+    .eq("event_id", eventId);
+
+  if (error) return { success: false, error: error.message };
+  return { success: true };
 }
