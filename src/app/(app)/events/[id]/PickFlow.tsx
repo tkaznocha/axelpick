@@ -34,8 +34,14 @@ export default function PickFlow({
   pendingReplacements,
   replacementDeadline,
 }: PickFlowProps) {
+  // Withdrawn skater IDs — computed before state init so picked excludes them
+  const withdrawnIds = useMemo(
+    () => new Set(entries.filter((e) => e.is_withdrawn).map((e) => e.skater_id)),
+    [entries]
+  );
+
   const [picked, setPicked] = useState<Set<string>>(
-    () => new Set(initialPicks)
+    () => new Set(initialPicks.filter((id) => !withdrawnIds.has(id)))
   );
   const [isSaving, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -59,12 +65,6 @@ export default function PickFlow({
   const [discipline, setDiscipline] = useState<string>("all");
   const [sort, setSort] = useState<SortKey>("ranking");
   const [search, setSearch] = useState("");
-
-  // Withdrawn skater IDs (for filtering)
-  const withdrawnIds = useMemo(
-    () => new Set(entries.filter((e) => e.is_withdrawn).map((e) => e.skater_id)),
-    [entries]
-  );
 
   // Derived
   const budgetSpent = useMemo(() => {
