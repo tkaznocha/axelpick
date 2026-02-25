@@ -506,7 +506,7 @@ export async function updateEvent(
 
   const { error } = await admin
     .from("events")
-    .update({ ...sanitized, updated_at: new Date().toISOString() })
+    .update(sanitized)
     .eq("id", eventId);
 
   if (error) return { success: false, error: error.message };
