@@ -416,7 +416,14 @@ export async function withdrawSkater(
 
   const affectedUserIds = (affectedPicks ?? []).map((p) => p.user_id);
 
-  // 5. Create replacement entitlements and notifications
+  // 5. Delete user_picks for the withdrawn skater (frees slot + budget)
+  await admin
+    .from("user_picks")
+    .delete()
+    .eq("event_id", eventId)
+    .eq("skater_id", skaterId);
+
+  // 6. Create replacement entitlements and notifications
   for (const userId of affectedUserIds) {
     await admin.from("pick_replacements").insert({
       user_id: userId,
@@ -942,7 +949,7 @@ export async function syncIsuProfile(skaterId: string) {
 
 // ---------- Bulk Sync ISU Profiles ----------
 
-export async function bulkSyncIsuProfiles(discipline?: string) {
+export async function bulkSyncIsuProfiles(discipline?: string, unsyncedOnly?: boolean) {
   await requireAdmin();
   const admin = createAdminClient();
 
@@ -953,6 +960,10 @@ export async function bulkSyncIsuProfiles(discipline?: string) {
 
   if (discipline && discipline !== "all") {
     query = query.eq("discipline", discipline);
+  }
+
+  if (unsyncedOnly) {
+    query = query.is("isu_bio_updated_at", null);
   }
 
   const { data: skaters, error } = await query;

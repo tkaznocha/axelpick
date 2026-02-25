@@ -113,13 +113,13 @@ export function SkatersTab() {
     setDeleteId(null);
   }
 
-  async function handleBulkSync() {
+  async function handleBulkSync(unsyncedOnly?: boolean) {
     setBulkSyncing(true);
     setSyncLog(null);
     setMessage(null);
     // First generate slugs for any skaters missing them
     await generateIsuSlugs();
-    const res = await bulkSyncIsuProfiles(discipline !== "all" ? discipline : undefined);
+    const res = await bulkSyncIsuProfiles(discipline !== "all" ? discipline : undefined, unsyncedOnly);
     if (res.success) {
       setMessage({ success: true, text: res.summary ?? "Sync complete" });
       setSyncLog(res.details ?? []);
@@ -170,11 +170,18 @@ export function SkatersTab() {
           ))}
         </select>
         <button
-          onClick={handleBulkSync}
+          onClick={() => handleBulkSync(true)}
           disabled={bulkSyncing}
           className="rounded-xl bg-sky-600 px-4 py-3 text-sm font-medium text-white hover:bg-sky-700 disabled:opacity-50"
         >
-          {bulkSyncing ? "Syncing ISU..." : "Bulk ISU Sync"}
+          {bulkSyncing ? "Syncing ISU..." : "Sync Unsynced"}
+        </button>
+        <button
+          onClick={() => handleBulkSync()}
+          disabled={bulkSyncing}
+          className="rounded-xl border border-sky-200 px-4 py-3 text-sm font-medium text-sky-700 hover:bg-sky-50 disabled:opacity-50"
+        >
+          {bulkSyncing ? "Syncing ISU..." : "Sync All"}
         </button>
       </div>
 
