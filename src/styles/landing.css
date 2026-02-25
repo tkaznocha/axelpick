@@ -611,6 +611,30 @@
 }
 .site-footer .foot-links a:hover { color: var(--text-lead); }
 
+/* Social proof — below hero CTA */
+.social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  animation: fadeUp 0.7s ease-out 0.3s both;
+}
+
+.social-proof-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 6px rgba(0, 165, 114, 0.4);
+  flex-shrink: 0;
+}
+
 /* Animations */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
@@ -650,6 +674,9 @@
   .event-badge .dot {
     animation: none;
   }
+  .social-proof {
+    animation: none;
+  }
 }
 
 /* Responsive */
@@ -666,6 +693,7 @@
   .event-card { padding: 28px 24px; }
   .event-stats-row { gap: 24px; }
   .cd-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .social-proof { font-size: 10px; }
   .site-footer { flex-direction: column; align-items: flex-start; padding: 24px 20px 32px; }
   .landing-nav { padding: 24px 20px 0; }
   .landing-section { padding: 0 20px; }

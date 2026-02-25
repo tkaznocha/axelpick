@@ -67,6 +67,10 @@ export default function LandingPage() {
             </p>
 
             <a href="/login" className="signup-btn">Play Now</a>
+            <p className="social-proof">
+              <span className="social-proof-dot" />
+              150+ players signed up in the first 24 hours
+            </p>
           </div>
         </section>
 
