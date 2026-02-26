@@ -374,9 +374,21 @@ export async function withdrawSkater(
   const admin = createAdminClient();
 
   // datetime-local gives "YYYY-MM-DDTHH:MM" without timezone — treat as UTC
-  const replacementDeadline = replacementDeadlineRaw
+  let replacementDeadline = replacementDeadlineRaw
     ? `${replacementDeadlineRaw}:00Z`
     : null;
+
+  // If no deadline provided, fall back to the event's picks_lock_at date
+  if (!replacementDeadline) {
+    const { data: ev } = await admin
+      .from("events")
+      .select("picks_lock_at")
+      .eq("id", eventId)
+      .single();
+    if (ev?.picks_lock_at) {
+      replacementDeadline = ev.picks_lock_at;
+    }
+  }
 
   // 1. Mark entry as withdrawn
   const { error: updateErr } = await admin
@@ -387,7 +399,7 @@ export async function withdrawSkater(
 
   if (updateErr) return { success: false, error: updateErr.message };
 
-  // 2. Update replacement deadline on event (if provided)
+  // 2. Update replacement deadline on event
   if (replacementDeadline) {
     await admin
       .from("events")
@@ -463,7 +475,7 @@ export async function fetchEvents() {
 
   const { data, error } = await admin
     .from("events")
-    .select("id, name, event_type, status, start_date")
+    .select("id, name, event_type, status, start_date, picks_lock_at")
     .order("start_date", { ascending: false });
 
   if (error) {
