@@ -74,6 +74,25 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Social Proof — Reddit */}
+        <section className="landing-section reddit-proof anim-in">
+          <span className="section-label">r/figureskating</span>
+          <div className="reddit-quotes">
+            <div className="reddit-quote">
+              <p>&ldquo;I have never done a fantasy sports thing before but looks like I&apos;m going to now!&rdquo;</p>
+              <span className="reddit-user">ToostsieWooGirl92</span>
+            </div>
+            <div className="reddit-quote">
+              <p>&ldquo;I was literally just thinking about this yesterday and wishing someone would build something like it!&rdquo;</p>
+              <span className="reddit-user">MeterMaid7</span>
+            </div>
+            <div className="reddit-quote">
+              <p>&ldquo;WAIT i love this so much, this would make watching worlds so much more fun than it already is&rdquo;</p>
+              <span className="reddit-user">knitterpotato</span>
+            </div>
+          </div>
+        </section>
+
         {/* App Preview */}
         <section className="landing-section preview-section anim-in">
           <span className="section-label">Sneak Peek</span>
