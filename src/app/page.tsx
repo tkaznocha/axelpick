@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Countdown from "./Countdown";
 import ScrollReveal from "./ScrollReveal";
+import LandingTrackClick from "./LandingTrackClick";
 import "@/styles/landing.css";
 
 export const metadata: Metadata = {
@@ -47,7 +48,7 @@ export default function LandingPage() {
             <span className="w-axel">Axel</span>
             <span className="w-pick">Pick</span>
           </a>
-          <a href="/login" className="nav-tag">Log in</a>
+          <LandingTrackClick href="/login" className="nav-tag" event="landing_login_clicked">Log in</LandingTrackClick>
         </nav>
 
         {/* Hero */}
@@ -66,7 +67,7 @@ export default function LandingPage() {
               try it out before the full season kicks off this fall.
             </p>
 
-            <a href="/login" className="signup-btn">Play Now</a>
+            <LandingTrackClick href="/login" className="signup-btn" event="landing_cta_clicked" data={{ location: "hero" }}>Play Now</LandingTrackClick>
             <p className="social-proof">
               <span className="social-proof-dot" />
               150+ players signed up in the first 24 hours
@@ -247,28 +248,32 @@ export default function LandingPage() {
             Follow Axel Pick on social media
           </p>
           <div className="social-icons">
-            <a
+            <LandingTrackClick
               href="https://x.com/axelpickapp?s=21"
               target="_blank"
               rel="noopener"
               className="social-icon-link"
               aria-label="Follow on X"
+              event="social_link_clicked"
+              data={{ platform: "x", location: "social_section" }}
             >
               <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
-            </a>
-            <a
+            </LandingTrackClick>
+            <LandingTrackClick
               href="https://www.instagram.com/axelpick.app?igsh=M2QzMXRoeGZ6ZGRl&utm_source=qr"
               target="_blank"
               rel="noopener"
               className="social-icon-link"
               aria-label="Follow on Instagram"
+              event="social_link_clicked"
+              data={{ platform: "instagram", location: "social_section" }}
             >
               <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
               </svg>
-            </a>
+            </LandingTrackClick>
           </div>
         </section>
 
@@ -279,15 +284,15 @@ export default function LandingPage() {
             Try Axel Pick at Worlds in Prague — get a feel for the game before
             the full season launches in October.
           </p>
-          <a href="/login" className="signup-btn">Play Now</a>
+          <LandingTrackClick href="/login" className="signup-btn" event="landing_cta_clicked" data={{ location: "bottom" }}>Play Now</LandingTrackClick>
         </section>
 
         {/* Footer */}
         <footer className="site-footer">
           <span className="copy">&copy; 2026 Axel Pick</span>
           <div className="foot-links">
-            <a href="https://x.com/axelpickapp?s=21" target="_blank" rel="noopener">X</a>
-            <a href="https://www.instagram.com/axelpick.app?igsh=M2QzMXRoeGZ6ZGRl&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
+            <LandingTrackClick href="https://x.com/axelpickapp?s=21" target="_blank" rel="noopener" event="social_link_clicked" data={{ platform: "x", location: "footer" }}>X</LandingTrackClick>
+            <LandingTrackClick href="https://www.instagram.com/axelpick.app?igsh=M2QzMXRoeGZ6ZGRl&utm_source=qr" target="_blank" rel="noopener" event="social_link_clicked" data={{ platform: "instagram", location: "footer" }}>Instagram</LandingTrackClick>
             <a href="/terms">Terms</a>
             <a href="/privacy">Privacy</a>
             <a href="mailto:support@axelpick.app">Contact</a>

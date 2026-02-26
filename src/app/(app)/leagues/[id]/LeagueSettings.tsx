@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { renameLeague, deleteLeague } from "@/app/(app)/leagues/actions";
 
 export default function LeagueSettings({
@@ -30,6 +31,7 @@ export default function LeagueSettings({
       if (result?.error) {
         setError(result.error);
       } else {
+        track("league_renamed");
         setEditing(false);
         router.refresh();
       }
@@ -42,6 +44,8 @@ export default function LeagueSettings({
       const result = await deleteLeague(leagueId);
       if (result?.error) {
         setError(result.error);
+      } else {
+        track("league_deleted");
       }
     });
   }

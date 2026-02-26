@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { track } from "@vercel/analytics";
 import { changePassword } from "./actions";
 
 export default function ChangePasswordForm() {
@@ -14,6 +15,7 @@ export default function ChangePasswordForm() {
       if (result.error) {
         setMessage({ type: "error", text: result.error });
       } else {
+        track("password_changed");
         setMessage({ type: "success", text: "Password updated." });
       }
     });
