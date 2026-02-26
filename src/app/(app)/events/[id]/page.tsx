@@ -211,19 +211,6 @@ export default async function EventPage({
         </div>
       </div>
 
-      {/* Entry list notice for Worlds */}
-      {event.event_type === "worlds" && (
-        <div className="mb-6 rounded-xl border border-sky-200 bg-sky-50/60 px-5 py-4 flex items-start gap-3 text-sm">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sky mt-0.5 shrink-0">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <p className="text-text-secondary">
-            Entries are currently identical to the Olympic Games and will be updated as soon as official entries are provided by the ISU.
-          </p>
-        </div>
-      )}
 
       {/* Pick flow */}
       <PickFlow

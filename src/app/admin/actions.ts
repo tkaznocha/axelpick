@@ -550,6 +550,20 @@ export async function deleteEvent(eventId: string) {
 
 // ---------- Update Entry Price ----------
 
+export async function propagatePriceToEntries(skaterId: string, newPrice: number) {
+  await requireAdmin();
+  const admin = createAdminClient();
+
+  const { data, error } = await admin
+    .from("event_entries")
+    .update({ price_at_event: newPrice })
+    .eq("skater_id", skaterId)
+    .select("id");
+
+  if (error) return { success: false, error: error.message };
+  return { success: true, count: data?.length ?? 0 };
+}
+
 export async function updateEntryPrice(entryId: string, newPrice: number) {
   await requireAdmin();
   const admin = createAdminClient();

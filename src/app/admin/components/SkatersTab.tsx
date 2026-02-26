@@ -8,6 +8,7 @@ import {
   generateIsuSlugs,
   syncIsuProfile,
   bulkSyncIsuProfiles,
+  propagatePriceToEntries,
 } from "../actions";
 import { InlineEditField, ConfirmDialog } from "./shared";
 
@@ -61,6 +62,7 @@ export function SkatersTab() {
   const [bulkSyncing, setBulkSyncing] = useState(false);
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [syncLog, setSyncLog] = useState<string[] | null>(null);
+  const [propagatePending, setPropagatePending] = useState<{ skaterId: string; skaterName: string; newPrice: number } | null>(null);
 
   // Debounce search
   useEffect(() => {
@@ -95,8 +97,23 @@ export function SkatersTab() {
       setSkaters((prev) =>
         prev.map((s) => (s.id === skaterId ? { ...s, [field]: parsed } : s))
       );
+      if (field === "current_price" && typeof parsed === "number") {
+        const skater = skaters.find((s) => s.id === skaterId);
+        setPropagatePending({ skaterId, skaterName: skater?.name ?? "", newPrice: parsed });
+      }
     } else {
       setMessage({ success: false, text: res.error ?? "Update failed" });
+    }
+  }
+
+  async function handlePropagatePrice() {
+    if (!propagatePending) return;
+    const res = await propagatePriceToEntries(propagatePending.skaterId, propagatePending.newPrice);
+    setPropagatePending(null);
+    if (res.success) {
+      setMessage({ success: true, text: `Price propagated to ${res.count} event entr${res.count === 1 ? "y" : "ies"}` });
+    } else {
+      setMessage({ success: false, text: res.error ?? "Propagation failed" });
     }
   }
 
@@ -424,6 +441,15 @@ export function SkatersTab() {
         message="This will permanently delete the skater. Blocked if any entries or results reference them."
         onConfirm={handleDelete}
         onCancel={() => setDeleteId(null)}
+      />
+
+      <ConfirmDialog
+        open={!!propagatePending}
+        title="Propagate price to event entries?"
+        message={`Also update all event entries for ${propagatePending?.skaterName ?? "this skater"} to $${((propagatePending?.newPrice ?? 0) / 1_000_000).toFixed(1)}M? This affects what users see in the picker.`}
+        confirmLabel="Yes, propagate"
+        onConfirm={handlePropagatePrice}
+        onCancel={() => setPropagatePending(null)}
       />
     </div>
   );
