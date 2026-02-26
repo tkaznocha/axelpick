@@ -287,11 +287,12 @@
     "price": 7600000
   },
   {
-    "skater_name": "Loena Hendrickx",
+    "skater_name": "Jade Hovine",
     "country": "BEL",
     "discipline": "women",
-    "world_ranking": 19,
-    "price": 7400000
+    "world_ranking": null,
+    "price": 3000000,
+    "substitutes_for": "Loena Hendrickx"
   },
   {
     "skater_name": "Lorine Schild",

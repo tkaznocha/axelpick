@@ -246,10 +246,11 @@
     "world_ranking": 18
   },
   {
-    "name": "Loena Hendrickx",
+    "name": "Jade Hovine",
     "country": "BEL",
     "discipline": "women",
-    "world_ranking": 19
+    "world_ranking": null,
+    "substitutes_for": "Loena Hendrickx"
   },
   {
     "name": "Lorine Schild",
