@@ -236,9 +236,11 @@ export default function LandingPage() {
         <footer className="site-footer">
           <span className="copy">&copy; 2026 Axel Pick</span>
           <div className="foot-links">
+            <a href="https://x.com/axelpickapp?s=21" target="_blank" rel="noopener">X</a>
+            <a href="https://www.instagram.com/axelpickapp" target="_blank" rel="noopener">Instagram</a>
             <a href="/terms">Terms</a>
             <a href="/privacy">Privacy</a>
-<a href="mailto:support@axelpick.app">Contact</a>
+            <a href="mailto:support@axelpick.app">Contact</a>
           </div>
         </footer>
       </div>
