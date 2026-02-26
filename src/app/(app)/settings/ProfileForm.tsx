@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { track } from "@vercel/analytics";
 import { updateDisplayName, updateAvatar } from "./actions";
 import { createClient } from "@/lib/supabase";
 import { resizeImage } from "@/lib/resize-image";
@@ -31,6 +32,7 @@ export default function ProfileForm({
       if (result.error) {
         setMessage({ type: "error", text: result.error });
       } else {
+        track("profile_updated");
         setMessage({ type: "success", text: "Display name updated." });
       }
     });
@@ -68,6 +70,7 @@ export default function ProfileForm({
       if (result.error) {
         setMessage({ type: "error", text: result.error });
       } else {
+        track("avatar_updated");
         setCurrentAvatarUrl(freshUrl);
         setMessage({ type: "success", text: "Avatar updated." });
       }

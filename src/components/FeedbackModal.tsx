@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
+import { track } from "@vercel/analytics";
 import { submitFeedback } from "@/app/(app)/feedback/actions";
 
 export default function FeedbackModal({
@@ -27,6 +28,7 @@ export default function FeedbackModal({
       if (result.error) {
         setMessage({ type: "error", text: result.error });
       } else {
+        track("feedback_submitted", { type: formData.get("type") as string });
         setMessage({ type: "success", text: "Feedback sent! Thanks for letting us know." });
         setTimeout(() => onClose(), 1500);
       }

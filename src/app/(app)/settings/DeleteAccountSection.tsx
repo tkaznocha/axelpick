@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { track } from "@vercel/analytics";
 import { deleteAccount } from "./actions";
 
 export default function DeleteAccountSection() {
@@ -10,6 +11,7 @@ export default function DeleteAccountSection() {
 
   function handleDelete() {
     setError(null);
+    track("account_deleted");
     startTransition(async () => {
       const result = await deleteAccount();
       if (result?.error) {
