@@ -422,6 +422,46 @@
   color: var(--text-lead);
 }
 
+/* Social media section */
+.social-section {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.social-heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--text-lead);
+  margin-bottom: 20px;
+}
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+.social-icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #FFFFFF;
+  color: #0A1628;
+  text-decoration: none;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.15s;
+  box-shadow: 0 1px 3px rgba(10, 22, 40, 0.04);
+}
+.social-icon-link:hover {
+  border-color: rgba(0, 165, 114, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 165, 114, 0.12);
+  transform: translateY(-2px);
+  color: var(--emerald);
+}
+
 /* Event card */
 .event-section {
   padding: 80px 0;
