@@ -13,6 +13,7 @@ interface EventOption {
   event_type: string;
   status: string;
   start_date: string;
+  picks_lock_at: string | null;
 }
 
 interface EntryRow {
@@ -80,6 +81,7 @@ export function WithdrawalsTab() {
     });
   }
 
+  const selectedEventObj = events.find((e) => e.id === selectedEvent) ?? null;
   const activeEntries = entries.filter((e) => !e.is_withdrawn);
   const withdrawnEntries = entries.filter((e) => e.is_withdrawn);
 
@@ -126,6 +128,9 @@ export function WithdrawalsTab() {
           />
           <p className="mt-1 text-xs text-text-secondary">
             Enter time in UTC. Set before withdrawing a skater.
+            {!deadline && selectedEventObj?.picks_lock_at && (
+              <> Defaults to pick lock date ({new Date(selectedEventObj.picks_lock_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: "UTC", timeZoneName: "short" })}).</>
+            )}
           </p>
         </div>
       )}
