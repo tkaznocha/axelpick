@@ -1,9 +1,9 @@
 // Add Jade Hovine to the upcoming Worlds event as substitute for Loena Hendrickx.
+// Loena Hendrickx's withdrawal has already been handled manually.
 // This script:
-//   1. Upserts Jade Hovine in the skaters table
+//   1. Upserts Jade Hovine in the skaters table (world_ranking: 62, price: $2M)
 //   2. Syncs her ISU profile (bio, scores, music)
-//   3. Withdraws Loena Hendrickx from the Worlds event entry
-//   4. Adds Jade Hovine to the Worlds event entry at the correct price
+//   3. Adds Jade Hovine to the Worlds event entry at the correct price
 //
 // Run with: node --env-file=.env.local scripts/add-jade-hovine-worlds.mjs [--apply]
 
@@ -21,11 +21,9 @@ const JADE = {
   name: "Jade Hovine",
   country: "BEL",
   discipline: "women",
-  world_ranking: null, // Update once confirmed from ISU standings
+  world_ranking: 62,
   isu_slug: "jade-hovine",
 };
-
-const REPLACES = "Loena Hendrickx";
 
 function getInitialPrice(worldRanking) {
   if (!worldRanking || worldRanking < 1) return 3_000_000;
@@ -179,21 +177,8 @@ async function main() {
   }
   console.log(`Event: ${event.name} (${event.id})\n`);
 
-  // 2. Find Loena Hendrickx (to withdraw from Worlds)
-  const { data: loena } = await supabase
-    .from("skaters")
-    .select("id, name, current_price")
-    .eq("name", REPLACES)
-    .eq("discipline", JADE.discipline)
-    .single();
-
-  if (!loena) {
-    console.warn(`WARNING: ${REPLACES} not found in skaters table — skipping withdrawal`);
-  } else {
-    console.log(`Found ${loena.name} (id: ${loena.id}) — will withdraw from ${event.name}`);
-  }
-
-  // 3. Upsert Jade Hovine in skaters table
+  // 2. Upsert Jade Hovine in skaters table
+  // Note: Loena Hendrickx's withdrawal has already been handled manually.
   const price = getInitialPrice(JADE.world_ranking);
   let jade;
 
@@ -250,7 +235,7 @@ async function main() {
     }
   }
 
-  // 4. Sync ISU profile
+  // 3. Sync ISU profile
   console.log(`\nSyncing ISU profile for ${JADE.name} (slug: ${JADE.isu_slug})...`);
   let profileData = null;
   try {
@@ -271,34 +256,7 @@ async function main() {
     console.warn(`  Profile can be synced later via Admin → Skaters → Sync ISU Profile`);
   }
 
-  // 5. Withdraw Loena Hendrickx from Worlds event
-  if (loena) {
-    const { data: loenaEntry } = await supabase
-      .from("event_entries")
-      .select("id, is_withdrawn")
-      .eq("event_id", event.id)
-      .eq("skater_id", loena.id)
-      .single();
-
-    if (!loenaEntry) {
-      console.log(`\n${REPLACES} has no entry in ${event.name} — nothing to withdraw`);
-    } else if (loenaEntry.is_withdrawn) {
-      console.log(`\n${REPLACES} is already withdrawn from ${event.name}`);
-    } else {
-      console.log(`\nWithdrawing ${REPLACES} from ${event.name}...`);
-      if (!dryRun) {
-        await supabase
-          .from("event_entries")
-          .update({ is_withdrawn: true, withdrawn_at: new Date().toISOString() })
-          .eq("id", loenaEntry.id);
-        console.log(`  Withdrawn.`);
-      } else {
-        console.log(`  DRY RUN: would mark is_withdrawn=true`);
-      }
-    }
-  }
-
-  // 6. Add Jade Hovine to Worlds event entries
+  // 4. Add Jade Hovine to Worlds event entries
   console.log(`\nAdding ${JADE.name} to ${event.name} at $${(price / 1e6).toFixed(1)}M...`);
   if (!dryRun && jade.id !== "<dry-run-id>") {
     const { error: entryErr } = await supabase
@@ -324,9 +282,7 @@ async function main() {
   }
 
   console.log(`\n--- Done ---`);
-  console.log(`Jade Hovine replaces ${REPLACES} in ${event.name}`);
-  console.log(`Price: $${(price / 1e6).toFixed(1)}M (world_ranking: ${JADE.world_ranking ?? "unranked → $3M default"})`);
-  console.log(`NOTE: Update world_ranking once confirmed from ISU World Standings, then re-run update-worlds-pricing.mjs --apply`);
+  console.log(`Jade Hovine added to ${event.name} (world_ranking: ${JADE.world_ranking}, price: $${(price / 1e6).toFixed(1)}M)`);
   if (dryRun) console.log(`\nRun with --apply to commit these changes.`);
 }
 
