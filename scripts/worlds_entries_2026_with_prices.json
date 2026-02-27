@@ -1,0 +1,884 @@
+[
+  {
+    "skater_name": "Olga Mikutina",
+    "country": "AUT",
+    "discipline": "women",
+    "world_ranking": 37,
+    "price": 4400000
+  },
+  {
+    "skater_name": "Nargiz Sueleymanova",
+    "country": "AZE",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Loena Hendrickx",
+    "country": "BEL",
+    "discipline": "women",
+    "world_ranking": 19,
+    "price": 7400000
+  },
+  {
+    "skater_name": "Nina Pinzarrone",
+    "country": "BEL",
+    "discipline": "women",
+    "world_ranking": 11,
+    "price": 10000000
+  },
+  {
+    "skater_name": "Alexandra Feigin",
+    "country": "BUL",
+    "discipline": "women",
+    "world_ranking": 48,
+    "price": 3300000
+  },
+  {
+    "skater_name": "Madeline Schizas",
+    "country": "CAN",
+    "discipline": "women",
+    "world_ranking": 18,
+    "price": 7600000
+  },
+  {
+    "skater_name": "Ruiyang Zhang",
+    "country": "CHN",
+    "discipline": "women",
+    "world_ranking": 45,
+    "price": 3600000
+  },
+  {
+    "skater_name": "Stefania Yakovleva",
+    "country": "CYP",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Barbora Vrankova",
+    "country": "CZE",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Nataly Langerbaur",
+    "country": "EST",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Niina Petrokina",
+    "country": "EST",
+    "discipline": "women",
+    "world_ranking": 12,
+    "price": 9600000
+  },
+  {
+    "skater_name": "Iida Karhunen",
+    "country": "FIN",
+    "discipline": "women",
+    "world_ranking": 30,
+    "price": 5200000
+  },
+  {
+    "skater_name": "Lorine Schild",
+    "country": "FRA",
+    "discipline": "women",
+    "world_ranking": 20,
+    "price": 7200000
+  },
+  {
+    "skater_name": "Kristen Spours",
+    "country": "GBR",
+    "discipline": "women",
+    "world_ranking": 50,
+    "price": 3100000
+  },
+  {
+    "skater_name": "Anastasiia Gubanova",
+    "country": "GEO",
+    "discipline": "women",
+    "world_ranking": 7,
+    "price": 11600000
+  },
+  {
+    "skater_name": "Mariia Seniuk",
+    "country": "ISR",
+    "discipline": "women",
+    "world_ranking": 38,
+    "price": 4300000
+  },
+  {
+    "skater_name": "Lara Naki Gutmann",
+    "country": "ITA",
+    "discipline": "women",
+    "world_ranking": 9,
+    "price": 10800000
+  },
+  {
+    "skater_name": "Mone Chiba",
+    "country": "JPN",
+    "discipline": "women",
+    "world_ranking": 3,
+    "price": 13500000
+  },
+  {
+    "skater_name": "Ami Nakai",
+    "country": "JPN",
+    "discipline": "women",
+    "world_ranking": 10,
+    "price": 10400000
+  },
+  {
+    "skater_name": "Kaori Sakamoto",
+    "country": "JPN",
+    "discipline": "women",
+    "world_ranking": 1,
+    "price": 15000000
+  },
+  {
+    "skater_name": "Sofia Samodelkina",
+    "country": "KAZ",
+    "discipline": "women",
+    "world_ranking": 17,
+    "price": 7800000
+  },
+  {
+    "skater_name": "Haein Lee",
+    "country": "KOR",
+    "discipline": "women",
+    "world_ranking": 21,
+    "price": 7000000
+  },
+  {
+    "skater_name": "Jia Shin",
+    "country": "KOR",
+    "discipline": "women",
+    "world_ranking": 23,
+    "price": 6600000
+  },
+  {
+    "skater_name": "Meda Variakojyte",
+    "country": "LTU",
+    "discipline": "women",
+    "world_ranking": 55,
+    "price": 2600000
+  },
+  {
+    "skater_name": "Anastasia Gracheva",
+    "country": "MDA",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Niki Wories",
+    "country": "NED",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Mia Risa Gomez",
+    "country": "NOR",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Ekaterina Kurakova",
+    "country": "POL",
+    "discipline": "women",
+    "world_ranking": 28,
+    "price": 5600000
+  },
+  {
+    "skater_name": "Julia Sauter",
+    "country": "ROU",
+    "discipline": "women",
+    "world_ranking": 35,
+    "price": 4600000
+  },
+  {
+    "skater_name": "Julija Lovrencic",
+    "country": "SLO",
+    "discipline": "women",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Livia Kaiser",
+    "country": "SUI",
+    "discipline": "women",
+    "world_ranking": 40,
+    "price": 4100000
+  },
+  {
+    "skater_name": "Kimmy Repond",
+    "country": "SUI",
+    "discipline": "women",
+    "world_ranking": 24,
+    "price": 6400000
+  },
+  {
+    "skater_name": "Amber Glenn",
+    "country": "USA",
+    "discipline": "women",
+    "world_ranking": 4,
+    "price": 12750000
+  },
+  {
+    "skater_name": "Isabeau Levito",
+    "country": "USA",
+    "discipline": "women",
+    "world_ranking": 5,
+    "price": 12000000
+  },
+  {
+    "skater_name": "Alysa Liu",
+    "country": "USA",
+    "discipline": "women",
+    "world_ranking": 2,
+    "price": 14250000
+  },
+  {
+    "skater_name": "Karina Akopova / Nikita Rakhmanin",
+    "country": "ARM",
+    "discipline": "pairs",
+    "world_ranking": 32,
+    "price": 4900000
+  },
+  {
+    "skater_name": "Anastasiia Golubeva / Hektor Giotopoulos Moore",
+    "country": "AUS",
+    "discipline": "pairs",
+    "world_ranking": 25,
+    "price": 6200000
+  },
+  {
+    "skater_name": "Gabriella Izzo / Luc Maierhofer",
+    "country": "AUT",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Kelly Ann Laurin / Loucas Ethier",
+    "country": "CAN",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Lia Pereira / Trennt Michaud",
+    "country": "CAN",
+    "discipline": "pairs",
+    "world_ranking": 10,
+    "price": 10400000
+  },
+  {
+    "skater_name": "Jiaxuan Zhang / Yihang Huang",
+    "country": "CHN",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Anna Valesi / Martin Bidar",
+    "country": "CZE",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Camille Kovalev / Pavel Kovalev",
+    "country": "FRA",
+    "discipline": "pairs",
+    "world_ranking": 19,
+    "price": 7400000
+  },
+  {
+    "skater_name": "Anastasia Vaipan-Law / Luke Digby",
+    "country": "GBR",
+    "discipline": "pairs",
+    "world_ranking": 13,
+    "price": 9200000
+  },
+  {
+    "skater_name": "Anastasiia Metelkina / Luka Berulava",
+    "country": "GEO",
+    "discipline": "pairs",
+    "world_ranking": 3,
+    "price": 13500000
+  },
+  {
+    "skater_name": "Minerva Fabienne Hase / Nikita Volodin",
+    "country": "GER",
+    "discipline": "pairs",
+    "world_ranking": 2,
+    "price": 14250000
+  },
+  {
+    "skater_name": "Annika Hocke / Robert Kunkel",
+    "country": "GER",
+    "discipline": "pairs",
+    "world_ranking": 11,
+    "price": 10000000
+  },
+  {
+    "skater_name": "Maria Pavlova / Alexei Sviatchenko",
+    "country": "HUN",
+    "discipline": "pairs",
+    "world_ranking": 7,
+    "price": 11600000
+  },
+  {
+    "skater_name": "Irma Caldara / Riccardo Maglio",
+    "country": "ITA",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Sara Conti / Niccolo Macii",
+    "country": "ITA",
+    "discipline": "pairs",
+    "world_ranking": 4,
+    "price": 12750000
+  },
+  {
+    "skater_name": "Riku Miura / Ryuichi Kihara",
+    "country": "JPN",
+    "discipline": "pairs",
+    "world_ranking": 1,
+    "price": 15000000
+  },
+  {
+    "skater_name": "Yuna Nagaoka / Sumitada Moriguchi",
+    "country": "JPN",
+    "discipline": "pairs",
+    "world_ranking": 15,
+    "price": 8400000
+  },
+  {
+    "skater_name": "Daria Danilova / Michel Tsiba",
+    "country": "NED",
+    "discipline": "pairs",
+    "world_ranking": 17,
+    "price": 7800000
+  },
+  {
+    "skater_name": "Ioulia Chtchetinina / Michal Wozniak",
+    "country": "POL",
+    "discipline": "pairs",
+    "world_ranking": 14,
+    "price": 8800000
+  },
+  {
+    "skater_name": "Oxana Vouillamoz / Tom Bouvart",
+    "country": "SUI",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Sofiia Holichenko / Artem Darenskyi",
+    "country": "UKR",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Alisa Efimova / Misha Mitrofanov",
+    "country": "USA",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Ellie Kam / Danny O'Shea",
+    "country": "USA",
+    "discipline": "pairs",
+    "world_ranking": 8,
+    "price": 11200000
+  },
+  {
+    "skater_name": "Katie McBeath / Daniil Parkman",
+    "country": "USA",
+    "discipline": "pairs",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Semen Daniliants",
+    "country": "ARM",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Maurizio Zandron",
+    "country": "AUT",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Vladimir Litvintsev",
+    "country": "AZE",
+    "discipline": "men",
+    "world_ranking": 23,
+    "price": 6600000
+  },
+  {
+    "skater_name": "Stephen Gogolev",
+    "country": "CAN",
+    "discipline": "men",
+    "world_ranking": 25,
+    "price": 6200000
+  },
+  {
+    "skater_name": "Yudong Chen",
+    "country": "CHN",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Georgii Reshtenko",
+    "country": "CZE",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Tomas-Llorenc Guarino Sabate",
+    "country": "ESP",
+    "discipline": "men",
+    "world_ranking": 50,
+    "price": 3100000
+  },
+  {
+    "skater_name": "Aleksandr Selevko",
+    "country": "EST",
+    "discipline": "men",
+    "world_ranking": 15,
+    "price": 8400000
+  },
+  {
+    "skater_name": "Kevin Aymoz",
+    "country": "FRA",
+    "discipline": "men",
+    "world_ranking": 6,
+    "price": 12000000
+  },
+  {
+    "skater_name": "Francois Pitot",
+    "country": "FRA",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Adam Siao Him Fa",
+    "country": "FRA",
+    "discipline": "men",
+    "world_ranking": 5,
+    "price": 12000000
+  },
+  {
+    "skater_name": "Edward Appleby",
+    "country": "GBR",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Nika Egadze",
+    "country": "GEO",
+    "discipline": "men",
+    "world_ranking": 7,
+    "price": 11600000
+  },
+  {
+    "skater_name": "Genrikh Gartung",
+    "country": "GER",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Tamir Kuperman",
+    "country": "ISR",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Daniel Grassl",
+    "country": "ITA",
+    "discipline": "men",
+    "world_ranking": 9,
+    "price": 10800000
+  },
+  {
+    "skater_name": "Matteo Rizzo",
+    "country": "ITA",
+    "discipline": "men",
+    "world_ranking": 11,
+    "price": 10000000
+  },
+  {
+    "skater_name": "Yuma Kagiyama",
+    "country": "JPN",
+    "discipline": "men",
+    "world_ranking": 2,
+    "price": 14250000
+  },
+  {
+    "skater_name": "Kao Miura",
+    "country": "JPN",
+    "discipline": "men",
+    "world_ranking": 10,
+    "price": 10400000
+  },
+  {
+    "skater_name": "Shun Sato",
+    "country": "JPN",
+    "discipline": "men",
+    "world_ranking": 4,
+    "price": 12750000
+  },
+  {
+    "skater_name": "Dias Jirenbayev",
+    "country": "KAZ",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Junhwan Cha",
+    "country": "KOR",
+    "discipline": "men",
+    "world_ranking": 14,
+    "price": 8800000
+  },
+  {
+    "skater_name": "Hyungyeom Kim",
+    "country": "KOR",
+    "discipline": "men",
+    "world_ranking": 35,
+    "price": 4600000
+  },
+  {
+    "skater_name": "Fedirs Kuliss",
+    "country": "LAT",
+    "discipline": "men",
+    "world_ranking": 39,
+    "price": 4200000
+  },
+  {
+    "skater_name": "Deniss Vasiljevs",
+    "country": "LAT",
+    "discipline": "men",
+    "world_ranking": 20,
+    "price": 7200000
+  },
+  {
+    "skater_name": "Donovan Carrillo",
+    "country": "MEX",
+    "discipline": "men",
+    "world_ranking": 42,
+    "price": 3900000
+  },
+  {
+    "skater_name": "Vladimir Samoilov",
+    "country": "POL",
+    "discipline": "men",
+    "world_ranking": 33,
+    "price": 4800000
+  },
+  {
+    "skater_name": "Lukas Britschgi",
+    "country": "SUI",
+    "discipline": "men",
+    "world_ranking": 8,
+    "price": 11200000
+  },
+  {
+    "skater_name": "Adam Hagara",
+    "country": "SVK",
+    "discipline": "men",
+    "world_ranking": 19,
+    "price": 7400000
+  },
+  {
+    "skater_name": "Andreas Nordeback",
+    "country": "SWE",
+    "discipline": "men",
+    "world_ranking": 48,
+    "price": 3300000
+  },
+  {
+    "skater_name": "Yu-Hsiang Li",
+    "country": "TPE",
+    "discipline": "men",
+    "world_ranking": 55,
+    "price": 2600000
+  },
+  {
+    "skater_name": "Alp Eren Ozkan",
+    "country": "TUR",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Kyrylo Marsak",
+    "country": "UKR",
+    "discipline": "men",
+    "world_ranking": 60,
+    "price": 2100000
+  },
+  {
+    "skater_name": "Jason Brown",
+    "country": "USA",
+    "discipline": "men",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Ilia Malinin",
+    "country": "USA",
+    "discipline": "men",
+    "world_ranking": 1,
+    "price": 15000000
+  },
+  {
+    "skater_name": "Andrew Torgashev",
+    "country": "USA",
+    "discipline": "men",
+    "world_ranking": 21,
+    "price": 7000000
+  },
+  {
+    "skater_name": "Holly Harris / Jason Chan",
+    "country": "AUS",
+    "discipline": "ice_dance",
+    "world_ranking": 26,
+    "price": 6000000
+  },
+  {
+    "skater_name": "Samantha Ritter / Daniel Brykalov",
+    "country": "AZE",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Piper Gilles / Paul Poirier",
+    "country": "CAN",
+    "discipline": "ice_dance",
+    "world_ranking": 4,
+    "price": 12750000
+  },
+  {
+    "skater_name": "Marjorie Lajoie / Zachary Lagha",
+    "country": "CAN",
+    "discipline": "ice_dance",
+    "world_ranking": 11,
+    "price": 10000000
+  },
+  {
+    "skater_name": "Marie-Jade Lauriault / Romain Le Gac",
+    "country": "CAN",
+    "discipline": "ice_dance",
+    "world_ranking": 19,
+    "price": 7400000
+  },
+  {
+    "skater_name": "Junfei Ren / Jianing Xing",
+    "country": "CHN",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Angelina Kudryavtseva / Ilia Karankevich",
+    "country": "CYP",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Katerina Mrazkova / Daniel Mrazek",
+    "country": "CZE",
+    "discipline": "ice_dance",
+    "world_ranking": 18,
+    "price": 7600000
+  },
+  {
+    "skater_name": "Natalie Taschlerova / Filip Taschler",
+    "country": "CZE",
+    "discipline": "ice_dance",
+    "world_ranking": 16,
+    "price": 8000000
+  },
+  {
+    "skater_name": "Olivia Smart / Tim Dieck",
+    "country": "ESP",
+    "discipline": "ice_dance",
+    "world_ranking": 9,
+    "price": 10800000
+  },
+  {
+    "skater_name": "Sofia Val / Asaf Kazimov",
+    "country": "ESP",
+    "discipline": "ice_dance",
+    "world_ranking": 38,
+    "price": 4300000
+  },
+  {
+    "skater_name": "Yuka Orihara / Juho Pirinen",
+    "country": "FIN",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Juulia Turkkila / Matthias Versluis",
+    "country": "FIN",
+    "discipline": "ice_dance",
+    "world_ranking": 13,
+    "price": 9200000
+  },
+  {
+    "skater_name": "Laurence Fournier Beaudry / Guillaume Cizeron",
+    "country": "FRA",
+    "discipline": "ice_dance",
+    "world_ranking": 21,
+    "price": 7000000
+  },
+  {
+    "skater_name": "Evgeniia Lopareva / Geoffrey Brissaud",
+    "country": "FRA",
+    "discipline": "ice_dance",
+    "world_ranking": 5,
+    "price": 12000000
+  },
+  {
+    "skater_name": "Phebe Bekker / James Hernandez",
+    "country": "GBR",
+    "discipline": "ice_dance",
+    "world_ranking": 32,
+    "price": 4900000
+  },
+  {
+    "skater_name": "Lilah Fear / Lewis Gibson",
+    "country": "GBR",
+    "discipline": "ice_dance",
+    "world_ranking": 1,
+    "price": 15000000
+  },
+  {
+    "skater_name": "Diana Davis / Gleb Smolkin",
+    "country": "GEO",
+    "discipline": "ice_dance",
+    "world_ranking": 12,
+    "price": 9600000
+  },
+  {
+    "skater_name": "Jennifer Janse van Rensburg / Benjamin Steffan",
+    "country": "GER",
+    "discipline": "ice_dance",
+    "world_ranking": 22,
+    "price": 6800000
+  },
+  {
+    "skater_name": "Mariia Ignateva / Danijil Leonyidovics Szemko",
+    "country": "HUN",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Shira Ichilov / Mikhail Nosovitskiy",
+    "country": "ISR",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Victoria Manni / Carlo Roethlisberger",
+    "country": "ITA",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Utana Yoshida / Masaya Morita",
+    "country": "JPN",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Hannah Lim / Ye Quan",
+    "country": "KOR",
+    "discipline": "ice_dance",
+    "world_ranking": 14,
+    "price": 8800000
+  },
+  {
+    "skater_name": "Allison Reed / Saulius Ambrulevicius",
+    "country": "LTU",
+    "discipline": "ice_dance",
+    "world_ranking": 7,
+    "price": 11600000
+  },
+  {
+    "skater_name": "Gina Zehnder / Beda Leon Sieber",
+    "country": "SUI",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Milla Ruud Reitan / Nikolaj Majorov",
+    "country": "SWE",
+    "discipline": "ice_dance",
+    "world_ranking": 42,
+    "price": 3900000
+  },
+  {
+    "skater_name": "Mariia Pinchuk / Mykyta Pogorielov",
+    "country": "UKR",
+    "discipline": "ice_dance",
+    "world_ranking": null,
+    "price": 3000000
+  },
+  {
+    "skater_name": "Christina Carreira / Anthony Ponomarenko",
+    "country": "USA",
+    "discipline": "ice_dance",
+    "world_ranking": 8,
+    "price": 11200000
+  },
+  {
+    "skater_name": "Madison Chock / Evan Bates",
+    "country": "USA",
+    "discipline": "ice_dance",
+    "world_ranking": 2,
+    "price": 14250000
+  },
+  {
+    "skater_name": "Emilea Zingas / Vadym Kolesnik",
+    "country": "USA",
+    "discipline": "ice_dance",
+    "world_ranking": 6,
+    "price": 12000000
+  }
+]
