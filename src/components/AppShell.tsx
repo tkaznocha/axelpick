@@ -1,5 +1,6 @@
 import { createServerSupabaseClient, getAuthUser } from "@/lib/supabase-server";
 import NavBar from "./NavBar";
+import CommunityBanner from "./CommunityBanner";
 
 export default async function AppShell({
   displayName = "Skater",
@@ -36,6 +37,7 @@ export default async function AppShell({
       <div className="app-noise" />
       <div style={{ position: "relative", zIndex: 1 }}>
         <NavBar displayName={displayName} avatarUrl={resolvedAvatarUrl} email={email} />
+        <CommunityBanner />
         {children}
       </div>
     </>
